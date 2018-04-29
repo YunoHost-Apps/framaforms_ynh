@@ -1,0 +1,4 @@
+SOURCE_URL=https://ftp.drupal.org/files/projects/drupal-8.5.3.tar.gz
+SOURCE_SUM=7fc105f9e04ac5ccd337ff784aeaba6b48841490d7a80fd8ddb002fac0def47b
+SOURCE_SUM_PRG=sha256sum
+SOURCE_FORMAT=tar.gz
