@@ -12,7 +12,7 @@
 		"yunohost": ">= 2.7.0"
   },
   "maintainer": {
-    "name": "jibec",
+    "name": "Jean-Baptiste Holcroft",
     "email": "jean-baptiste@holcroft.fr"
   },
   "multi_instance": false,
