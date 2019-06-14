@@ -16,6 +16,12 @@ $databases = array (
 	),
 );
 
+/**
+ * Turn off the X-Frame-Options header entirely, to restore the previous
+ * behavior of allowing the site to be embedded in a frame on another site.
+ */
+$conf['x_frame_options'] = '';
+
 /*
  *
  * The "driver" property indicates what Drupal database driver the
