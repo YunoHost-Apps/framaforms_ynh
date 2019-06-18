@@ -20,7 +20,7 @@ ynh_abort_if_errors
 # RETRIEVE ARGUMENTS FROM THE MANIFEST
 #=================================================
 
-ynh_export domain path admin is_public
+ynh_export domain path_url admin is_public
 
 # This is a multi-instance app, meaning it can be installed several times independently
 # The id of the app as stated in the manifest is available as $YNH_APP_ID
@@ -60,7 +60,7 @@ ynh_webpath_register --app=$app --domain=$domain --path_url=$path_url
 #=================================================
 ynh_script_progression --message="Storing installation settings..." --time --weight=1
 
-ynh_save_args domain path admin is_public final_path
+ynh_save_args domain path_url admin is_public final_path
 
 #=================================================
 # STANDARD MODIFICATIONS
@@ -87,7 +87,7 @@ ynh_script_progression --message="Creating a PostgreSQL database..." --time --we
 
 ynh_psql_test_if_first_run
 
-db_name=$(ynh_sanitize_dbid --dbname="$app")
+db_name=$(ynh_sanitize_dbid --db_name="$app")
 db_user=$db_name
 ynh_app_setting_set --app=$app --key=db_name --value=$db_name
 ynh_psql_setup_db --db_user=$db_user --db_name=$db_name
