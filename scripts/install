@@ -8,6 +8,10 @@
 
 source _common.sh
 source /usr/share/yunohost/helpers
+source ynh_add_extra_apt_repos__3
+source ynh_install_php__3
+source ynh_composer__2
+source ynh_exec_as
 
 #=================================================
 # MANAGE SCRIPT FAILURE
@@ -27,7 +31,7 @@ app=$YNH_APP_INSTANCE_NAME
 #=================================================
 # CHECK IF THE APP CAN BE INSTALLED WITH THESE ARGS
 #=================================================
-ynh_script_progression --message="Validating installation parameters..." --time --weight=1
+ynh_script_progression --message="Validating installation parameters..." --weight=1
 
 final_path=/var/www/$app
 test ! -e "$final_path" || ynh_die --message="This path already contains a folder"
@@ -38,7 +42,7 @@ ynh_webpath_register --app=$app --domain=$domain --path_url=$path_url
 #=================================================
 # STORE SETTINGS FROM MANIFEST
 #=================================================
-ynh_script_progression --message="Storing installation settings..." --time --weight=2
+ynh_script_progression --message="Storing installation settings..." --weight=1
 
 ynh_save_args domain path_url password is_public final_path
 
@@ -48,14 +52,14 @@ ynh_save_args domain path_url password is_public final_path
 # INSTALL DEPENDENCIES
 #=================================================
 
-ynh_script_progression --message="Installing dependencies..." --time --weight=7
+ynh_script_progression --message="Installing dependencies..." --weight=7
 
 ynh_install_app_dependencies $pkg_dependencies
 
 #=================================================
 # CREATE A PostgreSQL DATABASE
 #=================================================
-ynh_script_progression --message="Creating a PostgreSQL database..." --time --weight=2
+ynh_script_progression --message="Creating a PostgreSQL database..." --weight=2
 
 ynh_psql_test_if_first_run
 
@@ -67,7 +71,7 @@ ynh_psql_setup_db --db_user=$db_user --db_name=$db_name
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
-ynh_script_progression --message="Setting up source files..." --time --weight=12
+ynh_script_progression --message="Setting up source files..." --weight=9
 
 ### `ynh_setup_source` is used to install an app from a zip or tar.gz file,
 ### downloaded from an upstream source, like a git repository.
@@ -79,7 +83,7 @@ ynh_setup_source --dest_dir="$final_path"
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
-ynh_script_progression --message="Configuring nginx web server..." --time --weight=2
+ynh_script_progression --message="Configuring nginx web server..." --weight=1
 
 ### `ynh_add_nginx_config` will use the file conf/nginx.conf
 
@@ -89,7 +93,7 @@ ynh_add_nginx_config
 #=================================================
 # CREATE DEDICATED USER
 #=================================================
-ynh_script_progression --message="Configuring system user..." --time --weight=2
+ynh_script_progression --message="Configuring system user..." --weight=3
 
 # Create a system user
 ynh_system_user_create --username=$app
@@ -97,14 +101,14 @@ ynh_system_user_create --username=$app
 #=================================================
 # INSTALL PHP 7.2
 #=================================================
-ynh_script_progression --message="Installing PHP 7.2..." --time --weight=10
+ynh_script_progression --message="Installing PHP 7.2..." --weight=35
 
 ynh_install_php --phpversion="7.2" --package="$extra_pkg_dependencies"
 
 #=================================================
 # PHP-FPM CONFIGURATION
 #=================================================
-ynh_script_progression --message="Configuring php-fpm..." --time --weight=2
+ynh_script_progression --message="Configuring php-fpm..." --weight=1
 
 # Create a dedicated php-fpm config
 ynh_add_fpm_config --phpversion="7.2"
@@ -114,7 +118,7 @@ ynh_add_fpm_config --phpversion="7.2"
 #=================================================
 # CREATE DRUSH ALIAS
 #=================================================
-ynh_script_progression --message="Creating Drush alias..." --time --weight=2
+ynh_script_progression --message="Creating Drush alias..." --weight=2
 
 mkdir -p "$final_path/.drush"
 
@@ -128,7 +132,7 @@ ynh_replace_string --match_string="__PATH_URL__" --replace_string="$path_url" --
 #=================================================
 # INSTALL COMPOSER
 #=================================================
-ynh_script_progression --message="Installing Composer..." --time --weight=8
+ynh_script_progression --message="Installing Composer..." --weight=31
 
 mkdir -p "$final_path/.composer"
 
@@ -139,7 +143,7 @@ ynh_install_composer --phpversion="7.2" --workdir="$final_path/.composer"
 #=================================================
 # Database initialization
 #=================================================
-ynh_script_progression --message="Initializing PostgreSQL database..." --time --weight=8
+ynh_script_progression --message="Initializing PostgreSQL database..." --weight=8
 
 ynh_replace_string "betaforms" "$db_user" "$final_path/framaforms.sql"
 ynh_psql_execute_file_as_root "$final_path/framaforms.sql" "$db_name"
@@ -147,20 +151,20 @@ ynh_psql_execute_file_as_root "$final_path/framaforms.sql" "$db_name"
 #=================================================
 # Initialize tmp  and private directory
 #=================================================
-ynh_script_progression --message="Initializing tmp and private directory..." --time --weight=8
+ynh_script_progression --message="Initializing tmp and private directory..." --weight=1
 
 mkdir -p "$final_path/sites/default/files"
 chmod 2775 "$final_path/sites/default/files"
 mkdir -p "$final_path/sites/default/files/tmp"
 
-mkdir -p "${final_path}_private"
-chown -R $app: "${final_path}_private"
-chmod 775 "${final_path}_private"
+mkdir -p "/home/yunohost.app/$app/data"
+chown -R $app: "/home/yunohost.app/$app/data"
+chmod 775 "/home/yunohost.app/$app/data"
 
 #=================================================
 # Missing images
 #=================================================
-ynh_script_progression --message="Adding missing images..." --time --weight=2
+ynh_script_progression --message="Adding missing images..." --weight=2
 
 mkdir -p "$final_path/sites/default/files/imgforms"
 
@@ -183,16 +187,18 @@ ynh_replace_string --match_string="__FINALPATH__" --replace_string="$final_path"
 #=================================================
 # Change admin password and apply custom conf
 #=================================================
-ynh_script_progression --message="Changing admin password..." --time --weight=2
+ynh_script_progression --message="Changing admin password..." --weight=19
 
 chown -R $app: $final_path
+drush="$final_path/.composer/vendor/bin/drush --quiet"
 pushd $final_path
-sudo -u $app $final_path/.composer/vendor/bin/drush upwd --password="$password" "admin"
-sudo -u $app $final_path/.composer/vendor/bin/drush variable-set site_name "Framaforms"
-sudo -u $app $final_path/.composer/vendor/bin/drush variable-set site_mail "no-reply@$domain"
-#sudo -u $app $final_path/.composer/vendor/bin/drush @$app pm-download ldap
-#sudo -u $app $final_path/.composer/vendor/bin/drush @$app pm-enable -y ldap_servers ldap_user ldap_authentication ldap_authorization ldap_authorization_drupal_role
-#sudo -u $app $final_path/.composer/vendor/bin/drush @$app core-cron
+ynh_exec_as $app $drush upwd --password="$password" "admin" --verbose --debug
+ynh_exec_as $app $drush variable-set site_name "Framaforms" --verbose --debug
+ynh_exec_as $app $drush variable-set site_mail "no-reply@$domain" --verbose --debug
+ynh_exec_as $app $drush variable-set file_private_path "/home/yunohost.app/$app/data" --verbose --debug
+#ynh_exec_as $app $drush @$app pm-download ldap
+#ynh_exec_as $app $drush @$app pm-enable -y ldap_servers ldap_user ldap_authentication ldap_authorization ldap_authorization_drupal_role
+#ynh_exec_as $app $drush @$app core-cron
 popd
 
 #=================================================
@@ -220,7 +226,7 @@ chown -R $app: $final_path
 #=================================================
 # SETUP SSOWAT
 #=================================================
-ynh_script_progression --message="Configuring SSOwat..." --time --weight=1
+ynh_script_progression --message="Configuring SSOwat..." --weight=1
 
 # Make app public if necessary
 if [ $is_public -eq 1 ]
@@ -232,7 +238,7 @@ fi
 #=================================================
 # RELOAD NGINX
 #=================================================
-ynh_script_progression --message="Reloading nginx web server..." --time --weight=1
+ynh_script_progression --message="Reloading nginx web server..." --weight=1
 
 ynh_systemd_action --service_name=nginx --action=reload
 
@@ -240,4 +246,4 @@ ynh_systemd_action --service_name=nginx --action=reload
 # END OF SCRIPT
 #=================================================
 
-ynh_script_progression --message="Installation of $app completed" --time --last
+ynh_script_progression --message="Installation of $app completed" --last
