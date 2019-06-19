@@ -42,12 +42,13 @@
         "default": "/poll"
       },
       {
-        "name": "admin",
+        "name": "password",
+        "type": "password",
         "ask": {
-          "en": "Choose an admin user"
+            "en": "Set the administrator password",
+            "fr": "Définissez le mot de passe administrateur"
         },
-        "type": "user",
-        "example": "johndoe"
+        "example": "Choose a password"
       },
       {
         "name": "is_public",

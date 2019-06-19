@@ -43,6 +43,15 @@ test ! -d $final_path \
 #=================================================
 # STANDARD RESTORATION STEPS
 #=================================================
+# RECREATE THE DEDICATED USER
+#=================================================
+ynh_print_info --message="Recreating the dedicated system user..."
+
+ynh_system_user_create --username=$app --home_dir="$final_path"
+
+#=================================================
+# RESTORE ALL FILES
+#=================================================
 ynh_script_progression --message="Restoring all files..." --time --weight=1
 
 ynh_restore
@@ -65,13 +74,21 @@ ynh_script_progression --message="Reinstalling dependencies..." --time --weight=
 ynh_install_app_dependencies $pkg_dependencies
 
 #=================================================
+# REINSTALL PHP
+#=================================================
+ynh_print_info --message="Reinstalling php..."
+
+ynh_install_php --phpversion="7.2" --package="$extra_pkg_dependencies"
+
+
+#=================================================
 # RESTORE THE DATABASE
 #=================================================
 ynh_script_progression --message="Restoring the database..." --time --weight=1
 
 ynh_psql_test_if_first_run
 
-db_pwd=$(ynh_app_setting_get --app=$app --key=mysqlpwd)
+db_pwd=$(ynh_app_setting_get --app=$app --key=psqlpwd)
 ynh_psql_setup_db --db_user=$db_user --db_name=$db_name --db_pwd=$db_pwd
 ynh_psql_execute_file_as_root ./db.sql "$db_name"
 
