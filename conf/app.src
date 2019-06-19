@@ -1,4 +1,4 @@
-SOURCE_URL=https://framagit.org/framasoft/framaforms/-/archive/ad53d1a6f3d78ec0748a35a4e82bb013cad22f00/framaforms-ad53d1a6f3d78ec0748a35a4e82bb013cad22f00.tar.gz
-SOURCE_SUM=0272127cfe4e307ce2b824446fab1dfacba54071dcf06cdf48bc265da6719362
+SOURCE_URL=https://framagit.org/ljf/framaforms/-/archive/19ef353c7d88813d9c404e965b3f86bc8905d06d/framaforms-19ef353c7d88813d9c404e965b3f86bc8905d06d.tar.gz
+SOURCE_SUM=7df7a449a36bb60059b5642cfd86b44422e0bd8bdc182ba71621d90c74bc0967
 SOURCE_SUM_PRG=sha256sum
-SOURCE_FILENAME=framaforms-0.0.0+190614.tar.gz
+SOURCE_FILENAME=framaforms-1.0.0+190618.tar.gz

@@ -18,7 +18,6 @@ app=$YNH_APP_INSTANCE_NAME
 
 domain=$(ynh_app_setting_get --app=$app --key=domain)
 path_url=$(ynh_app_setting_get --app=$app --key=path)
-admin=$(ynh_app_setting_get --app=$app --key=admin)
 is_public=$(ynh_app_setting_get --app=$app --key=is_public)
 final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 db_name=$(ynh_app_setting_get --app=$app --key=db_name)
@@ -125,17 +124,44 @@ ynh_script_progression --message="Making sure dedicated system user exists..." -
 ynh_system_user_create --username=$app
 
 #=================================================
+# UPGRADE PHP
+#=================================================
+ynh_script_progression --message="Upgrading PHP..." --weight=1
+
+ynh_install_php --phpversion="7.2" --package="$extra_pkg_dependencies"
+
+#=================================================
 # PHP-FPM CONFIGURATION
 #=================================================
 ynh_script_progression --message="Upgrading php-fpm configuration..." --time --weight=1
 
 # Create a dedicated php-fpm config
-ynh_add_fpm_config
+ynh_add_fpm_config --phpversion="7.2"
 
 #=================================================
 # SPECIFIC UPGRADE
 #=================================================
-# ...
+# UPGRADE COMPOSER
+#=================================================
+ynh_script_progression --message="Upgrading Composer..." --weight=1
+
+ynh_install_composer --phpversion="7.2" --workdir="$final_path/.composer"
+
+#=================================================
+# UPGRADE DRUPAL
+#=================================================
+ynh_script_progression --message="Upgrading Drupal..." --weight=1
+
+ynh_backup_if_checksum_is_different --file="$final_path/$app/sites/default/settings.php"
+
+sudo -u $app $final_path/.composer/vendor/bin/drush @$app variable-set --exact maintenance_mode 1 
+sudo -u $app $final_path/.composer/vendor/bin/drush @$app cache-clear all 
+sudo -u $app $final_path/.composer/vendor/bin/drush @$app pm-update -y drupal
+sudo -u $app $final_path/.composer/vendor/bin/drush @$app vset --exact maintenance_mode 0 
+sudo -u $app $final_path/.composer/vendor/bin/drush @$app cache-clear all 
+sudo -u $app $final_path/.composer/vendor/bin/drush @$app l10n-update-refresh
+sudo -u $app $final_path/.composer/vendor/bin/drush @$app l10n-update
+
 #=================================================
 
 #=================================================
@@ -143,9 +169,6 @@ ynh_add_fpm_config
 #=================================================
 config_file=$final_path/sites/default/settings.php
 
-### Verify the checksum of a file, stored by `ynh_store_file_checksum` in the install script.
-### And create a backup of this file if the checksum is different. So the file will be backed up if the admin had modified it.
-ynh_backup_if_checksum_is_different --file="$config_file"
 # Recalculate and store the checksum of the file for the next upgrade.
 ynh_store_file_checksum --file="$config_file"
 

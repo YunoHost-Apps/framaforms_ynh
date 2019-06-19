@@ -5,7 +5,8 @@
 #=================================================
 
 # dependencies used by the app
-pkg_dependencies="postgresql php-pgsql php-mbstring"
+pkg_dependencies="postgresql curl libzip-dev"
+extra_pkg_dependencies="php7.2-fpm php7.2-cli php7.2-gd php7.2-mysql php7.2-xml php7.2-ldap php7.2-mbstring php7.2-uploadprogress php7.2-pgsql"
 
 #=================================================
 # PERSONAL HELPERS
@@ -42,3 +43,6 @@ ynh_save_args () {
     done
 }
 
+source ynh_add_extra_apt_repos__3
+source ynh_install_php__3
+source ynh_composer__2

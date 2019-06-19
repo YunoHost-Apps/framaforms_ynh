@@ -1,28 +1,78 @@
 <?php
-
-$databases = array (
-	'default' =>
-	array (
-		'default' =>
-		array (
-			'database' => '__DB_NAME__',
-			'username' => '__DB_USER__',
-			'password' => '__DB_PWD__',
-			'host' => 'localhost',
-			'port' => '5432',
-			'driver' => 'pgsql',
-			'prefix' => '',
-		),
-	),
-);
+/**
+ * @file
+ * Drupal site-specific configuration file.
+ *
+ * IMPORTANT NOTE:
+ * This file may have been set to read-only by the Drupal installation program.
+ * If you make changes to this file, be sure to protect it again after making
+ * your modifications. Failure to remove write permissions to this file is a
+ * security risk.
+ *
+ * The configuration file to be loaded is based upon the rules below. However
+ * if the multisite aliasing file named sites/sites.php is present, it will be
+ * loaded, and the aliases in the array $sites will override the default
+ * directory rules below. See sites/example.sites.php for more information about
+ * aliases.
+ *
+ * The configuration directory will be discovered by stripping the website's
+ * hostname from left to right and pathname from right to left. The first
+ * configuration file found will be used and any others will be ignored. If no
+ * other configuration file is found then the default configuration file at
+ * 'sites/default' will be used.
+ *
+ * For example, for a fictitious site installed at
+ * http://www.drupal.org:8080/mysite/test/, the 'settings.php' file is searched
+ * for in the following directories:
+ *
+ * - sites/8080.www.drupal.org.mysite.test
+ * - sites/www.drupal.org.mysite.test
+ * - sites/drupal.org.mysite.test
+ * - sites/org.mysite.test
+ *
+ * - sites/8080.www.drupal.org.mysite
+ * - sites/www.drupal.org.mysite
+ * - sites/drupal.org.mysite
+ * - sites/org.mysite
+ *
+ * - sites/8080.www.drupal.org
+ * - sites/www.drupal.org
+ * - sites/drupal.org
+ * - sites/org
+ *
+ * - sites/default
+ *
+ * Note that if you are installing on a non-standard port number, prefix the
+ * hostname with that number. For example,
+ * http://www.drupal.org:8080/mysite/test/ could be loaded from
+ * sites/8080.www.drupal.org.mysite.test/.
+ *
+ * @see example.sites.php
+ * @see conf_path()
+ */
 
 /**
- * Turn off the X-Frame-Options header entirely, to restore the previous
- * behavior of allowing the site to be embedded in a frame on another site.
- */
-$conf['x_frame_options'] = '';
-
-/*
+ * Database settings:
+ *
+ * The $databases array specifies the database connection or
+ * connections that Drupal may use.  Drupal is able to connect
+ * to multiple databases, including multiple types of databases,
+ * during the same request.
+ *
+ * Each database connection is specified as an array of settings,
+ * similar to the following:
+ * @code
+ * array(
+ *   'driver' => 'mysql',
+ *   'database' => 'databasename',
+ *   'username' => 'username',
+ *   'password' => 'password',
+ *   'host' => 'localhost',
+ *   'port' => 3306,
+ *   'prefix' => 'myprefix_',
+ *   'collation' => 'utf8_general_ci',
+ * );
+ * @endcode
  *
  * The "driver" property indicates what Drupal database driver the
  * connection should use.  This is usually the same as the name of the
@@ -74,6 +124,38 @@ $conf['x_frame_options'] = '';
  *   'collation' => 'utf8_general_ci',
  * );
  * @endcode
+ *
+ * For handling full UTF-8 in MySQL, including multi-byte characters such as
+ * emojis, Asian symbols, and mathematical symbols, you may set the collation
+ * and charset to "utf8mb4" prior to running install.php:
+ * @code
+ * $databases['default']['default'] = array(
+ *   'driver' => 'mysql',
+ *   'database' => 'databasename',
+ *   'username' => 'username',
+ *   'password' => 'password',
+ *   'host' => 'localhost',
+ *   'charset' => 'utf8mb4',
+ *   'collation' => 'utf8mb4_general_ci',
+ * );
+ * @endcode
+ * When using this setting on an existing installation, ensure that all existing
+ * tables have been converted to the utf8mb4 charset, for example by using the
+ * utf8mb4_convert contributed project available at
+ * https://www.drupal.org/project/utf8mb4_convert, so as to prevent mixing data
+ * with different charsets.
+ * Note this should only be used when all of the following conditions are met:
+ * - In order to allow for large indexes, MySQL must be set up with the
+ *   following my.cnf settings:
+ *     [mysqld]
+ *     innodb_large_prefix=true
+ *     innodb_file_format=barracuda
+ *     innodb_file_per_table=true
+ *   These settings are available as of MySQL 5.5.14, and are defaults in
+ *   MySQL 5.7.7 and up.
+ * - The PHP MySQL driver must support the utf8mb4 charset (libmysqlclient
+ *   5.5.3 and up, as well as mysqlnd 5.0.9 and up).
+ * - The MySQL server must support the utf8mb4 charset (5.5.3 and up).
  *
  * You can optionally set prefixes for some or all database table names
  * by using the 'prefix' setting. If a prefix is specified, the table
@@ -161,6 +243,21 @@ $conf['x_frame_options'] = '';
  *   );
  * @endcode
  */
+$databases = array (
+	'default' =>
+	array (
+		'default' =>
+		array (
+			'database' => '__DB_NAME__',
+			'username' => '__DB_USER__',
+			'password' => '__DB_PWD__',
+			'host' => 'localhost',
+			'port' => '5432',
+			'driver' => 'pgsql',
+			'prefix' => '',
+		),
+	),
+);
 
 /**
  * Access control for update.php script.
@@ -395,6 +492,23 @@ ini_set('session.cookie_lifetime', 2000000);
 # $conf['block_cache_bypass_node_grants'] = TRUE;
 
 /**
+ * Expiration of cache_form entries:
+ *
+ * Drupal's Form API stores details of forms in cache_form and these entries are
+ * kept for at least 6 hours by default. Expired entries are cleared by cron.
+ * Busy sites can encounter problems with the cache_form table becoming very
+ * large. It's possible to mitigate this by setting a shorter expiration for
+ * cached forms. In some cases it may be desirable to set a longer cache
+ * expiration, for example to prolong cache_form entries for Ajax forms in
+ * cached HTML.
+ *
+ * @see form_set_cache()
+ * @see system_cron()
+ * @see ajax_get_form()
+ */
+# $conf['form_cache_expiration'] = 21600;
+
+/**
  * String overrides:
  *
  * To override specific strings on your site with or without enabling the Locale
@@ -532,3 +646,37 @@ $conf['404_fast_html'] = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN"
  * Remove the leading hash sign to enable.
  */
 # $conf['theme_debug'] = TRUE;
+
+/**
+ * CSS identifier double underscores allowance:
+ *
+ * To allow CSS identifiers to contain double underscores (.example__selector)
+ * for Drupal's BEM-style naming standards, uncomment the line below.
+ * Note that if you change this value in existing sites, existing page styles
+ * may be broken.
+ *
+ * @see drupal_clean_css_identifier()
+ */
+# $conf['allow_css_double_underscores'] = TRUE;
+
+/**
+ * The default list of directories that will be ignored by Drupal's file API.
+ *
+ * By default ignore node_modules and bower_components folders to avoid issues
+ * with common frontend tools and recursive scanning of directories looking for
+ * extensions.
+ *
+ * @see file_scan_directory()
+ */
+$conf['file_scan_ignore_directories'] = array(
+  'node_modules',
+  'bower_components',
+);
+
+/**
+ * Turn off the X-Frame-Options header entirely, to restore the previous
+ * behavior of allowing the site to be embedded in a frame on another site.
+ */
+$conf['x_frame_options'] = '';
+
+$conf['file_temporary_path'] = '__FINALPATH__/sites/default/files/tmp';
