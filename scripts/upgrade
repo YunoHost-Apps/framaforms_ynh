@@ -154,6 +154,7 @@ ynh_script_progression --message="Upgrading Drupal..." --weight=1
 
 ynh_backup_if_checksum_is_different --file="$final_path/$app/sites/default/settings.php"
 
+pushd $final_path
 sudo -u $app $final_path/.composer/vendor/bin/drush @$app variable-set --exact maintenance_mode 1 
 sudo -u $app $final_path/.composer/vendor/bin/drush @$app cache-clear all 
 sudo -u $app $final_path/.composer/vendor/bin/drush @$app pm-update -y drupal
@@ -161,6 +162,7 @@ sudo -u $app $final_path/.composer/vendor/bin/drush @$app vset --exact maintenan
 sudo -u $app $final_path/.composer/vendor/bin/drush @$app cache-clear all 
 sudo -u $app $final_path/.composer/vendor/bin/drush @$app l10n-update-refresh
 sudo -u $app $final_path/.composer/vendor/bin/drush @$app l10n-update
+popd
 
 #=================================================
 

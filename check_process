@@ -4,7 +4,7 @@
 	; Manifest
 		domain="domain.tld"	(DOMAIN)
 		path="/path"	(PATH)
-		password="bibopP5"	(PASSWORD)
+		password="password"
 		is_public=1	(PUBLIC|public=1|private=0)
 	; Checks
 		pkg_linter=1
