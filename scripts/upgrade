@@ -8,11 +8,15 @@
 
 source _common.sh
 source /usr/share/yunohost/helpers
+source ynh_add_extra_apt_repos__3
+source ynh_install_php__3
+source ynh_composer__2
+source ynh_exec_as
 
 #=================================================
 # LOAD SETTINGS
 #=================================================
-ynh_script_progression --message="Loading installation settings..." --time --weight=1
+ynh_script_progression --message="Loading installation settings..." --weight=2
 
 app=$YNH_APP_INSTANCE_NAME
 
@@ -37,7 +41,7 @@ upgrade_type=$(ynh_check_app_version_changed)
 #=================================================
 # ENSURE DOWNWARD COMPATIBILITY
 #=================================================
-ynh_script_progression --message="Ensuring downward compatibility..." --time --weight=1
+ynh_script_progression --message="Ensuring downward compatibility..." --weight=1
 
 # Fix is_public as a boolean value
 if [ "$is_public" = "Yes" ]; then
@@ -63,7 +67,7 @@ fi
 #=================================================
 # BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
 #=================================================
-ynh_script_progression --message="Backing up the app before upgrading (may take a while)..." --time --weight=1
+ynh_script_progression --message="Backing up the app before upgrading (may take a while)..." --weight=21
 
 # Backup the current version of the app
 ynh_backup_before_upgrade
@@ -75,18 +79,6 @@ ynh_clean_setup () {
 ynh_abort_if_errors
 
 #=================================================
-# CHECK THE PATH
-#=================================================
-
-# Normalize the URL path syntax
-# N.B. : this is for app installations before YunoHost 2.7
-# where this value might be something like /foo/ or foo/
-# instead of /foo ....
-# If nobody installed your app before 2.7, then you may
-# safely remove this line
-path_url=$(ynh_normalize_url_path --path_url=$path_url)
-
-#=================================================
 # STANDARD UPGRADE STEPS
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
@@ -94,7 +86,7 @@ path_url=$(ynh_normalize_url_path --path_url=$path_url)
 
 if [ "$upgrade_type" == "UPGRADE_APP" ]
 then
-	ynh_script_progression --message="Upgrading source files..." --time --weight=1
+	ynh_script_progression --message="Upgrading source files..." --weight=9
 
 	# Download, check integrity, uncompress and patch the source from app.src
 	ynh_setup_source --dest_dir="$final_path"
@@ -103,7 +95,7 @@ fi
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
-ynh_script_progression --message="Upgrading nginx web server configuration..." --time --weight=1
+ynh_script_progression --message="Upgrading nginx web server configuration..." --weight=1
 
 # Create a dedicated nginx config
 ynh_add_nginx_config
@@ -111,14 +103,14 @@ ynh_add_nginx_config
 #=================================================
 # UPGRADE DEPENDENCIES
 #=================================================
-ynh_script_progression --message="Upgrading dependencies..." --time --weight=1
+ynh_script_progression --message="Upgrading dependencies..." --weight=5
 
 ynh_install_app_dependencies $pkg_dependencies
 
 #=================================================
 # CREATE DEDICATED USER
 #=================================================
-ynh_script_progression --message="Making sure dedicated system user exists..." --time --weight=1
+ynh_script_progression --message="Making sure dedicated system user exists..." --weight=1
 
 # Create a dedicated user (if not existing)
 ynh_system_user_create --username=$app
@@ -126,14 +118,14 @@ ynh_system_user_create --username=$app
 #=================================================
 # UPGRADE PHP
 #=================================================
-ynh_script_progression --message="Upgrading PHP..." --weight=1
+ynh_script_progression --message="Upgrading PHP..." --weight=12
 
 ynh_install_php --phpversion="7.2" --package="$extra_pkg_dependencies"
 
 #=================================================
 # PHP-FPM CONFIGURATION
 #=================================================
-ynh_script_progression --message="Upgrading php-fpm configuration..." --time --weight=1
+ynh_script_progression --message="Upgrading php-fpm configuration..." --weight=1
 
 # Create a dedicated php-fpm config
 ynh_add_fpm_config --phpversion="7.2"
@@ -143,25 +135,25 @@ ynh_add_fpm_config --phpversion="7.2"
 #=================================================
 # UPGRADE COMPOSER
 #=================================================
-ynh_script_progression --message="Upgrading Composer..." --weight=1
+ynh_script_progression --message="Upgrading Composer..." --weight=3
 
 ynh_install_composer --phpversion="7.2" --workdir="$final_path/.composer"
 
 #=================================================
 # UPGRADE DRUPAL
 #=================================================
-ynh_script_progression --message="Upgrading Drupal..." --weight=1
+ynh_script_progression --message="Upgrading Drupal..." --time --weight=30
 
 ynh_backup_if_checksum_is_different --file="$final_path/$app/sites/default/settings.php"
 
+drush="$final_path/.composer/vendor/bin/drush --quiet"
 pushd $final_path
-sudo -u $app $final_path/.composer/vendor/bin/drush @$app variable-set --exact maintenance_mode 1 
-sudo -u $app $final_path/.composer/vendor/bin/drush @$app cache-clear all 
-sudo -u $app $final_path/.composer/vendor/bin/drush @$app pm-update -y drupal
-sudo -u $app $final_path/.composer/vendor/bin/drush @$app vset --exact maintenance_mode 0 
-sudo -u $app $final_path/.composer/vendor/bin/drush @$app cache-clear all 
-sudo -u $app $final_path/.composer/vendor/bin/drush @$app l10n-update-refresh
-sudo -u $app $final_path/.composer/vendor/bin/drush @$app l10n-update
+ynh_exec_as $app $drush 
+ynh_exec_as $app $drush variable-set --exact maintenance_mode 1 
+ynh_exec_as $app $drush cache-clear all 
+ynh_exec_as $app $drush pm-update -y drupal
+ynh_exec_as $app $drush vset --exact maintenance_mode 0 
+ynh_exec_as $app $drush cache-clear all 
 popd
 
 #=================================================
@@ -180,7 +172,8 @@ ynh_store_file_checksum --file="$config_file"
 #=================================================
 
 # Set permissions on app files
-chown -R root: $final_path
+chown -R $app: $final_path
+chown -R $app: "${final_path}_private"
 
 #=================================================
 # SETUP SSOWAT

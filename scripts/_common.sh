@@ -43,6 +43,3 @@ ynh_save_args () {
     done
 }
 
-source ynh_add_extra_apt_repos__3
-source ynh_install_php__3
-source ynh_composer__2
