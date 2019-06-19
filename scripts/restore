@@ -62,6 +62,9 @@ ynh_restore
 
 # Restore permissions on app files
 chown -R root: $final_path
+chmod 2775 "$final_path/sites/default/files"
+chown -R $app: "${final_path}_private"
+chmod 775 "${final_path}_private"
 
 #=================================================
 # SPECIFIC RESTORATION
