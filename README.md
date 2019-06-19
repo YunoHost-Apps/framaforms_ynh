@@ -10,7 +10,7 @@ If you don't have YunoHost, please see [here](https://yunohost.org/#/install) to
 Framaforms helps you create online webforms and surveys.
 See https://framablog.org/2016/10/05/framaforms-noffrez-plus-les-reponses-que-vous-collectez-a-google/ (in French ) and https://framablog.org/2016/10/05/en-savoir-un-peu-plus-sur-le-projet-framaforms/ (in French) for further informations.
 
-**Shipped version:** 20190614
+**Shipped version:** 1.0.0+190618
 
 ## Screenshots
 
@@ -22,7 +22,7 @@ See https://framablog.org/2016/10/05/framaforms-noffrez-plus-les-reponses-que-vo
 
 ## Configuration
 
-How to configure this app: by an admin panel, a plain file with SSH, or any other way.
+You can change some configuration by using the administration panel of drupal. You can connect with admin user and the password you give at installation.
 
 ## Documentation
 
@@ -32,8 +32,8 @@ How to configure this app: by an admin panel, a plain file with SSH, or any othe
 
 #### Multi-users support
 
-Are LDAP and HTTP auth supported?
-Can the app be used by multiple users?
+Are LDAP and HTTP auth supported? No
+Can the app be used by multiple users? Yes
 
 #### Supported architectures
 
