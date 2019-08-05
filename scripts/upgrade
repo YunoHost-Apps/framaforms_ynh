@@ -30,12 +30,6 @@ db_name=$(ynh_app_setting_get --app=$app --key=db_name)
 # CHECK VERSION
 #=================================================
 
-### This helper will compare the version of the currently installed app and the version of the upstream package.
-### $upgrade_type can have 2 different values
-### - UPGRADE_APP if the upstream app version has changed
-### - UPGRADE_PACKAGE if only the YunoHost package has changed
-### ynh_check_app_version_changed will stop the upgrade if the app is up to date.
-### UPGRADE_APP should be used to upgrade the core app only if there's an upgrade to do.
 upgrade_type=$(ynh_check_app_version_changed)
 
 #=================================================
@@ -113,7 +107,7 @@ ynh_install_app_dependencies $pkg_dependencies
 ynh_script_progression --message="Making sure dedicated system user exists..." --weight=1
 
 # Create a dedicated user (if not existing)
-ynh_system_user_create --username=$app
+ynh_system_user_create --username=$app --home_dir="$final_path"
 
 #=================================================
 # UPGRADE PHP
@@ -146,17 +140,17 @@ ynh_script_progression --message="Upgrading Drupal..." --time --weight=30
 
 ynh_backup_if_checksum_is_different --file="$final_path/$app/sites/default/settings.php"
 
-drush="$final_path/.composer/vendor/bin/drush --quiet"
-pushd $final_path
-ynh_exec_as $app $drush 
-ynh_exec_as $app $drush variable-set --exact maintenance_mode 1 
-ynh_exec_as $app $drush cache-clear all 
-ynh_exec_as $app $drush pm-update -y drupal
-ynh_exec_as $app $drush vset --exact maintenance_mode 0 
-ynh_exec_as $app $drush cache-clear all 
-popd
+export PATH="$final_path/.composer/vendor/bin:$PATH"
 
-#=================================================
+update-alternatives --set php /usr/bin/php7.2
+
+ynh_exec_as $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 1 
+ynh_exec_as $app env PATH=$PATH drush @$app cache-clear all 
+ynh_exec_as $app env PATH=$PATH drush @$app pm-update -y drupal
+ynh_exec_as $app env PATH=$PATH drush @$app vset --exact maintenance_mode 0 
+ynh_exec_as $app env PATH=$PATH drush @$app cache-clear all 
+
+update-alternatives --set php /usr/bin/php7.0
 
 #=================================================
 # STORE THE CONFIG FILE CHECKSUM
@@ -168,6 +162,7 @@ ynh_store_file_checksum --file="$config_file"
 
 #=================================================
 # GENERIC FINALIZATION
+#=================================================
 # SECURE FILES AND DIRECTORIES
 #=================================================
 
