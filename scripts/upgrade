@@ -168,7 +168,10 @@ ynh_store_file_checksum --file="$config_file"
 
 # Set permissions on app files
 chown -R $app: $final_path
-chown -R $app: "${final_path}_private"
+
+mkdir -p "/home/yunohost.app/$app/data"
+chown -R $app: "/home/yunohost.app/$app/data"
+chmod 775 "/home/yunohost.app/$app/data"
 
 #=================================================
 # SETUP SSOWAT
