@@ -73,10 +73,6 @@ ynh_psql_setup_db --db_user=$db_user --db_name=$db_name
 #=================================================
 ynh_script_progression --message="Setting up source files..." --weight=9
 
-### `ynh_setup_source` is used to install an app from a zip or tar.gz file,
-### downloaded from an upstream source, like a git repository.
-### `ynh_setup_source` use the file conf/app.src
-
 # Download, check integrity, uncompress and patch the source from app.src
 ynh_setup_source --dest_dir="$final_path"
 
@@ -84,8 +80,6 @@ ynh_setup_source --dest_dir="$final_path"
 # NGINX CONFIGURATION
 #=================================================
 ynh_script_progression --message="Configuring nginx web server..." --weight=1
-
-### `ynh_add_nginx_config` will use the file conf/nginx.conf
 
 # Create a dedicated nginx config
 ynh_add_nginx_config
@@ -96,7 +90,7 @@ ynh_add_nginx_config
 ynh_script_progression --message="Configuring system user..." --weight=3
 
 # Create a system user
-ynh_system_user_create --username=$app
+ynh_system_user_create --username=$app --home_dir="$final_path"
 
 #=================================================
 # INSTALL PHP 7.2
@@ -139,6 +133,8 @@ mkdir -p "$final_path/.composer"
 cp -f "../conf/composer.json" "$final_path/.composer/composer.json"
 
 ynh_install_composer --phpversion="7.2" --workdir="$final_path/.composer"
+
+export PATH="$final_path/.composer/vendor/bin:$PATH"
 
 #=================================================
 # Database initialization
@@ -190,26 +186,22 @@ ynh_replace_string --match_string="__FINALPATH__" --replace_string="$final_path"
 ynh_script_progression --message="Changing admin password..." --weight=19
 
 chown -R $app: $final_path
-drush="$final_path/.composer/vendor/bin/drush --quiet"
-pushd $final_path
-ynh_exec_as $app $drush upwd --password="$password" "admin" --verbose --debug
-ynh_exec_as $app $drush variable-set site_name "Framaforms" --verbose --debug
-ynh_exec_as $app $drush variable-set site_mail "no-reply@$domain" --verbose --debug
-ynh_exec_as $app $drush variable-set file_private_path "/home/yunohost.app/$app/data" --verbose --debug
-#ynh_exec_as $app $drush @$app pm-download ldap
-#ynh_exec_as $app $drush @$app pm-enable -y ldap_servers ldap_user ldap_authentication ldap_authorization ldap_authorization_drupal_role
-#ynh_exec_as $app $drush @$app core-cron
-popd
 
-#=================================================
+update-alternatives --set php /usr/bin/php7.2
+
+ynh_exec_as $app env PATH=$PATH drush @$app upwd --password="$password" "admin" --verbose --debug
+ynh_exec_as $app env PATH=$PATH drush @$app variable-set site_name "Framaforms" --verbose --debug
+ynh_exec_as $app env PATH=$PATH drush @$app variable-set site_mail "no-reply@$domain" --verbose --debug
+ynh_exec_as $app env PATH=$PATH drush @$app variable-set file_private_path "/home/yunohost.app/$app/data" --verbose --debug
+#ynh_exec_as $app env PATH=$PATH drush @$app pm-download ldap
+#ynh_exec_as $app env PATH=$PATH drush @$app pm-enable -y ldap_servers ldap_user ldap_authentication ldap_authorization ldap_authorization_drupal_role
+#ynh_exec_as $app env PATH=$PATH drush @$app core-cron
+
+update-alternatives --set php /usr/bin/php7.0
 
 #=================================================
 # STORE THE CONFIG FILE CHECKSUM
 #=================================================
-
-### `ynh_store_file_checksum` is used to store the checksum of a file.
-### That way, during the upgrade script, by using `ynh_backup_if_checksum_is_different`,
-### you can make a backup of this file before modifying it again if the admin had modified it.
 
 # Calculate and store the config file checksum into the app settings
 ynh_store_file_checksum --file="$config_file"
