@@ -161,13 +161,23 @@ config_file=$final_path/sites/default/settings.php
 ynh_store_file_checksum --file="$config_file"
 
 #=================================================
-# GENERIC FINALIZATION
+
 #=================================================
+# STORE THE CONFIG FILE CHECKSUM
+#=================================================
+config_file=$final_path/sites/default/settings.php
+
+# Recalculate and store the checksum of the file for the next upgrade.
+ynh_store_file_checksum --file="$config_file"
+
+#=================================================
+# GENERIC FINALIZATION
 # SECURE FILES AND DIRECTORIES
 #=================================================
 
 # Set permissions on app files
 chown -R $app: $final_path
+chown -R $app: "${final_path}_private"
 
 mkdir -p "/home/yunohost.app/$app/data"
 chown -R $app: "/home/yunohost.app/$app/data"
