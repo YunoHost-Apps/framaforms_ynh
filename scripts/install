@@ -189,10 +189,19 @@ chown -R $app: $final_path
 
 update-alternatives --set php /usr/bin/php7.2
 
-ynh_exec_as $app env PATH=$PATH drush @$app upwd --password="$password" "admin" --verbose --debug
-ynh_exec_as $app env PATH=$PATH drush @$app variable-set site_name "Framaforms" --verbose --debug
-ynh_exec_as $app env PATH=$PATH drush @$app variable-set site_mail "no-reply@$domain" --verbose --debug
-ynh_exec_as $app env PATH=$PATH drush @$app variable-set file_private_path "/home/yunohost.app/$app/data" --verbose --debug
+ynh_exec_as $app env PATH=$PATH drush @$app upwd --password="$password" "admin" 2>&1
+ynh_exec_as $app env PATH=$PATH drush @$app variable-set site_name "Framaforms" 2>&1
+ynh_exec_as $app env PATH=$PATH drush @$app variable-set site_mail "no-reply@$domain" 2>&1
+ynh_exec_as $app env PATH=$PATH drush @$app variable-set file_private_path "/home/yunohost.app/$app/data" 2>&1
+
+# Remove some Framasoft branding
+ynh_exec_as $app env PATH=$PATH drush @$app sql-query "UPDATE block_custom SET body='' WHERE bid=12" 2>&1
+
+# Fix some link if install on subpath
+ynh_exec_as $app env PATH=$PATH drush @$app sql-query "UPDATE block_custom SET body=REPLACE(body, 'href=\"/', 'href=\"')" 2>&1
+ynh_exec_as $app env PATH=$PATH drush @$app sql-query "UPDATE field_data_body SET body_value=REPLACE(body_value, 'src=\"/', 'src=\"')" 2>&1
+ynh_exec_as $app env PATH=$PATH drush @$app sql-query "UPDATE field_data_body SET body_value=REPLACE(body_value, 'href=\"/', 'href=\"')" 2>&1
+ynh_exec_as $app env PATH=$PATH drush @$app cache-clear all 2>&1
 #ynh_exec_as $app env PATH=$PATH drush @$app pm-download ldap
 #ynh_exec_as $app env PATH=$PATH drush @$app pm-enable -y ldap_servers ldap_user ldap_authentication ldap_authorization ldap_authorization_drupal_role
 #ynh_exec_as $app env PATH=$PATH drush @$app core-cron
