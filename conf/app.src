@@ -1,4 +1,6 @@
 SOURCE_URL=https://framagit.org/framasoft/framaforms/-/archive/v0.1/framaforms-v0.1.tar.gz
 SOURCE_SUM=7320414b95992f33a8ea1ea8504ed95fb06a637e03118fadf8ed20a121f09f76
 SOURCE_SUM_PRG=sha256sum
+SOURCE_FORMAT=tar.gz
+SOURCE_IN_SUBDIR=true
 SOURCE_FILENAME=
