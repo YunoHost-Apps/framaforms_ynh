@@ -17,6 +17,10 @@ source /usr/share/yunohost/helpers
 # MANAGE SCRIPT FAILURE
 #=================================================
 
+ynh_clean_setup () {
+	read -p "key"
+	true
+}
 # Exit if an error occurs during the execution of the script
 ynh_abort_if_errors
 
@@ -184,7 +188,7 @@ chown -R $app: $final_path
 
 update-alternatives --set php /usr/bin/php7.3
 
-ynh_exec_as $app env PATH=$PATH drush @$app upwd --password="$password" "admin" 2>&1
+ynh_exec_as $app env PATH=$PATH drush @$app user-password "admin" --password="$password" 2>&1
 ynh_exec_as $app env PATH=$PATH drush @$app variable-set site_name "Framaforms" 2>&1
 ynh_exec_as $app env PATH=$PATH drush @$app variable-set site_mail "no-reply@$domain" 2>&1
 ynh_exec_as $app env PATH=$PATH drush @$app variable-set file_private_path "/home/yunohost.app/$app/data" 2>&1
