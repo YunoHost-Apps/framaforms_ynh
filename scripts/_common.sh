@@ -6,7 +6,7 @@
 
 # dependencies used by the app
 pkg_dependencies="postgresql curl libzip-dev"
-extra_pkg_dependencies="php7.2-fpm php7.2-cli php7.2-gd php7.2-mysql php7.2-xml php7.2-ldap php7.2-mbstring php7.2-uploadprogress php7.2-pgsql"
+extra_pkg_dependencies="php7.3-fpm php7.3-cli php7.3-gd php7.3-mysql php7.3-xml php7.3-ldap php7.3-mbstring php7.3-pgsql"
 
 #=================================================
 # PERSONAL HELPERS

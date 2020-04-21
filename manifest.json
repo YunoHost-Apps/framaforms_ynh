@@ -5,7 +5,7 @@
   "description": {
     "en": "Framaforms helps you create online webforms and surveys"
   },
-  "version": "1.0.0+190618-ynh6",
+  "version": "1.0.0+191218-ynh1",
   "url": "https://framagit.org/framasoft/framaforms",
   "license": "GPL-2.0-only",
   "requirements": {
