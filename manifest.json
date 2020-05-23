@@ -3,8 +3,8 @@
   "id": "framaforms",
   "packaging_format": 1,
   "description": {
-    "en": "Framaforms helps you create online webforms and surveys",
-    "fr": "Framaforms est un gestionnaire de formulaires et de questionnaires en ligne"
+    "en": "Create online webforms and surveys",
+    "fr": "Créez des formulaires et questionnaires en ligne"
   },
   "version": "1.0.0+191218-ynh1",
   "url": "https://framagit.org/framasoft/framaforms",
