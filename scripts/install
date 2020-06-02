@@ -7,8 +7,6 @@
 #=================================================
 
 source _common.sh
-source ynh_add_extra_apt_repos__3
-source ynh_install_php__3
 source ynh_composer__2
 source ynh_exec_as
 source /usr/share/yunohost/helpers
@@ -24,7 +22,10 @@ ynh_abort_if_errors
 # RETRIEVE ARGUMENTS FROM THE MANIFEST
 #=================================================
 
-ynh_export domain path_url password is_public
+domain=$YNH_APP_ARG_DOMAIN
+path_url=$YNH_APP_ARG_PATH
+is_public=$YNH_APP_ARG_IS_PUBLIC
+password=$YNH_APP_ARG_PASSWORD
 
 app=$YNH_APP_INSTANCE_NAME
 
@@ -44,21 +45,13 @@ ynh_webpath_register --app=$app --domain=$domain --path_url=$path_url
 #=================================================
 ynh_script_progression --message="Storing installation settings..." --weight=1
 
-ynh_save_args domain path_url password is_public final_path
+ynh_app_setting_set --app=$app --key=domain --value=$domain
+ynh_app_setting_set --app=$app --key=path --value=$path_url
+ynh_app_setting_set --app=$app --key=password --value=$password
+ynh_app_setting_set --app=$app --key=is_public --value=$is_public
 
 #=================================================
 # STANDARD MODIFICATIONS
-#=================================================
-# INSTALL PHP7.3
-#=================================================
-
-if [ "$(lsb_release --codename --short)" = "buster" ]; then
-	pkg_dependencies="$pkg_dependencies $extra_pkg_dependencies"
-else
-	ynh_script_progression --message="Installing PHP7.3..." --weight=1
-	ynh_install_php --phpversion="7.3" --package="$extra_pkg_dependencies"
-fi
-
 #=================================================
 # INSTALL DEPENDENCIES
 #=================================================
@@ -73,7 +66,7 @@ ynh_script_progression --message="Creating a PostgreSQL database..." --weight=2
 
 ynh_psql_test_if_first_run
 
-db_name=$(ynh_sanitize_dbid --db_name="$app")
+db_name=$(ynh_sanitize_dbid --db_name=$app)
 db_user=$db_name
 ynh_app_setting_set --app=$app --key=db_name --value=$db_name
 ynh_psql_setup_db --db_user=$db_user --db_name=$db_name
@@ -83,6 +76,7 @@ ynh_psql_setup_db --db_user=$db_user --db_name=$db_name
 #=================================================
 ynh_script_progression --message="Setting up source files..." --weight=9
 
+ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 # Download, check integrity, uncompress and patch the source from app.src
 ynh_setup_source --dest_dir="$final_path"
 
@@ -101,6 +95,15 @@ ynh_script_progression --message="Configuring system user..." --weight=3
 
 # Create a system user
 ynh_system_user_create --username=$app --home_dir="$final_path"
+
+#=================================================
+# PHP-FPM CONFIGURATION
+#=================================================
+ynh_script_progression --message="Configuring php-fpm..." --weight=1
+
+# Create a dedicated php-fpm config
+ynh_add_fpm_config --phpversion="${YNH_PHP_VERSION}"
+phpversion=$(ynh_app_setting_get --app=$app --key=phpversion)
 
 #=================================================
 # SPECIFIC SETUP
@@ -127,7 +130,7 @@ mkdir -p "$final_path/.composer"
 
 cp -f "../conf/composer.json" "$final_path/.composer/composer.json"
 
-ynh_install_composer --phpversion="7.3" --workdir="$final_path/.composer"
+ynh_install_composer --phpversion="$phpversion" --workdir="$final_path/.composer"
 
 export PATH="$final_path/.composer/vendor/bin:$PATH"
 
@@ -136,8 +139,8 @@ export PATH="$final_path/.composer/vendor/bin:$PATH"
 #=================================================
 ynh_script_progression --message="Initializing PostgreSQL database..." --weight=8
 
-ynh_replace_string "betaforms" "$db_user" "$final_path/framaforms.sql"
-ynh_psql_execute_file_as_root "$final_path/framaforms.sql" "$db_name"
+ynh_replace_string --match_string="betaforms" --replace_string="$db_user" --target_file="$final_path/framaforms.sql"
+ynh_psql_execute_file_as_root --file="$final_path/framaforms.sql" --database="$db_name"
 
 #=================================================
 # INITIALIZE TMP AND PRIVATE DIRECTORY
@@ -166,6 +169,7 @@ cp ../sources/partager.png "$final_path/sites/default/files/imgforms/"
 #=================================================
 # MODIFY CONFIG FILES
 #=================================================
+ynh_script_progression --message="Modifying a config file..." --weight=1
 
 config_file=$final_path/sites/default/settings.php
 
@@ -206,6 +210,7 @@ update-alternatives --set php /usr/bin/php7.0
 #=================================================
 # STORE THE CONFIG FILE CHECKSUM
 #=================================================
+ynh_script_progression --message="Storing the config file checksum..." --weight=1
 
 # Calculate and store the config file checksum into the app settings
 ynh_store_file_checksum --file="$config_file"
@@ -213,16 +218,9 @@ ynh_store_file_checksum --file="$config_file"
 #=================================================
 # GENERIC FINALIZATION
 #=================================================
-# PHP-FPM CONFIGURATION
-#=================================================
-ynh_script_progression --message="Configuring php-fpm..." --weight=1
-
-# Create a dedicated php-fpm config
-ynh_add_fpm_config --phpversion="7.3"
-
-#=================================================
 # SECURE FILES AND DIRECTORIES
 #=================================================
+ynh_script_progression --message="Securing files and directories..." --weight=1
 
 # Set permissions to app files
 chown -R $app: $final_path
