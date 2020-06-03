@@ -31,6 +31,7 @@ path_url=$(ynh_app_setting_get --app=$app --key=path)
 final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 db_name=$(ynh_app_setting_get --app=$app --key=db_name)
 db_user=$db_name
+db_pwd=$(ynh_app_setting_get --app=$app --key=psqlpwd)
 phpversion=$(ynh_app_setting_get --app=$app --key=phpversion)
 
 #=================================================
@@ -103,10 +104,8 @@ ynh_install_app_dependencies $pkg_dependencies
 ynh_script_progression --message="Restoring the PostgreSQL database..." --weight=2
 
 ynh_psql_test_if_first_run
-
-db_pwd=$(ynh_app_setting_get --app=$app --key=psqlpwd)
 ynh_psql_setup_db --db_user=$db_user --db_name=$db_name --db_pwd=$db_pwd
-ynh_psql_execute_file_as_root ./db.sql "$db_name"
+ynh_psql_execute_file_as_root --file="./db.sql" --database="$db_name"
 
 #=================================================
 # GENERIC FINALIZATION
