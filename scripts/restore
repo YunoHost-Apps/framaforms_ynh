@@ -100,7 +100,7 @@ ynh_install_app_dependencies $pkg_dependencies
 #=================================================
 # RESTORE THE POSTGRESQL DATABASE
 #=================================================
-ynh_script_progression --message="Restoring the PostgreSQL database..." --weight=1
+ynh_script_progression --message="Restoring the PostgreSQL database..." --weight=2
 
 ynh_psql_test_if_first_run
 
