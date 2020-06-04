@@ -115,7 +115,7 @@ ynh_system_user_create --username=$app --home_dir="$final_path"
 ynh_script_progression --message="Upgrading php-fpm configuration..." --weight=1
 
 # Create a dedicated php-fpm config
-ynh_add_fpm_config --phpversion="$phpversion" --package="$extra_php_dependencies"
+ynh_add_fpm_config --usage=low --footprint=low --package="$extra_php_dependencies"
 
 #=================================================
 # SPECIFIC UPGRADE
