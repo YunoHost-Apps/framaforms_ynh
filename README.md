@@ -1,14 +1,14 @@
 # Framaforms for YunoHost
 
-[![Integration level](https://dash.yunohost.org/integration/framaforms.svg)](https://dash.yunohost.org/appci/app/framaforms)  
+[![Integration level](https://dash.yunohost.org/integration/framaforms.svg)](https://dash.yunohost.org/appci/app/framaforms) ![](https://ci-apps.yunohost.org/ci/badges/framaforms.status.svg) ![](https://ci-apps.yunohost.org/ci/badges/framaforms.maintain.svg)    
 [![Install FramaForms with YunoHost](https://install-app.yunohost.org/install-with-yunohost.png)](https://install-app.yunohost.org/?app=framaforms)
 
-> *This package allow you to install FramaForms quickly and simply on a YunoHost server.  
+> *This package allow you to install Framaforms quickly and simply on a YunoHost server.  
 If you don't have YunoHost, please see [here](https://yunohost.org/#/install) to know how to install and enjoy it.*
 
 ## Overview
 Framaforms helps you create online webforms and surveys.
-See https://framablog.org/2016/10/05/framaforms-noffrez-plus-les-reponses-que-vous-collectez-a-google/ (in French ) and https://framablog.org/2016/10/05/en-savoir-un-peu-plus-sur-le-projet-framaforms/ (in French) for further informations.
+See https://framablog.org/2016/10/05/framaforms-noffrez-plus-les-reponses-que-vous-collectez-a-google/ (in French) and https://framablog.org/2016/10/05/en-savoir-un-peu-plus-sur-le-projet-framaforms/ (in French) for further informations.
 
 **Shipped version:** 1.0.0+190618
 
@@ -22,7 +22,7 @@ See https://framablog.org/2016/10/05/framaforms-noffrez-plus-les-reponses-que-vo
 
 ## Configuration
 
-You can change some configuration by using the administration panel of drupal. You can connect with admin user and the password you give at installation.
+You can change some configuration by using the Framaforms administration panel. You can log in with the administrator user and the password you gave during the installation.
 
 ## Documentation
 
@@ -32,14 +32,13 @@ You can change some configuration by using the administration panel of drupal. Y
 
 #### Multi-users support
 
-Are LDAP and HTTP auth supported? No
-Can the app be used by multiple users? Yes
+* Are LDAP and HTTP auth supported? **No**
+* Can the app be used by multiple users? **Yes**
 
 #### Supported architectures
 
-* x86-64b - [![Build Status](https://ci-apps.yunohost.org/ci/logs/framaforms%20%28Apps%29.svg)](https://ci-apps.yunohost.org/ci/apps/framaforms/)
+* x86-64 - [![Build Status](https://ci-apps.yunohost.org/ci/logs/framaforms%20%28Apps%29.svg)](https://ci-apps.yunohost.org/ci/apps/framaforms/)
 * ARMv8-A - [![Build Status](https://ci-apps-arm.yunohost.org/ci/logs/framaforms%20%28Apps%29.svg)](https://ci-apps-arm.yunohost.org/ci/apps/framaforms/)
-* Jessie x86-64b - [![Build Status](https://ci-stretch.nohost.me/ci/logs/framaforms%20%28Apps%29.svg)](https://ci-stretch.nohost.me/ci/apps/framaforms/)
 
 ## Limitations
 
@@ -48,9 +47,6 @@ Can the app be used by multiple users? Yes
 ## Additional information
 
 * Other information you would add about this application
-
-**More information on the documentation page:**  
-https://yunohost.org/packaging_apps
 
 ## Links
 
@@ -64,7 +60,6 @@ https://yunohost.org/packaging_apps
 Developers info
 ----------------
 
-**Only if you want to use a testing branch for coding, instead of merging directly into master.**
 Please do your pull request to the [testing branch](https://github.com/YunoHost-Apps/framaforms_ynh/tree/testing).
 
 To try the testing branch, please proceed like that.
