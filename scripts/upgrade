@@ -126,26 +126,33 @@ ynh_script_progression --message="Upgrading Composer..." --weight=3
 
 ynh_install_composer --phpversion="$phpversion" --workdir="$final_path/.composer"
 
+export PATH="$final_path/.composer/vendor/bin:$PATH"
+
 #=================================================
 # UPGRADE DRUPAL
 #=================================================
-ynh_script_progression --message="Upgrading Drupal..." --weight=30
 
-ynh_backup_if_checksum_is_different --file="$final_path/$app/sites/default/settings.php"
+if [ "$upgrade_type" == "UPGRADE_APP" ]
+then
+	ynh_script_progression --message="Upgrading Drupal..." --weight=30
 
-export PATH="$final_path/.composer/vendor/bin:$PATH"
+	ynh_backup_if_checksum_is_different --file="$final_path/$app/sites/default/settings.php"
 
-update-alternatives --set php /usr/bin/php$phpversion
+	chown -R $app: $final_path
 
-pushd "$final_path"
-    ynh_exec_as $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 1 
-    ynh_exec_as $app env PATH=$PATH drush @$app cache-clear all 
-    ynh_exec_as $app env PATH=$PATH drush @$app pm-update -y drupal
-    ynh_exec_as $app env PATH=$PATH drush @$app cache-clear all 
-    ynh_exec_as $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 0 
-popd
+	update-alternatives --set php /usr/bin/php$phpversion
 
-update-alternatives --set php /usr/bin/php${YNH_DEFAULT_PHP_VERSION}
+	pushd "$final_path"
+    	ynh_exec_as $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 1 
+    	ynh_exec_as $app env PATH=$PATH drush @$app cache-clear all 
+    	# ynh_exec_as $app env PATH=$PATH drush @$app pm-update -y drupal
+    	ynh_exec_as $app env PATH=$PATH drush @$app updatedb -y
+    	ynh_exec_as $app env PATH=$PATH drush @$app cache-clear all 
+    	ynh_exec_as $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 0 
+	popd
+
+	update-alternatives --set php /usr/bin/php${YNH_DEFAULT_PHP_VERSION}
+fi
 
 #=================================================
 # STORE THE CONFIG FILE CHECKSUM
