@@ -146,7 +146,7 @@ then
     	ynh_exec_as $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 1 
     	ynh_exec_as $app env PATH=$PATH drush @$app cache-clear all 
     	# ynh_exec_as $app env PATH=$PATH drush @$app pm-update -y drupal
-    	ynh_exec_as $app env PATH=$PATH drush @$app updatedb -y
+    	# ynh_exec_as $app env PATH=$PATH drush @$app updatedb -y
     	ynh_exec_as $app env PATH=$PATH drush @$app cache-clear all 
     	ynh_exec_as $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 0 
 	popd
