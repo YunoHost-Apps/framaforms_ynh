@@ -52,6 +52,16 @@
         "example": "Choose a password"
       },
       {
+        "name": "language",
+        "type": "string",
+        "ask": {
+        "en": "Choose the application language",
+        "fr": "Choisissez la langue de l'application"
+        },
+        "choices": ["fr", "en"],
+        "default": "en"
+      },
+      {
         "name": "is_public",
         "ask": {
           "en": "Are visitors who do not have a YunoHost account on this server allowed to register and create forms ?"

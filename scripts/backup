@@ -57,6 +57,12 @@ ynh_backup --src_path="/etc/php/$phpversion/fpm/pool.d/$app.conf"
 #=================================================
 # SPECIFIC BACKUP
 #=================================================
+# BACKUP A CRON FILE
+#=================================================
+
+ynh_backup --src_path="/etc/cron.d/$app"
+
+#=================================================
 # BACKUP THE POSTGRESQL DATABASE
 #=================================================
 ynh_print_info --message="Backing up the PostgreSQL database..."
