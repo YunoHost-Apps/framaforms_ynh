@@ -32,8 +32,8 @@ You can change some configuration by using the administration panel of drupal. Y
 
 #### Multi-user support
 
-Are LDAP and HTTP auth supported? No
-Can the app be used by multiple users? Yes
+Are LDAP and HTTP auth supported? **No**
+Can the app be used by multiple users? **Yes**
 
 #### Supported architectures
 
@@ -47,9 +47,6 @@ Can the app be used by multiple users? Yes
 ## Additional information
 
 * Other info you would like to add about this app.
-
-**More info on the documentation page:**  
-https://yunohost.org/packaging_apps
 
 ## Links
 
