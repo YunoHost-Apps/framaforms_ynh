@@ -10,7 +10,7 @@
   "url": "https://framagit.org/framasoft/framaforms",
   "license": "GPL-2.0-only",
   "requirements": {
-		"yunohost": ">= 3.5"
+		"yunohost": ">= 3.8.1"
   },
   "maintainer": {
     "name": "ljf",
@@ -20,7 +20,7 @@
   "multi_instance": true,
   "services": [
     "nginx",
-    "php5-fpm",
+    "php7.0-fpm",
     "mysql"
   ],
   "arguments": {
@@ -35,10 +35,11 @@
       },
       {
         "name": "path",
-        "ask": {
-          "en": "Choose a path for Framaforms"
-        },
         "type": "path",
+        "ask": {
+          "en": "Choose a path for Framaforms",
+          "fr": "Choisissez un chemin pour Framaforms"
+        },
         "example": "/poll",
         "default": "/poll"
       },
@@ -46,8 +47,8 @@
         "name": "password",
         "type": "password",
         "ask": {
-            "en": "Set the administrator password",
-            "fr": "Définissez le mot de passe administrateur"
+          "en": "Set the administrator password",
+          "fr": "Définissez le mot de passe administrateur"
         },
         "example": "Choose a password"
       },
@@ -55,21 +56,23 @@
         "name": "language",
         "type": "string",
         "ask": {
-        "en": "Choose the application language",
-        "fr": "Choisissez la langue de l'application"
+          "en": "Choose the application language",
+          "fr": "Choisissez la langue de l'application"
         },
         "choices": ["fr", "en"],
         "default": "en"
       },
       {
         "name": "is_public",
+        "type": "boolean",
         "ask": {
-          "en": "Are visitors who do not have a YunoHost account on this server allowed to register and create forms ?"
+          "en": "Are visitors who do not have a YunoHost account on this server allowed to register and create forms?",
+          "fr": "Les visiteurs qui n'ont pas de compte YunoHost sur ce serveur sont-ils autorisés à s'inscrire et à créer des formulaires ?"
         },
         "help": {
-          "en": "If no, only person with an account on your server will be able to create forms. In all cases, visitors will be able to reply to form"
+          "en": "If no, only person with an account on your server will be able to create forms. In all cases, visitors will be able to reply to form.",
+          "fr": "Si non, seule la personne disposant d'un compte sur votre serveur pourra créer des formulaires. Dans tous les cas, les visiteurs pourront répondre au formulaire."
         },
-        "type": "boolean",
         "default": true
       }
     ]
