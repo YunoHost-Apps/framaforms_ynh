@@ -3,5 +3,4 @@ PATH=__FINALPATH__/.composer/vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin
 
 # m h dom mon dow user	command
 30 *	* * *	__APP__	drush --quiet @__APP__ core-cron
-00 22	* * *	__APP__	drush --quiet @__APP__ pm-update -y
-#
+#00 22	* * *	__APP__	drush --quiet @__APP__ pm-update -y
