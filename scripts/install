@@ -26,7 +26,11 @@ domain=$YNH_APP_ARG_DOMAIN
 path_url=$YNH_APP_ARG_PATH
 is_public=$YNH_APP_ARG_IS_PUBLIC
 password=$YNH_APP_ARG_PASSWORD
+admin=admin
 language=$YNH_APP_ARG_LANGUAGE
+expiration=$YNH_APP_ARG_EXPIRATION
+deletion=$YNH_APP_ARG_DELETION
+admin_mail="root@$domain"
 
 app=$YNH_APP_INSTANCE_NAME
 
@@ -48,9 +52,12 @@ ynh_script_progression --message="Storing installation settings..." --weight=1
 
 ynh_app_setting_set --app=$app --key=domain --value=$domain
 ynh_app_setting_set --app=$app --key=path --value=$path_url
+ynh_app_setting_set --app=$app --key=admin --value=$admin
 ynh_app_setting_set --app=$app --key=password --value=$password
 ynh_app_setting_set --app=$app --key=is_public --value=$is_public
 ynh_app_setting_set --app=$app --key=language --value=$language
+ynh_app_setting_set --app=$app --key=expiration --value=$expiration
+ynh_app_setting_set --app=$app --key=deletion --value=$deletion
 
 #=================================================
 # STANDARD MODIFICATIONS
@@ -80,7 +87,7 @@ ynh_script_progression --message="Setting up source files..." --weight=9
 
 ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 # Download, check integrity, uncompress and patch the source from app.src
-ynh_setup_source --dest_dir="$final_path"
+ynh_setup_source --dest_dir="$final_path/app"
 
 #=================================================
 # NGINX CONFIGURATION
@@ -141,9 +148,9 @@ export PATH="$final_path/.composer/vendor/bin:$PATH"
 #=================================================
 ynh_script_progression --message="Initializing tmp and private directory..." --weight=1
 
-mkdir -p "$final_path/sites/default/files"
-chmod 2775 "$final_path/sites/default/files"
-mkdir -p "$final_path/sites/default/files/tmp"
+mkdir -p "$final_path/app/sites/default/files"
+chmod 2775 "$final_path/app/sites/default/files"
+mkdir -p "$final_path/app/sites/default/files/tmp"
 
 mkdir -p "/home/yunohost.app/$app/data"
 chown -R $app: "/home/yunohost.app/$app/data"
@@ -152,20 +159,20 @@ chmod 775 "/home/yunohost.app/$app/data"
 #=================================================
 # ADD MISSING IMAGES
 #=================================================
-ynh_script_progression --message="Adding missing images..." --weight=2
-
-mkdir -p "$final_path/sites/default/files/imgforms"
-
-cp ../sources/anim_analyse.gif "$final_path/sites/default/files/imgforms/"
-cp ../sources/anim_creation.gif "$final_path/sites/default/files/imgforms/"
-cp ../sources/partager.png "$final_path/sites/default/files/imgforms/"
+#ynh_script_progression --message="Adding missing images..." --weight=2
+#
+#mkdir -p "$final_path/sites/default/files/imgforms"
+#
+#cp ../sources/anim_analyse.gif "$final_path/sites/default/files/imgforms/"
+#cp ../sources/anim_creation.gif "$final_path/sites/default/files/imgforms/"
+#cp ../sources/partager.png "$final_path/sites/default/files/imgforms/"
 
 #=================================================
 # MODIFY CONFIG FILES
 #=================================================
 ynh_script_progression --message="Modifying a config file..." --weight=1
 
-config_file=$final_path/sites/default/settings.php
+config_file=$final_path/app/sites/default/settings.php
 
 cp ../conf/default.settings.php "$config_file"
 ynh_replace_string --match_string="__DB_NAME__" --replace_string="$db_name" --target_file="$config_file"
@@ -174,20 +181,25 @@ ynh_replace_string --match_string="__DB_PWD__" --replace_string="$db_pwd" --targ
 ynh_replace_string --match_string="__FINALPATH__" --replace_string="$final_path" --target_file="$config_file"
 
 #=================================================
-# CHANGE ADMIN PASSWORD AND APPLY CUSTOM CONF
+# INSTALLING FRAMAFORMS WITH DRUSH
 #=================================================
 ynh_script_progression --message="Installing database..." --weight=19
 
 chown -R $app: $final_path
 
 update-alternatives --set php /usr/bin/php$phpversion
-ynh_exec_as $app env PATH=$PATH drush @$app site-install framaforms_org  install_configure_form.site_contact_url="https://forum.yunohost.org/t/framaforms-create-polls-using-drag-and-drop/8208" install_configure_form.site_default_country=FR -y --locale="$language" --account-name="admin" --account-pass="$password" --site-name="Framaforms" --site-mail="no-reply@$domain" 2>&1
+ynh_exec_as $app env PATH=$PATH drush @$app site-install framaforms_org  install_configure_form.site_contact_url="https://forum.yunohost.org/t/framaforms-create-polls-using-drag-and-drop/8208" install_configure_form.site_default_country=FR -y --locale="$language" --account-name="admin" --account-pass="$password" --site-name="Framaforms" --site-mail="$admin_mail" 2>&1
+ynh_exec_as $app env PATH=$PATH drush @$app variable-set update_notify_emails "$admin_mail"
 ynh_exec_as $app env PATH=$PATH drush @$app variable-set file_private_path "/home/yunohost.app/$app/data" 2>&1
 ynh_exec_as $app env PATH=$PATH drush @$app pm-enable framaforms_feature -y --resolve-dependencies 2>&1
 ynh_exec_as $app env PATH=$PATH drush @$app php-eval "module_load_include('inc', 'framaforms', 'includes/framaforms.pages');create_all_pages();" 2>&1 || true
+
+#=================================================
+# IMPORTING LANGUAGE PACK
+#=================================================
+ynh_script_progression --message="Importing language pack..." --weight=5
+
 sudo -u $app env PATH=$PATH drush @$app pm-download -y drush_language
-#sudo -u $app env PATH=$PATH drush @$app pm-download ldap
-#sudo -u $app env PATH=$PATH drush @$app pm-enable -y ldap_servers ldap_user ldap_authentication ldap_authorization ldap_authorization_drupal_role
 sudo -u $app env PATH=$PATH drush @$app pm-download -y l10n_update
 sudo -u $app env PATH=$PATH drush @$app pm-enable -y l10n_update
 sudo -u $app env PATH=$PATH drush @$app language-add $language -y
@@ -195,10 +207,34 @@ sudo -u $app env PATH=$PATH drush @$app language-default $language -y
 sudo -u $app env PATH=$PATH drush @$app cache-clear drush -y
 sudo -u $app env PATH=$PATH drush @$app l10n-update-refresh -y
 sudo -u $app env PATH=$PATH drush @$app l10n-update -y
-sudo -u $app env PATH=$PATH drush @$app pm-update -y || true
-sudo -u $app env PATH=$PATH drush @$app core-cron -y || true
-# Remove some Framasoft branding
-#ynh_exec_as $app env PATH=$PATH drush @$app sql-query "UPDATE block_custom SET body='' WHERE bid=12" 2>&1
+
+# We don't upgrade module to avoid to erase framaforms change 
+# in drupal core and modules code
+# see https://framagit.org/framasoft/framaforms/-/wikis/modifications
+#sudo -u $app env PATH=$PATH drush @$app pm-update -y
+
+#=================================================
+# REMOVING BRANDING AND CHANGING DEFAULT SETTINGS
+#=================================================
+ynh_script_progression --message="Removing branding and change default settings..." --weight=1
+
+sudo -u $app env PATH=$PATH drush @$app vset error_level 0
+sudo -u $app env PATH=$PATH drush @$app vset framaforms_notification_period_value $expiration
+sudo -u $app env PATH=$PATH drush @$app vset framaforms_deletion_period_value $deletion
+# Remove framaforms footer
+sudo -u $app env PATH=$PATH drush @$app sql-query "UPDATE block SET region='-1', status=0 WHERE delta='framaforms_footer' AND region='footer'"
+
+
+#=================================================
+# CONFIGURING LDAP
+#=================================================
+ynh_script_progression --message="Configuring LDAP authentication..." --weight=1
+
+sudo -u $app env PATH=$PATH drush @$app pm-download ldap
+sudo -u $app env PATH=$PATH drush @$app pm-enable -y ldap_servers ldap_user ldap_authentication ldap_authorization ldap_authorization_drupal_role
+# Generated with sudo -u postgres pg_dump -a -t ldap_servers --inserts framaforms
+sudo -u $app env PATH=$PATH drush @$app sql-query "INSERT INTO public.ldap_servers VALUES ('localhost', 1, 'localhost', 1, 'default', 'ldap://127.0.0.1', 389, 0, 0, 3, '', NULL, 'a:2:{i:0;s:27:\"ou=users,dc=yunohost,dc=org\";i:1;s:28:\"ou=groups,dc=yunohost,dc=org\";}', 'uid', 'uid', 'mail', '', '', '', 0, 'cn=%username,ou=users,dc=yunohost,dc=org', '', 'ljf', '', 0, 'groupofnamesynh', 0, 0, '', 'memberuid', 'dn', 0, '', 'all_users', '', 0, 1000, 0);"
+cat ../conf/ldap.conf | sudo -u $app env PATH=$PATH drush @$app variable-set --format=yaml ldap_authentication_conf -
 
 update-alternatives --set php /usr/bin/php${YNH_DEFAULT_PHP_VERSION}
 

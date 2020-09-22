@@ -44,6 +44,15 @@
         "default": "/poll"
       },
       {
+        "name": "admin",
+        "type": "user",
+        "ask": {
+            "en": "Choose an admin user",
+            "fr": "Choisissez l’administrateur"
+        },
+        "example": "johndoe"
+      },
+      {
         "name": "password",
         "type": "password",
         "ask": {
@@ -61,6 +70,32 @@
         },
         "choices": ["fr", "en"],
         "default": "en"
+      },
+      {
+        "name": "expiration",
+        "type": "string",
+        "ask": {
+          "en": "After how many weeks do the forms expire?",
+          "fr": "Après combien de semaines les formulaires expirent-ils ?"
+        },
+        "help": {
+          "en": "Set 0 to disable expiration",
+          "fr": "Mettre 0 pour désactiver l'expiration"
+        },
+        "default": "0"
+      },
+      {
+        "name": "deletion",
+        "type": "string",
+        "ask": {
+          "en": "After how many weeks is the forms deleted?",
+          "fr": "Après combien de semaines les formulaires sont-ils supprimés ?"
+        },
+        "help": {
+          "en": "Set 0 to disable deletion",
+          "fr": "Mettre 0 pour désactiver la suppression"
+        },
+        "default": "0"
       },
       {
         "name": "is_public",

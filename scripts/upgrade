@@ -83,7 +83,7 @@ then
 	ynh_script_progression --message="Upgrading source files..." --weight=9
 
 	# Download, check integrity, uncompress and patch the source from app.src
-	ynh_setup_source --dest_dir="$final_path"
+	ynh_setup_source --dest_dir="$final_path/app"
 fi
 
 #=================================================
@@ -136,7 +136,7 @@ if [ "$upgrade_type" == "UPGRADE_APP" ]
 then
 	ynh_script_progression --message="Upgrading Drupal..." --weight=30
 
-	ynh_backup_if_checksum_is_different --file="$final_path/$app/sites/default/settings.php"
+	ynh_backup_if_checksum_is_different --file="$final_path/app/sites/default/settings.php"
 
 	chown -R $app: $final_path
 
