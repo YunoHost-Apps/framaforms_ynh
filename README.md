@@ -12,7 +12,7 @@ See https://framablog.org/2016/10/05/framaforms-noffrez-plus-les-reponses-que-vo
 
 **Shipped version:** 1.0.0+190618
 
-## Screenshots
+## Screenshot
 
 ![Animation that present how to build a form with Framaforms](https://framaforms.org/profiles/framaforms_org/files/imgforms/anim_creation.gif)
 
