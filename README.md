@@ -14,7 +14,7 @@ See https://framablog.org/2016/10/05/framaforms-noffrez-plus-les-reponses-que-vo
 
 ## Screenshots
 
-![Animation that present how to build a form with Framaforms](https://framaforms.org/sites/default/files/imgforms/anim_creation.gif)
+![Animation that present how to build a form with Framaforms](https://framaforms.org/profiles/framaforms_org/files/imgforms/anim_creation.gif)
 
 ## Demo
 
@@ -22,18 +22,19 @@ See https://framablog.org/2016/10/05/framaforms-noffrez-plus-les-reponses-que-vo
 
 ## Configuration
 
-You can change some configuration by using the administration panel of drupal. You can connect with admin user and the password you give at installation.
+You can modify some configurations using the Framaforms administration panel. You can log in with the admin user and the password you gave during installation.
 
 ## Documentation
 
  * Official documentation: https://docs.framasoft.org/fr/framaforms/
+ * YunoHost documentation: https://yunohost.org/#/app_framaforms
 
 ## YunoHost specific features
 
 #### Multi-user support
 
-Are LDAP and HTTP auth supported? No
-Can the app be used by multiple users? Yes
+ * Are LDAP and HTTP auth supported? **No**
+ * Can the app be used by multiple users? **Yes**
 
 #### Supported architectures
 
@@ -48,9 +49,6 @@ Can the app be used by multiple users? Yes
 
 * Other info you would like to add about this app.
 
-**More info on the documentation page:**  
-https://yunohost.org/packaging_apps
-
 ## Links
 
  * Report a bug: https://github.com/YunoHost-Apps/framaforms_ynh/issues
@@ -60,8 +58,7 @@ https://yunohost.org/packaging_apps
 
 ---
 
-Developer info
-----------------
+## Developer info
 
 Please send your pull request to the [testing branch](https://github.com/YunoHost-Apps/framaforms_ynh/tree/testing).
 
