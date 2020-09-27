@@ -7,8 +7,6 @@
 #=================================================
 
 source _common.sh
-source ynh_add_extra_apt_repos__3
-source ynh_install_php__3
 source /usr/share/yunohost/helpers
 
 #=================================================
@@ -31,16 +29,8 @@ final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 ynh_script_progression --message="Removing the database..." --weight=1
 
 # Remove a database if it exists, along with the associated user
-ynh_psql_remove_db --db_user=$db_user --db_name=$db_name
+ynh_psql_remove_db --db_user="$db_user" --db_name="$db_name"
 
-#=================================================
-# REMOVE PHP
-#=================================================
-
-if [ "$(lsb_release --codename --short)" != "buster" ]; then
-	ynh_print_info --message="Removing php..."
-	ynh_remove_php
-fi
 #=================================================
 # REMOVE DEPENDENCIES
 #=================================================
@@ -56,6 +46,14 @@ ynh_script_progression --message="Removing app main directory..." --weight=1
 
 # Remove the app directory securely
 ynh_secure_remove --file="$final_path"
+
+#=================================================
+# REMOVE APP DATA DIR
+#=================================================
+ynh_script_progression --message="Removing app main directory..." --weight=1
+
+# Remove the app directory securely
+ynh_secure_remove --file="/home/yunohost.app/$app"
 
 #=================================================
 # REMOVE NGINX CONFIGURATION
@@ -76,6 +74,13 @@ ynh_remove_fpm_config
 #=================================================
 # SPECIFIC REMOVE
 #=================================================
+# REMOVE THE CRON FILE
+#=================================================
+ynh_script_progression --message="Removing the cron file..."
+
+# Remove a cron file
+ynh_secure_remove --file="/etc/cron.d/$app"
+
 #=================================================
 # GENERIC FINALIZATION
 #=================================================
