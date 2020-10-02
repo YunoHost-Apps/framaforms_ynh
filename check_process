@@ -27,7 +27,5 @@
 ;;; Levels
 	# If the level 5 (Package linter) is forced to 1. Please add justifications here.
 	Level 5=auto
-;;; Upgrade options
-	; commit=CommitHash
-		name=Name and date of the commit.
-		manifest_arg=domain=DOMAIN&path=PATH&admin=USER&language=fr&is_public=1&password=pass&expiration=0&deletion=0&
+;;; Options
+	Email=ljf+framaforms_ynh@reflexlibre.net
