@@ -75,7 +75,6 @@ ynh_script_progression --message="Restoring user rights..." --weight=1
 
 # Restore permissions on app files
 chown -R root: $final_path
-mkdir -p "$final_path/app/sites/default/files"
 chmod 2775 "$final_path/app/sites/default/files"
 
 mkdir -p "/home/yunohost.app/$app/data"
