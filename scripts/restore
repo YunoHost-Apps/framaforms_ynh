@@ -75,7 +75,7 @@ ynh_script_progression --message="Restoring user rights..." --weight=1
 
 # Restore permissions on app files
 chown -R root: $final_path
-chmod 2775 "$final_path/sites/default/files"
+chmod 2775 "$final_path/app/sites/default/files"
 
 mkdir -p "/home/yunohost.app/$app/data"
 chown -R $app: "/home/yunohost.app/$app/data"
@@ -91,6 +91,14 @@ ynh_restore_file --origin_path="/etc/php/$phpversion/fpm/pool.d/$app.conf"
 
 # Recreate a dedicated php-fpm config
 ynh_add_fpm_config  --usage=low --footprint=low --package="$extra_php_dependencies"
+
+#=================================================
+# RESTORE THE CRON FILE
+#=================================================
+ynh_script_progression --message="Restoring cron file..." --weight=1
+
+# Restore the file first, so it can have a backup if different
+ynh_restore_file --origin_path="/etc/cron.d/$app.conf"
 
 #=================================================
 # SPECIFIC RESTORATION
