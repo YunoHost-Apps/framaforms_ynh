@@ -98,7 +98,7 @@ ynh_add_fpm_config  --usage=low --footprint=low --package="$extra_php_dependenci
 ynh_script_progression --message="Restoring cron file..." --weight=1
 
 # Restore the file first, so it can have a backup if different
-ynh_restore_file --origin_path="/etc/cron.d/$app.conf"
+ynh_restore_file --origin_path="/etc/cron.d/$app"
 
 #=================================================
 # SPECIFIC RESTORATION
