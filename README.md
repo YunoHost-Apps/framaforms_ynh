@@ -7,14 +7,14 @@
 If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/install) to learn how to install it.*
 
 ## Overview
-Framaforms helps you create online webforms and surveys.
-See https://framablog.org/2016/10/05/framaforms-noffrez-plus-les-reponses-que-vous-collectez-a-google/ (in French ) and https://framablog.org/2016/10/05/en-savoir-un-peu-plus-sur-le-projet-framaforms/ (in French) for further informations.
+Framaforms is an online forms and surveys service. Registered users are allowed to create forms, share them, collect and visualize results through a simple interface.
+See this [article](https://framablog.org/2016/10/05/framaforms-noffrez-plus-les-reponses-que-vous-collectez-a-google/) and this [interview](https://framablog.org/2016/10/05/en-savoir-un-peu-plus-sur-le-projet-framaforms/) (in French) for further informations.
 
-**Shipped version:** 1.0.0+190618
+**Shipped version:** 1.0.1
 
-## Screenshots
+## Screenshot
 
-![Animation that present how to build a form with Framaforms](https://framaforms.org/sites/default/files/imgforms/anim_creation.gif)
+![Animation that present how to build a form with Framaforms](https://framaforms.org/profiles/framaforms_org/files/imgforms/anim_creation.gif)
 
 ## Demo
 
@@ -22,18 +22,19 @@ See https://framablog.org/2016/10/05/framaforms-noffrez-plus-les-reponses-que-vo
 
 ## Configuration
 
-You can change some configuration by using the administration panel of drupal. You can connect with admin user and the password you give at installation.
+You can modify some configurations using the Framaforms administration panel. You can log in with the admin user and the password you gave during installation.
 
 ## Documentation
 
  * Official documentation: https://docs.framasoft.org/fr/framaforms/
+ * YunoHost documentation: https://yunohost.org/#/app_framaforms
 
 ## YunoHost specific features
 
 #### Multi-user support
 
-Are LDAP and HTTP auth supported? **No**
-Can the app be used by multiple users? **Yes**
+* Are LDAP and HTTP auth supported? **No**
+* Can the app be used by multiple users? **Yes**
 
 #### Supported architectures
 
@@ -57,8 +58,7 @@ Can the app be used by multiple users? **Yes**
 
 ---
 
-Developer info
-----------------
+## Developer info
 
 Please send your pull request to the [testing branch](https://github.com/YunoHost-Apps/framaforms_ynh/tree/testing).
 

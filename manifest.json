@@ -27,11 +27,12 @@
     "install": [
       {
         "name": "domain",
+        "type": "domain",
         "ask": {
-          "en": "Choose a domain for Framaforms"
+          "en": "Choose a domain for Framaforms",
+          "fr": "Choisissez un nom de domaine pour Framaforms"
         },
-        "example": "domain.org",
-        "type": "domain"
+        "example": "domain.org"
       },
       {
         "name": "path",
