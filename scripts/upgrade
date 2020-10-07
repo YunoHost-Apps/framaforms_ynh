@@ -159,7 +159,7 @@ fi
 #=================================================
 ynh_script_progression --message="Storing the config file checksum..." --weight=1
 
-config_file=$final_path/sites/default/settings.php
+config_file=$final_path/app/sites/default/settings.php
 
 # Recalculate and store the checksum of the file for the next upgrade.
 ynh_store_file_checksum --file="$config_file"
