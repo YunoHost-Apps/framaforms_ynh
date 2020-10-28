@@ -6,7 +6,7 @@
     "en": "Create online webforms and surveys",
     "fr": "Créez des formulaires et questionnaires en ligne"
   },
-  "version": "1.0.1+200715~ynh4",
+  "version": "1.0.1+200715~ynh5",
   "url": "https://framagit.org/framasoft/framaforms",
   "license": "GPL-2.0-only",
   "requirements": {
