@@ -1,7 +1,7 @@
 # Framaforms for YunoHost
 
 [![Integration level](https://dash.yunohost.org/integration/framaforms.svg)](https://dash.yunohost.org/appci/app/framaforms) ![](https://ci-apps.yunohost.org/ci/badges/framaforms.status.svg) ![](https://ci-apps.yunohost.org/ci/badges/framaforms.maintain.svg)  
-[![Install Framaforms with YunoHost](https://install-app.yunohost.org/install-with-yunohost.png)](https://install-app.yunohost.org/?app=framaforms)
+[![Install Framaforms with YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=framaforms)
 
 > *This package allows you to install Framaforms quickly and simply on a YunoHost server.  
 If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/install) to learn how to install it.*
@@ -10,7 +10,7 @@ If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/in
 Framaforms is an online forms and surveys service. Registered users are allowed to create forms, share them, collect and visualize results through a simple interface.
 See this [article](https://framablog.org/2016/10/05/framaforms-noffrez-plus-les-reponses-que-vous-collectez-a-google/) and this [interview](https://framablog.org/2016/10/05/en-savoir-un-peu-plus-sur-le-projet-framaforms/) (in French) for further informations.
 
-**Shipped version:** 1.0.1
+**Shipped version:** 1.0.3
 
 ## Screenshot
 
