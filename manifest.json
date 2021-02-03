@@ -10,7 +10,7 @@
   "url": "https://framagit.org/framasoft/framaforms",
   "license": "GPL-2.0-only",
   "requirements": {
-		"yunohost": ">= 3.8.1"
+		"yunohost": ">= 4.0.0"
   },
   "maintainer": {
     "name": "ljf",
@@ -20,7 +20,7 @@
   "multi_instance": true,
   "services": [
     "nginx",
-    "php7.0-fpm",
+    "php7.3-fpm",
     "mysql"
   ],
   "arguments": {
