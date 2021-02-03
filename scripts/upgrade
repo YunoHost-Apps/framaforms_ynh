@@ -155,11 +155,11 @@ then
 
 	pushd "$final_path"
     	sudo -u $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 1 
-    	sudo -u $app $app env PATH=$PATH drush @$app cache-clear all 
+    	sudo -u $app env PATH=$PATH drush @$app cache-clear all 
     	# sudo -u $app env PATH=$PATH drush @$app pm-update -y drupal
     	# sudo -u $app env PATH=$PATH drush @$app updatedb -y
-    	sudo -u $app $app env PATH=$PATH drush @$app cache-clear all 
-    	sudo -u $app $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 0 
+    	sudo -u $app env PATH=$PATH drush @$app cache-clear all 
+    	sudo -u $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 0 
 	popd
 
 	update-alternatives --set php /usr/bin/php${YNH_DEFAULT_PHP_VERSION}
