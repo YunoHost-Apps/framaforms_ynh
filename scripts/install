@@ -188,11 +188,11 @@ ynh_script_progression --message="Installing database..." --weight=19
 chown -R $app: $final_path
 
 update-alternatives --set php /usr/bin/php$phpversion
-ynh_exec_as $app env PATH=$PATH drush @$app site-install framaforms_org  install_configure_form.site_contact_url="https://forum.yunohost.org/t/framaforms-create-polls-using-drag-and-drop/8208" install_configure_form.site_default_country=FR -y --locale="$language" --account-name="admin" --account-pass="$password" --site-name="Framaforms" --site-mail="$admin_mail" 2>&1
-ynh_exec_as $app env PATH=$PATH drush @$app variable-set update_notify_emails "$admin_mail"
-ynh_exec_as $app env PATH=$PATH drush @$app variable-set file_private_path "/home/yunohost.app/$app/data" 2>&1
-ynh_exec_as $app env PATH=$PATH drush @$app pm-enable framaforms_feature -y --resolve-dependencies 2>&1
-ynh_exec_as $app env PATH=$PATH drush @$app php-eval "module_load_include('inc', 'framaforms', 'includes/framaforms.pages');create_all_pages();" 2>&1 || true
+sudo -u $app env PATH=$PATH drush @$app site-install framaforms_org  install_configure_form.site_contact_url="https://forum.yunohost.org/t/framaforms-create-polls-using-drag-and-drop/8208" install_configure_form.site_default_country=FR -y --locale="$language" --account-name="admin" --account-pass="$password" --site-name="Framaforms" --site-mail="$admin_mail" 2>&1
+sudo -u $app env PATH=$PATH drush @$app variable-set update_notify_emails "$admin_mail"
+sudo -u $app env PATH=$PATH drush @$app variable-set file_private_path "/home/yunohost.app/$app/data" 2>&1
+sudo -u $app env PATH=$PATH drush @$app pm-enable framaforms_feature -y --resolve-dependencies 2>&1
+sudo -u $app env PATH=$PATH drush @$app php-eval "module_load_include('inc', 'framaforms', 'includes/framaforms.pages');create_all_pages();" 2>&1 || true
 
 #=================================================
 # IMPORTING LANGUAGE PACK
