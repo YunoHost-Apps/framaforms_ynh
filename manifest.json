@@ -6,11 +6,11 @@
     "en": "Create online webforms and surveys",
     "fr": "Créez des formulaires et questionnaires en ligne"
   },
-  "version": "1.0.3~ynh1",
+  "version": "1.0.3~ynh2",
   "url": "https://framagit.org/framasoft/framaforms",
   "license": "GPL-2.0-only",
   "requirements": {
-		"yunohost": ">= 3.8.1"
+		"yunohost": ">= 4.0.0"
   },
   "maintainer": {
     "name": "ljf",
@@ -20,7 +20,7 @@
   "multi_instance": true,
   "services": [
     "nginx",
-    "php7.0-fpm",
+    "php7.3-fpm",
     "mysql"
   ],
   "arguments": {
@@ -69,7 +69,7 @@
           "en": "Choose the application language",
           "fr": "Choisissez la langue de l'application"
         },
-        "choices": ["fr", "en"],
+        "choices": ["de", "en", "es", "fr", "it", "pt"],
         "default": "en"
       },
       {

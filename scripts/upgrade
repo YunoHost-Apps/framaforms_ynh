@@ -7,8 +7,6 @@
 #=================================================
 
 source _common.sh
-source ynh_composer__2
-source ynh_exec_as
 source /usr/share/yunohost/helpers
 
 #=================================================
@@ -22,6 +20,7 @@ domain=$(ynh_app_setting_get --app=$app --key=domain)
 path_url=$(ynh_app_setting_get --app=$app --key=path)
 is_public=$(ynh_app_setting_get --app=$app --key=is_public)
 final_path=$(ynh_app_setting_get --app=$app --key=final_path)
+admin=$(ynh_app_setting_get --app=$app --key=admin)
 db_name=$(ynh_app_setting_get --app=$app --key=db_name)
 phpversion=$(ynh_app_setting_get --app=$app --key=phpversion)
 
@@ -56,6 +55,18 @@ fi
 if [ -z "$final_path" ]; then
 	final_path=/var/www/$app
 	ynh_app_setting_set --app=$app --key=final_path --value=$final_path
+fi
+
+# Cleaning legacy permissions
+if ynh_legacy_permissions_exists; then
+	ynh_legacy_permissions_delete_all
+
+	ynh_app_setting_delete --app=$app --key=is_public
+fi
+
+if ! ynh_permission_exists --permission="admin"; then
+	# Create the required permissions
+	ynh_permission_create --permission="admin" --url="/admin" --allowed=$admin
 fi
 
 #=================================================
@@ -143,12 +154,12 @@ then
 	update-alternatives --set php /usr/bin/php$phpversion
 
 	pushd "$final_path"
-    	ynh_exec_as $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 1 
-    	ynh_exec_as $app env PATH=$PATH drush @$app cache-clear all 
-    	# ynh_exec_as $app env PATH=$PATH drush @$app pm-update -y drupal
-    	# ynh_exec_as $app env PATH=$PATH drush @$app updatedb -y
-    	ynh_exec_as $app env PATH=$PATH drush @$app cache-clear all 
-    	ynh_exec_as $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 0 
+    	sudo -u $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 1 
+    	sudo -u $app env PATH=$PATH drush @$app cache-clear all 
+    	# sudo -u $app env PATH=$PATH drush @$app pm-update -y drupal
+    	# sudo -u $app env PATH=$PATH drush @$app updatedb -y
+    	sudo -u $app env PATH=$PATH drush @$app cache-clear all 
+    	sudo -u $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 0 
 	popd
 
 	update-alternatives --set php /usr/bin/php${YNH_DEFAULT_PHP_VERSION}
@@ -179,18 +190,6 @@ chown -R $app: $final_path
 mkdir -p "/home/yunohost.app/$app/data"
 chown -R $app: "/home/yunohost.app/$app/data"
 chmod 775 "/home/yunohost.app/$app/data"
-
-#=================================================
-# SETUP SSOWAT
-#=================================================
-ynh_script_progression --message="Upgrading SSOwat configuration..." --weight=1
-
-# Make app public if necessary
-if [ $is_public -eq 1 ]
-then
-	# unprotected_uris allows SSO credentials to be passed anyway
-	ynh_app_setting_set --app=$app --key=unprotected_uris --value="/"
-fi
 
 #=================================================
 # RELOAD NGINX

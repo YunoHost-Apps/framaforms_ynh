@@ -7,8 +7,6 @@
 #=================================================
 
 source _common.sh
-source ynh_composer__2
-source ynh_exec_as
 source /usr/share/yunohost/helpers
 
 #=================================================
@@ -26,7 +24,7 @@ domain=$YNH_APP_ARG_DOMAIN
 path_url=$YNH_APP_ARG_PATH
 is_public=$YNH_APP_ARG_IS_PUBLIC
 password=$YNH_APP_ARG_PASSWORD
-admin=admin
+admin=$YNH_APP_ARG_ADMIN
 language=$YNH_APP_ARG_LANGUAGE
 expiration=$YNH_APP_ARG_EXPIRATION
 deletion=$YNH_APP_ARG_DELETION
@@ -188,11 +186,11 @@ ynh_script_progression --message="Installing database..." --weight=19
 chown -R $app: $final_path
 
 update-alternatives --set php /usr/bin/php$phpversion
-ynh_exec_as $app env PATH=$PATH drush @$app site-install framaforms_org  install_configure_form.site_contact_url="https://forum.yunohost.org/t/framaforms-create-polls-using-drag-and-drop/8208" install_configure_form.site_default_country=FR -y --locale="$language" --account-name="admin" --account-pass="$password" --site-name="Framaforms" --site-mail="$admin_mail" 2>&1
-ynh_exec_as $app env PATH=$PATH drush @$app variable-set update_notify_emails "$admin_mail"
-ynh_exec_as $app env PATH=$PATH drush @$app variable-set file_private_path "/home/yunohost.app/$app/data" 2>&1
-ynh_exec_as $app env PATH=$PATH drush @$app pm-enable framaforms_feature -y --resolve-dependencies 2>&1
-ynh_exec_as $app env PATH=$PATH drush @$app php-eval "module_load_include('inc', 'framaforms', 'includes/framaforms.pages');create_all_pages();" 2>&1 || true
+sudo -u $app env PATH=$PATH drush @$app site-install framaforms_org  install_configure_form.site_contact_url="https://forum.yunohost.org/t/framaforms-create-polls-using-drag-and-drop/8208" install_configure_form.site_default_country=FR -y --locale="$language" --account-name="admin" --account-pass="$password" --site-name="Framaforms" --site-mail="$admin_mail" 2>&1
+sudo -u $app env PATH=$PATH drush @$app variable-set update_notify_emails "$admin_mail"
+sudo -u $app env PATH=$PATH drush @$app variable-set file_private_path "/home/yunohost.app/$app/data" 2>&1
+sudo -u $app env PATH=$PATH drush @$app pm-enable framaforms_feature -y --resolve-dependencies 2>&1
+sudo -u $app env PATH=$PATH drush @$app php-eval "module_load_include('inc', 'framaforms', 'includes/framaforms.pages');create_all_pages();" 2>&1 || true
 
 #=================================================
 # IMPORTING LANGUAGE PACK
@@ -271,16 +269,18 @@ chown -R $app: $final_path
 #=================================================
 # SETUP SSOWAT
 #=================================================
-ynh_script_progression --message="Configuring SSOwat..." --weight=1
-
-ynh_permission_create --permission "admin" --url /admin/
+ynh_script_progression --message="Configuring permissions..." --weight=1
 
 # Make app public if necessary
 if [ $is_public -eq 1 ]
 then
-	# unprotected_uris allows SSO credentials to be passed anyway.
-	ynh_app_setting_set --app=$app --key=unprotected_uris --value="/"
+	# Everyone can access the app.
+	# The "main" permission is automatically created before the install script.
+	ynh_permission_update --permission="main" --add="visitors"
 fi
+
+# Only the admin can access the admin panel of the app (if the app has an admin panel)
+ynh_permission_create --permission="admin" --url="/admin" --allowed=$admin
 
 #=================================================
 # RELOAD NGINX
