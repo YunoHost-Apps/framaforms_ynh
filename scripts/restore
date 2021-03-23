@@ -78,6 +78,7 @@ chmod 2775 "$final_path/app/sites/default/files"
 mkdir -p "/home/yunohost.app/$app/data"
 chown -R $app: "/home/yunohost.app/$app/data"
 chmod 775 "/home/yunohost.app/$app/data"
+chmod 600 "$final_path/app/sites/default/settings.php"
 
 #=================================================
 # RESTORE THE PHP-FPM CONFIGURATION
