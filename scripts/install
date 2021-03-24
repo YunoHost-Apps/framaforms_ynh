@@ -120,12 +120,14 @@ ynh_script_progression --message="Creating Drush alias..." --weight=2
 
 mkdir -p "$final_path/.drush"
 drush_aliasconfig="$final_path/.drush/$app.aliases.drushrc.php"
-cp -f "../conf/yoursite.aliases.drushrc.php" "$drush_aliasconfig"
+# cp -f "../conf/yoursite.aliases.drushrc.php" "$drush_aliasconfig"
 
-ynh_replace_string --match_string="__FINALPATH__" --replace_string="$final_path" --target_file="$drush_aliasconfig"
-ynh_replace_string --match_string="__APP__" --replace_string="$app" --target_file="$drush_aliasconfig"
-ynh_replace_string --match_string="__DOMAIN__" --replace_string="$domain" --target_file="$drush_aliasconfig"
-ynh_replace_string --match_string="__PATH_URL__" --replace_string="$path_url" --target_file="$drush_aliasconfig"
+# ynh_replace_string --match_string="__FINALPATH__" --replace_string="$final_path" --target_file="$drush_aliasconfig"
+# ynh_replace_string --match_string="__APP__" --replace_string="$app" --target_file="$drush_aliasconfig"
+# ynh_replace_string --match_string="__DOMAIN__" --replace_string="$domain" --target_file="$drush_aliasconfig"
+# ynh_replace_string --match_string="__PATH__" --replace_string="$path_url" --target_file="$drush_aliasconfig"
+
+ynh_add_config --template="../conf/yoursite.aliases.drushrc.php" --destination="$drush_aliasconfig"
 
 #=================================================
 # INSTALL COMPOSER
@@ -171,11 +173,13 @@ ynh_script_progression --message="Modifying a config file..." --weight=1
 
 config_file=$final_path/app/sites/default/settings.php
 
-cp ../conf/default.settings.php "$config_file"
-ynh_replace_string --match_string="__DB_NAME__" --replace_string="$db_name" --target_file="$config_file"
-ynh_replace_string --match_string="__DB_USER__" --replace_string="$db_user" --target_file="$config_file"
-ynh_replace_string --match_string="__DB_PWD__" --replace_string="$db_pwd" --target_file="$config_file"
-ynh_replace_string --match_string="__FINALPATH__" --replace_string="$final_path" --target_file="$config_file"
+# cp ../conf/default.settings.php "$config_file"
+# ynh_replace_string --match_string="__DB_NAME__" --replace_string="$db_name" --target_file="$config_file"
+# ynh_replace_string --match_string="__DB_USER__" --replace_string="$db_user" --target_file="$config_file"
+# ynh_replace_string --match_string="__DB_PWD__" --replace_string="$db_pwd" --target_file="$config_file"
+# ynh_replace_string --match_string="__FINALPATH__" --replace_string="$final_path" --target_file="$config_file"
+
+ynh_add_config --template="../conf/default.settings.php" --destination="$config_file"
 
 #=================================================
 # INSTALLING FRAMAFORMS WITH DRUSH
@@ -196,14 +200,14 @@ sudo -u $app env PATH=$PATH drush @$app php-eval "module_load_include('inc', 'fr
 #=================================================
 ynh_script_progression --message="Importing language pack..." --weight=5
 
-sudo -u $app env PATH=$PATH drush @$app pm-download -y drush_language
-sudo -u $app env PATH=$PATH drush @$app pm-download -y l10n_update
-sudo -u $app env PATH=$PATH drush @$app pm-enable -y l10n_update
-sudo -u $app env PATH=$PATH drush @$app language-add $language -y
-sudo -u $app env PATH=$PATH drush @$app language-default $language -y
-sudo -u $app env PATH=$PATH drush @$app cache-clear drush -y
-sudo -u $app env PATH=$PATH drush @$app l10n-update-refresh -y
-sudo -u $app env PATH=$PATH drush @$app l10n-update -y
+ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app pm-download -y drush_language
+ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app pm-download -y l10n_update
+ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app pm-enable -y l10n_update
+ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app language-add $language -y
+ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app language-default $language -y
+ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app cache-clear drush -y
+ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app l10n-update-refresh -y
+ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app l10n-update -y
 
 # We don't upgrade module to avoid to erase framaforms change 
 # in drupal core and modules code
@@ -250,10 +254,7 @@ ynh_store_file_checksum --file="$config_file"
 #=================================================
 ynh_script_progression --message="Setuping the cron file..."
 
-cp ../conf/cron /etc/cron.d/$app
-
-ynh_replace_string --match_string="__FINALPATH__" --replace_string="$final_path" --target_file="/etc/cron.d/$app"
-ynh_replace_string --match_string="__APP__" --replace_string="$app" --target_file="/etc/cron.d/$app"
+ynh_add_config --template="../conf/cron" --destination="/etc/cron.d/$app"
 
 #=================================================
 # GENERIC FINALIZATION
@@ -264,6 +265,7 @@ ynh_script_progression --message="Securing files and directories..." --weight=1
 
 # Set permissions to app files
 chown -R $app: $final_path
+chmod o-rwx $final_path
 chmod 600 $config_file
 
 #=================================================

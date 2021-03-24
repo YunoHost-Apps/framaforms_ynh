@@ -29,7 +29,7 @@
  */
 $aliases['__APP__'] = array(
   'root' => '__FINALPATH__/app/',
-  'uri'  => 'https://__DOMAIN____PATH_URL__',
+  'uri'  => 'https://__DOMAIN____PATH__',
   'path-aliases' => array(
     '%dump-dir' => '/tmp',
   ),

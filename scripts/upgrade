@@ -98,7 +98,7 @@ fi
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
-ynh_script_progression --message="Upgrading nginx web server configuration..." --weight=1
+ynh_script_progression --message="Upgrading NGINX web server configuration..." --weight=1
 
 # Create a dedicated nginx config
 ynh_add_nginx_config
@@ -176,7 +176,7 @@ ynh_script_progression --message="Securing files and directories..." --weight=1
 
 # Set permissions on app files
 chown -R $app: $final_path
-
+chmod o-rwx $final_path
 mkdir -p "/home/yunohost.app/$app/data"
 chown -R $app: "/home/yunohost.app/$app/data"
 chmod 775 "/home/yunohost.app/$app/data"
