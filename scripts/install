@@ -200,14 +200,14 @@ sudo -u $app env PATH=$PATH drush @$app php-eval "module_load_include('inc', 'fr
 #=================================================
 ynh_script_progression --message="Importing language pack..." --weight=5
 
-ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app pm-download -y drush_language
-ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app pm-download -y l10n_update
-ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app pm-enable -y l10n_update
-ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app language-add $language -y
-ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app language-default $language -y
-ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app cache-clear drush -y
-ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app l10n-update-refresh -y
-ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app l10n-update -y
+sudo -u $app env PATH=$PATH drush @$app pm-download -y drush_language 2>&1
+sudo -u $app env PATH=$PATH drush @$app pm-download -y l10n_update 2>&1
+sudo -u $app env PATH=$PATH drush @$app pm-enable -y l10n_update 2>&1
+sudo -u $app env PATH=$PATH drush @$app language-add $language -y 2>&1
+sudo -u $app env PATH=$PATH drush @$app language-default $language -y 2>&1
+sudo -u $app env PATH=$PATH drush @$app cache-clear drush -y 2>&1
+sudo -u $app env PATH=$PATH drush @$app l10n-update-refresh -y 2>&1
+sudo -u $app env PATH=$PATH drush @$app l10n-update -y 2>&1
 
 # We don't upgrade module to avoid to erase framaforms change 
 # in drupal core and modules code
