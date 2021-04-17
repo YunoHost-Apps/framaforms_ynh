@@ -120,12 +120,6 @@ ynh_script_progression --message="Creating Drush alias..." --weight=2
 
 mkdir -p "$final_path/.drush"
 drush_aliasconfig="$final_path/.drush/$app.aliases.drushrc.php"
-# cp -f "../conf/yoursite.aliases.drushrc.php" "$drush_aliasconfig"
-
-# ynh_replace_string --match_string="__FINALPATH__" --replace_string="$final_path" --target_file="$drush_aliasconfig"
-# ynh_replace_string --match_string="__APP__" --replace_string="$app" --target_file="$drush_aliasconfig"
-# ynh_replace_string --match_string="__DOMAIN__" --replace_string="$domain" --target_file="$drush_aliasconfig"
-# ynh_replace_string --match_string="__PATH__" --replace_string="$path_url" --target_file="$drush_aliasconfig"
 
 ynh_add_config --template="../conf/yoursite.aliases.drushrc.php" --destination="$drush_aliasconfig"
 
@@ -172,12 +166,6 @@ chmod 775 "/home/yunohost.app/$app/data"
 ynh_script_progression --message="Modifying a config file..." --weight=1
 
 config_file=$final_path/app/sites/default/settings.php
-
-# cp ../conf/default.settings.php "$config_file"
-# ynh_replace_string --match_string="__DB_NAME__" --replace_string="$db_name" --target_file="$config_file"
-# ynh_replace_string --match_string="__DB_USER__" --replace_string="$db_user" --target_file="$config_file"
-# ynh_replace_string --match_string="__DB_PWD__" --replace_string="$db_pwd" --target_file="$config_file"
-# ynh_replace_string --match_string="__FINALPATH__" --replace_string="$final_path" --target_file="$config_file"
 
 ynh_add_config --template="../conf/default.settings.php" --destination="$config_file"
 
