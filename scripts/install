@@ -127,6 +127,9 @@ drush_aliasconfig="$final_path/.drush/$app.aliases.drushrc.php"
 
 ynh_add_config --template="../conf/yoursite.aliases.drushrc.php" --destination="$drush_aliasconfig"
 
+chmod 400 "$drush_aliasconfig"
+chown $app:$app "$drush_aliasconfig"
+
 #=================================================
 # INSTALL COMPOSER
 #=================================================
