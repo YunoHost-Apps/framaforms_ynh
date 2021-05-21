@@ -148,13 +148,13 @@ export PATH="$final_path/.composer/vendor/bin:$PATH"
 #=================================================
 ynh_script_progression --message="Initializing tmp and private directory..." --weight=1
 
+mkdir -p "$final_path/app/sites/default/files"
+mkdir -p "$final_path/app/sites/default/files/tmp"
+
 chmod 750 "$final_path"
 chmod -R o-rwx "$final_path"
 chown -R $app:www-data "$final_path"
-
-mkdir -p "$final_path/app/sites/default/files"
 chmod 2775 "$final_path/app/sites/default/files"
-mkdir -p "$final_path/app/sites/default/files/tmp"
 
 #=================================================
 # CREATE DATA DIRECTORY
