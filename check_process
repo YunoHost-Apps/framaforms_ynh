@@ -16,8 +16,6 @@
 		setup_private=1
 		setup_public=1
 		upgrade=1
-		# 1.0.1+200715~ynh4
-		upgrade=1	from_commit=25e97123f0e82ec1b9375774f3e86b7d8f5d73cf
 		backup_restore=1
 		multi_instance=1
 		change_url=1

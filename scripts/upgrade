@@ -22,6 +22,7 @@ final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 admin=$(ynh_app_setting_get --app=$app --key=admin)
 db_name=$(ynh_app_setting_get --app=$app --key=db_name)
 phpversion=$(ynh_app_setting_get --app=$app --key=phpversion)
+datadir=$(ynh_app_setting_get --app=$app --key=datadir)
 
 #=================================================
 # CHECK VERSION
@@ -30,6 +31,22 @@ ynh_script_progression --message="Checking version..." --weight=1
 
 upgrade_type=$(ynh_check_app_version_changed)
 
+#=================================================
+# BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
+#=================================================
+ynh_script_progression --message="Backing up the app before upgrading (may take a while)..." --weight=21
+
+# Backup the current version of the app
+ynh_backup_before_upgrade
+ynh_clean_setup () {
+	# Restore it if the upgrade fails
+	ynh_restore_upgradebackup
+}
+# Exit if an error occurs during the execution of the script
+ynh_abort_if_errors
+
+#=================================================
+# STANDARD UPGRADE STEPS
 #=================================================
 # ENSURE DOWNWARD COMPATIBILITY
 #=================================================
@@ -47,6 +64,12 @@ if [ -z "$final_path" ]; then
 	ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 fi
 
+# If datadir doesn't exist, create it
+if [ -z "$datadir" ]; then
+	final_path=/home/yunohost.app/$app
+	ynh_app_setting_set --app=$app --key=final_path --value=$datadir
+fi
+
 # Cleaning legacy permissions
 if ynh_legacy_permissions_exists; then
 	ynh_legacy_permissions_delete_all
@@ -60,29 +83,13 @@ if ! ynh_permission_exists --permission="admin"; then
 fi
 
 #=================================================
-# BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
-#=================================================
-ynh_script_progression --message="Backing up the app before upgrading (may take a while)..." --weight=21
-
-# Backup the current version of the app
-ynh_backup_before_upgrade
-ynh_clean_setup () {
-	# restore it if the upgrade fails
-	ynh_restore_upgradebackup
-}
-# Exit if an error occurs during the execution of the script
-ynh_abort_if_errors
-
-#=================================================
 # CREATE DEDICATED USER
 #=================================================
 ynh_script_progression --message="Making sure dedicated system user exists..." --weight=1
 
 # Create a dedicated user (if not existing)
-ynh_system_user_create --username=$app --home_dir="$final_path"
+ynh_system_user_create --username=$app --home_dir=$final_path
 
-#=================================================
-# STANDARD UPGRADE STEPS
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
@@ -95,12 +102,16 @@ then
 	ynh_setup_source --dest_dir="$final_path/app"
 fi
 
+chmod 750 "$final_path"
+chmod -R o-rwx "$final_path"
+chown -R $app:www-data "$final_path"
+
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
 ynh_script_progression --message="Upgrading NGINX web server configuration..." --weight=1
 
-# Create a dedicated nginx config
+# Create a dedicated NGINX config
 ynh_add_nginx_config
 
 #=================================================
@@ -121,6 +132,16 @@ ynh_add_fpm_config --usage=low --footprint=low --package="$extra_php_dependencie
 #=================================================
 # SPECIFIC UPGRADE
 #=================================================
+# CREATE DATA DIRECTORY
+#=================================================
+ynh_script_progression --message="Creating a data directory..."
+
+mkdir -p $datadir
+chmod 750 "$datadir"
+chmod -R o-rwx "$datadir"
+chown -R $app:www-data "$datadir"
+
+#=================================================
 # UPGRADE COMPOSER
 #=================================================
 ynh_script_progression --message="Upgrading Composer..." --weight=3
@@ -139,8 +160,6 @@ then
 
 	ynh_backup_if_checksum_is_different --file="$final_path/app/sites/default/settings.php"
 
-	chown -R $app: $final_path
-
 	update-alternatives --set php /usr/bin/php$phpversion
 
 	pushd "$final_path"
@@ -156,32 +175,15 @@ then
 fi
 
 #=================================================
-# STORE THE CONFIG FILE CHECKSUM
+# UPDATE A CONFIG FILE
 #=================================================
-ynh_script_progression --message="Storing the config file checksum..." --weight=1
+ynh_script_progression --message="Updating a configuration file..."
 
-config_file=$final_path/app/sites/default/settings.php
-
-# Recalculate and store the checksum of the file for the next upgrade.
-ynh_store_file_checksum --file="$config_file"
-
-#=================================================
+chmod 600 "$final_path/app/sites/default/settings.php"
+chown $app:$app "$final_path/app/sites/default/settings.php"
 
 #=================================================
 # GENERIC FINALIZATION
-#=================================================
-# SECURE FILES AND DIRECTORIES
-#=================================================
-ynh_script_progression --message="Securing files and directories..." --weight=1
-
-# Set permissions on app files
-chown -R $app: $final_path
-chmod o-rwx $final_path
-mkdir -p "/home/yunohost.app/$app/data"
-chown -R $app: "/home/yunohost.app/$app/data"
-chmod 775 "/home/yunohost.app/$app/data"
-chmod 600 $config_file
-
 #=================================================
 # RELOAD NGINX
 #=================================================
