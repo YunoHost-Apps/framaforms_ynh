@@ -1,116 +1,96 @@
 {
-  "name": "Framaforms",
-  "id": "framaforms",
-  "packaging_format": 1,
-  "description": {
-    "en": "Create online webforms and surveys",
-    "fr": "Créez des formulaires et questionnaires en ligne"
-  },
-  "version": "1.0.3~ynh1",
-  "url": "https://framagit.org/framasoft/framaforms",
-  "license": "GPL-2.0-only",
-  "requirements": {
-		"yunohost": ">= 3.8.1"
-  },
-  "maintainer": {
-    "name": "ljf",
-    "email": "ljf+framaforms_ynh@reflexlibre.net",
-    "url": "https://reflexlibre.net"
-  },
-  "multi_instance": true,
-  "services": [
-    "nginx",
-    "php7.0-fpm",
-    "mysql"
-  ],
-  "arguments": {
-    "install": [
-      {
-        "name": "domain",
-        "type": "domain",
-        "ask": {
-          "en": "Choose a domain for Framaforms",
-          "fr": "Choisissez un nom de domaine pour Framaforms"
-        },
-        "example": "domain.org"
-      },
-      {
-        "name": "path",
-        "type": "path",
-        "ask": {
-          "en": "Choose a path for Framaforms",
-          "fr": "Choisissez un chemin pour Framaforms"
-        },
-        "example": "/poll",
-        "default": "/poll"
-      },
-      {
-        "name": "admin",
-        "type": "user",
-        "ask": {
-            "en": "Choose an admin user",
-            "fr": "Choisissez l’administrateur"
-        },
-        "example": "johndoe"
-      },
-      {
-        "name": "password",
-        "type": "password",
-        "ask": {
-          "en": "Set the administrator password",
-          "fr": "Définissez le mot de passe administrateur"
-        },
-        "example": "Choose a password"
-      },
-      {
-        "name": "language",
-        "type": "string",
-        "ask": {
-          "en": "Choose the application language",
-          "fr": "Choisissez la langue de l'application"
-        },
-        "choices": ["fr", "en"],
-        "default": "en"
-      },
-      {
-        "name": "expiration",
-        "type": "string",
-        "ask": {
-          "en": "After how many weeks do the forms expire?",
-          "fr": "Après combien de semaines les formulaires expirent-ils ?"
-        },
-        "help": {
-          "en": "Set 0 to disable expiration",
-          "fr": "Mettre 0 pour désactiver l'expiration"
-        },
-        "default": "0"
-      },
-      {
-        "name": "deletion",
-        "type": "string",
-        "ask": {
-          "en": "After how many weeks is the forms deleted?",
-          "fr": "Après combien de semaines les formulaires sont-ils supprimés ?"
-        },
-        "help": {
-          "en": "Set 0 to disable deletion",
-          "fr": "Mettre 0 pour désactiver la suppression"
-        },
-        "default": "0"
-      },
-      {
-        "name": "is_public",
-        "type": "boolean",
-        "ask": {
-          "en": "Are visitors who do not have a YunoHost account on this server allowed to register and create forms?",
-          "fr": "Les visiteurs qui n'ont pas de compte YunoHost sur ce serveur sont-ils autorisés à s'inscrire et à créer des formulaires ?"
-        },
-        "help": {
-          "en": "If no, only person with an account on your server will be able to create forms. In all cases, visitors will be able to reply to form.",
-          "fr": "Si non, seule la personne disposant d'un compte sur votre serveur pourra créer des formulaires. Dans tous les cas, les visiteurs pourront répondre au formulaire."
-        },
-        "default": true
-      }
-    ]
-  }
+    "name": "Framaforms",
+    "id": "framaforms",
+    "packaging_format": 1,
+    "description": {
+        "en": "Create online webforms and surveys",
+        "fr": "Créez des formulaires et questionnaires en ligne"
+    },
+    "version": "1.0.3~ynh2",
+    "url": "https://framagit.org/framasoft/framaforms",
+    "license": "GPL-2.0-only",
+    "requirements": {
+        "yunohost": ">= 4.2.0"
+    },
+    "maintainer": {
+        "name": "ljf",
+        "email": "ljf+framaforms_ynh@reflexlibre.net",
+        "url": "https://reflexlibre.net"
+    },
+    "multi_instance": true,
+    "services": [
+        "nginx",
+        "php7.3-fpm",
+        "mysql"
+    ],
+    "arguments": {
+        "install" : [
+            {
+                "name": "domain",
+                "type": "domain",
+                "example": "domain.org"
+            },
+            {
+                "name": "path",
+                "type": "path",
+                "example": "/poll",
+                "default": "/poll"
+            },
+            {
+                "name": "admin",
+                "type": "user",
+                "example": "johndoe"
+            },
+            {
+                "name": "password",
+                "type": "password",
+                "example": "Choose a password"
+            },
+            {
+                "name": "language",
+                "type": "string",
+                "ask": {
+                    "en": "Choose the application language",
+                    "fr": "Choisissez la langue de l'application"
+                },
+                "choices": ["de", "en", "es", "fr", "it", "pt"],
+                "default": "en"
+            },
+            {
+                "name": "expiration",
+                "type": "string",
+                "ask": {
+                    "en": "After how many weeks do the forms expire?",
+                    "fr": "Après combien de semaines les formulaires expirent-ils ?"
+                },
+                "help": {
+                    "en": "Set 0 to disable expiration",
+                    "fr": "Mettre 0 pour désactiver l'expiration"
+                },
+                "default": "0"
+            },
+            {
+                "name": "deletion",
+                "type": "string",
+                "ask": {
+                    "en": "After how many weeks is the forms deleted?",
+                    "fr": "Après combien de semaines les formulaires sont-ils supprimés ?"
+                },
+                "help": {
+                "en": "Set 0 to disable deletion",
+                "fr": "Mettre 0 pour désactiver la suppression"
+                },
+                "default": "0"
+            },
+            {
+                "name": "is_public",
+                "type": "boolean",
+                "help": {
+                    "en": "If no, only person with an account on your server will be able to create forms. In all cases, visitors will be able to reply to form.",
+                    "fr": "Si non, seule la personne disposant d'un compte sur votre serveur pourra créer des formulaires. Dans tous les cas, les visiteurs pourront répondre au formulaire."
+                },
+                "default": true
+            }
+        ]
+    }
 }

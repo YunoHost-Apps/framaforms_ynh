@@ -27,14 +27,14 @@ You can modify some configurations using the Framaforms administration panel. Yo
 ## Documentation
 
  * Official documentation: https://docs.framasoft.org/fr/framaforms/
- * YunoHost documentation: https://yunohost.org/#/app_framaforms
+ * YunoHost documentation: https://yunohost.org/en/app_framaforms
 
 ## YunoHost specific features
 
 #### Multi-user support
 
-Are LDAP and HTTP auth supported? **Only LDAP**
-Can the app be used by multiple users? **Yes**
+ * Are LDAP and HTTP auth supported? **Only LDAP**
+ * Can the app be used by multiple users? **Yes**
 
 #### Supported architectures
 

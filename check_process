@@ -1,12 +1,10 @@
-# See here for more information
-# https://github.com/YunoHost/package_check#syntax-check_process-file
 ;; Test complet
 	; Manifest
-		domain="domain.tld"	(DOMAIN)
-		path="/path"	(PATH)
-		admin="john"	(USER)
+		domain="domain.tld"
+		path="/path"
+		admin="john"
 		language="fr"
-		is_public=1	(PUBLIC|public=1|private=0)
+		is_public=1
 		password="password"
 		expiration="0"
 		deletion="0"
@@ -18,11 +16,8 @@
 		setup_private=1
 		setup_public=1
 		upgrade=1
-		# 1.0.1+200715~ynh4
-		upgrade=1	from_commit=25e97123f0e82ec1b9375774f3e86b7d8f5d73cf
 		backup_restore=1
 		multi_instance=1
-		port_already_use=0
 		change_url=1
 ;;; Options
 Email=ljf+framaforms_ynh@reflexlibre.net
