@@ -68,7 +68,7 @@ ynh_remove_fpm_config
 #=================================================
 # REMOVE APP DATA DIR
 #=================================================
-ynh_script_progression --message="Removing app main directory..." --weight=1
+ynh_script_progression --message="Removing app data directory..." --weight=1
 
 # Remove the app directory securely
 ynh_secure_remove --file="/home/yunohost.app/$app"
