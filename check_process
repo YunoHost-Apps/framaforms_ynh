@@ -16,6 +16,8 @@
 		setup_private=1
 		setup_public=1
 		upgrade=1
+		# From Framaforms 1.0.3
+		upgrade=1	from_commit=32fc6718c993e93eee558631f6dc9413c7ee83ee
 		backup_restore=1
 		multi_instance=1
 		change_url=1
@@ -25,3 +27,5 @@ Notification=yes
 ;;; Upgrade options
 	; commit=25e97123f0e82ec1b9375774f3e86b7d8f5d73cf
 		name=#34 from YunoHost-Apps/testing
+	; commit=32fc6718c993e93eee558631f6dc9413c7ee83ee
+		name=Framaforms 1.0.3

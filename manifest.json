@@ -1,13 +1,13 @@
 {
-    "name": "Framaforms",
-    "id": "framaforms",
+    "name": "Yakforms",
+    "id": "yakforms",
     "packaging_format": 1,
     "description": {
         "en": "Create online webforms and surveys",
         "fr": "Créez des formulaires et questionnaires en ligne"
     },
-    "version": "1.0.3~ynh2",
-    "url": "https://framagit.org/framasoft/framaforms",
+    "version": "1.1~ynh2",
+    "url": "https://framagit.org/yakforms/yakforms",
     "license": "GPL-2.0-only",
     "requirements": {
         "yunohost": ">= 4.2.0"

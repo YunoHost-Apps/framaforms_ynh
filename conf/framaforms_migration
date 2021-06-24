@@ -1,0 +1,8 @@
+# App main directory
+/var/www/$app
+
+# Datadir
+/home/yunohost.app/$app
+
+# NGINX web server configuration
+/etc/nginx/conf.d/$domain.d/$app.conf

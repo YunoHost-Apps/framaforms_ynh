@@ -196,7 +196,7 @@ chown $app:$app "$final_path/app/sites/default/settings.php"
 ynh_script_progression --message="Installing database..." --weight=19
 
 update-alternatives --set php /usr/bin/php$phpversion
-sudo -u $app env PATH=$PATH drush @$app site-install framaforms_org  install_configure_form.site_contact_url="https://forum.yunohost.org/t/framaforms-create-polls-using-drag-and-drop/8208" install_configure_form.site_default_country=FR -y --locale="$language" --account-name="admin" --account-pass="$password" --site-name="Framaforms" --site-mail="$admin_mail" 2>&1
+sudo -u $app env PATH=$PATH drush @$app site-install yakforms_profile install_configure_form.site_contact_url="https://forum.yunohost.org/t/framaforms-create-polls-using-drag-and-drop/8208" install_configure_form.site_default_country=FR -y --locale="$language" --account-name="admin" --account-pass="$password" --site-name="Yakforms" --site-mail="$admin_mail" 2>&1
 sudo -u $app env PATH=$PATH drush @$app variable-set update_notify_emails "$admin_mail"
 sudo -u $app env PATH=$PATH drush @$app variable-set file_private_path "/home/yunohost.app/$app/data" 2>&1
 sudo -u $app env PATH=$PATH drush @$app pm-enable framaforms_feature -y --resolve-dependencies 2>&1

@@ -7,6 +7,7 @@
 #=================================================
 
 source _common.sh
+source ynh_handle_app_migration
 source /usr/share/yunohost/helpers
 
 #=================================================
@@ -47,6 +48,56 @@ ynh_abort_if_errors
 
 #=================================================
 # STANDARD UPGRADE STEPS
+#=================================================
+# HANDLE MIGRATION FROM FRAMAFORMS
+#=================================================
+
+ynh_handle_app_migration --migration_id="framaforms" --migration_list="framaforms_migration"
+
+if [ $migration_process -eq 1 ]
+then
+	# If a migration has been perform
+	# Reload some values changed by the migration process
+	final_path=$(ynh_app_setting_get --app=$app --key=final_path)
+	db_name=$(ynh_app_setting_get --app=$app --key=db_name)
+	db_user=$db_name
+	db_pwd=$(ynh_app_setting_get --app=$app --key=psqlpwd)
+
+	# Rebuild config files
+	ynh_delete_file_checksum --file="$final_path/.drush/$old_app.aliases.drushrc.php"
+	ynh_secure_remove --file="$final_path/.drush/$old_app.aliases.drushrc.php"
+	ynh_add_config --template="../conf/yoursite.aliases.drushrc.php" --destination="$final_path/.drush/$app.aliases.drushrc.php"
+
+	ynh_add_config --template="../conf/default.settings.php" --destination="$final_path/app/sites/default/settings.php"
+
+	ynh_delete_file_checksum --file="/etc/cron.d/$old_app"
+	ynh_secure_remove --file="/etc/cron.d/$old_app"
+	ynh_add_config --template="../conf/cron" --destination="/etc/cron.d/$app"
+
+	# Update datadir setting
+	datadir=/home/yunohost.app/$app
+	ynh_app_setting_set --app=$app --key=datadir --value=$datadir
+
+	# Update Database
+	ynh_psql_connect_as --user=$db_user --password=$db_pwd --database=$db_name < ../conf/framaforms_migration_step1.sql
+
+	# Remove the old php config
+	fpm_config_dir=$(ynh_app_setting_get --app=$old_app --key=fpm_config_dir)
+	ynh_delete_file_checksum --file="$fpm_config_dir/pool.d/$old_app.conf"
+	ynh_secure_remove --file="$fpm_config_dir/pool.d/$old_app.conf"
+
+	# Manage permissions
+	ynh_permission_update --permission="main" --add="all_users"
+	ynh_permission_update --permission="main" --add="visitors"
+
+	# Remove the service from the list of services known by YunoHost (added from `yunohost service add`)
+	if ynh_exec_warn_less yunohost service status $old_app >/dev/null
+	then
+		ynh_script_progression --message="Removing $old_app service integration..."
+		yunohost service remove $old_app
+	fi
+fi
+
 #=================================================
 # ENSURE DOWNWARD COMPATIBILITY
 #=================================================
@@ -190,6 +241,27 @@ chown $app:$app "$final_path/app/sites/default/settings.php"
 ynh_script_progression --message="Reloading NGINX web server..." --weight=1
 
 ynh_systemd_action --service_name=nginx --action=reload
+
+#=================================================
+# FINISH MIGRATION PROCESS
+#=================================================
+
+if [ $migration_process -eq 1 ]
+then
+	# Update Database
+	ynh_psql_connect_as --user=$db_user --password=$db_pwd --database=$db_name < ../conf/framaforms_migration_step2.sql
+
+	ynh_script_progression --message="Framaforms has been successfully migrated to Yakforms! \
+A last scheduled operation will run in a couple of minutes to finish the \
+migration in YunoHost side. Do not proceed any application operation while \
+you don't see Vaultwarden as installed."
+	script_post_migration=framaforms_post_migration.sh
+	cp ../conf/$script_post_migration /tmp
+	ynh_replace_string --match_string="__OLD_APP__" --replace_string="$old_app" --target_file=/tmp/$script_post_migration
+	ynh_replace_string --match_string="__NEW_APP__" --replace_string="$app" --target_file=/tmp/$script_post_migration
+	chmod +x /tmp/$script_post_migration
+	(cd /tmp; echo "/tmp/$script_post_migration > /tmp/$script_post_migration.log 2>&1" | at now + 2 minutes)
+fi
 
 #=================================================
 # END OF SCRIPT
