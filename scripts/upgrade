@@ -66,8 +66,8 @@ fi
 
 # If datadir doesn't exist, create it
 if [ -z "$datadir" ]; then
-	final_path=/home/yunohost.app/$app
-	ynh_app_setting_set --app=$app --key=final_path --value=$datadir
+	datadir=/home/yunohost.app/$app
+	ynh_app_setting_set --app=$app --key=datadir --value=$datadir
 fi
 
 # Cleaning legacy permissions
