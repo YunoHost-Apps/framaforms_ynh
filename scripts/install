@@ -29,6 +29,7 @@ password=$YNH_APP_ARG_PASSWORD
 expiration=$YNH_APP_ARG_EXPIRATION
 deletion=$YNH_APP_ARG_DELETION
 admin_mail=$(ynh_user_get_info --username=$admin --key=mail)
+phpversion=$YNH_PHP_VERSION
 
 app=$YNH_APP_INSTANCE_NAME
 
@@ -55,6 +56,7 @@ ynh_app_setting_set --app=$app --key=password --value=$password
 ynh_app_setting_set --app=$app --key=language --value=$language
 ynh_app_setting_set --app=$app --key=expiration --value=$expiration
 ynh_app_setting_set --app=$app --key=deletion --value=$deletion
+ynh_app_setting_set --app=$app --key=phpversion --value=$phpversion
 
 #=================================================
 # STANDARD MODIFICATIONS
@@ -63,7 +65,7 @@ ynh_app_setting_set --app=$app --key=deletion --value=$deletion
 #=================================================
 ynh_script_progression --message="Installing dependencies..." --weight=7
 
-ynh_install_app_dependencies $pkg_dependencies
+ynh_exec_warn_less ynh_install_app_dependencies $pkg_dependencies
 
 #=================================================
 # CREATE DEDICATED USER
@@ -112,8 +114,7 @@ ynh_add_nginx_config
 ynh_script_progression --message="Configuring PHP-FPM..." --weight=1
 
 # Create a dedicated PHP-FPM config
-ynh_add_fpm_config --usage=low --footprint=low --package="$extra_php_dependencies"
-phpversion=$(ynh_app_setting_get --app=$app --key=phpversion)
+ynh_add_fpm_config --usage=low --footprint=low
 
 #=================================================
 # SPECIFIC SETUP
