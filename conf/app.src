@@ -1,5 +1,5 @@
-SOURCE_URL=https://framagit.org/yakforms/yakforms/-/archive/v1.1/yakforms-v1.1.tar.gz
-SOURCE_SUM=da30fbd9821f84f21f06b7604232f0dc9b6b6a39738bb5326ee875f173300045
+SOURCE_URL=https://packages.yakforms.org/yakforms_distribution_1.1.zip
+SOURCE_SUM=96c026e914b29ea81c8e86aeca2754af51314ca0529cf7d3005f75653827520b
 SOURCE_SUM_PRG=sha256sum
 SOURCE_FORMAT=tar.gz
 SOURCE_IN_SUBDIR=true
