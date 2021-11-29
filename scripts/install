@@ -125,6 +125,7 @@ datadir=/home/yunohost.app/$app
 ynh_app_setting_set --app=$app --key=datadir --value=$datadir
 
 mkdir -p $datadir
+
 chmod 750 "$datadir"
 chmod -R o-rwx "$datadir"
 chown -R $app:www-data "$datadir"
@@ -142,11 +143,11 @@ chown $app:$app "$final_path/settings.php"
 #=================================================
 # SETUP THE CRON FILE
 #=================================================
-ynh_script_progression --message="Setuping the cron file..."
+# ynh_script_progression --message="Setuping the cron file..."
 
-ynh_add_config --template="../conf/cron" --destination="/etc/cron.d/$app"
-chown root: "/etc/cron.d/$app"
-chmod 644 "/etc/cron.d/$app"
+# ynh_add_config --template="../conf/cron" --destination="/etc/cron.d/$app"
+# chown root: "/etc/cron.d/$app"
+# chmod 644 "/etc/cron.d/$app"
 
 #=================================================
 # GENERIC FINALIZATION
