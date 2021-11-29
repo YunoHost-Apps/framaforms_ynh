@@ -1,6 +1,6 @@
-SOURCE_URL=https://framagit.org/framasoft/framaforms/-/archive/1.0.3/framaforms-1.0.3.tar.gz
-SOURCE_SUM=a7b004dac19d761212d49a0e407f5d31c97e49ccefca6443067a9d5da68bf64d
+SOURCE_URL=https://framagit.org/yakforms/yakforms/-/archive/v1.1/yakforms-v1.1.tar.gz
+SOURCE_SUM=da30fbd9821f84f21f06b7604232f0dc9b6b6a39738bb5326ee875f173300045
 SOURCE_SUM_PRG=sha256sum
 SOURCE_FORMAT=tar.gz
 SOURCE_IN_SUBDIR=true
-SOURCE_FILENAME=framaforms
+SOURCE_FILENAME=yakforms
