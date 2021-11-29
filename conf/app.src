@@ -1,6 +1,6 @@
 SOURCE_URL=https://packages.yakforms.org/yakforms_distribution_1.1.zip
 SOURCE_SUM=96c026e914b29ea81c8e86aeca2754af51314ca0529cf7d3005f75653827520b
 SOURCE_SUM_PRG=sha256sum
-SOURCE_FORMAT=tar.gz
+SOURCE_FORMAT=zip
 SOURCE_IN_SUBDIR=true
 SOURCE_FILENAME=yakforms
