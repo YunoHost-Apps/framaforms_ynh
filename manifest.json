@@ -6,8 +6,14 @@
         "en": "Create online webforms and surveys",
         "fr": "Créez des formulaires et questionnaires en ligne"
     },
-    "version": "1.0.3~ynh3",
-    "url": "https://framagit.org/framasoft/framaforms",
+    "version": "1.1~ynh1",
+    "url": "https://yakforms.org/",
+    "upstream": {
+        "license": "GPL-2.0-only",
+        "website": "https://yakforms.org/",
+        "admindoc": "https://docs.yakforms.org/",
+        "code": "https://framagit.org/yakforms/yakforms"
+    },
     "license": "GPL-2.0-only",
     "requirements": {
         "yunohost": ">= 4.3.0"

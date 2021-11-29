@@ -1,0 +1,1 @@
+Yakforms est un logiciel libre qui vous permet de créer simplement et rapidement des formulaires en ligne. Que ce soit pour une enquête avancée ou un sondage rapide, Yakforms s'adapte à vos besoins.
