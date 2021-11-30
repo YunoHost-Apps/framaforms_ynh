@@ -29,8 +29,6 @@ ynh_script_progression --message="Loading installation settings..." --weight=1
 # Needed for helper "ynh_add_nginx_config"
 final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 
-# Add settings here as needed by your application
-
 #=================================================
 # BACKUP BEFORE CHANGE URL THEN ACTIVE TRAP
 #=================================================
@@ -94,18 +92,6 @@ then
 	# Store file checksum for the new config file location
 	ynh_store_file_checksum --file="/etc/nginx/conf.d/$new_domain.d/$app.conf"
 fi
-
-#=================================================
-# SPECIFIC MODIFICATIONS
-#=================================================
-# UPDATE DRUSH ALIAS
-#=================================================
-ynh_script_progression --message="Updating Drush alias..." --weight=1
-
-domain="$new_domain"
-path_url="$new_path"
-
-ynh_add_config --template="../conf/yoursite.aliases.drushrc.php" --destination="$final_path/.drush/$app.aliases.drushrc.php"
 
 #=================================================
 # GENERIC FINALISATION
