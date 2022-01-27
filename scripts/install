@@ -23,11 +23,8 @@ ynh_abort_if_errors
 domain=$YNH_APP_ARG_DOMAIN
 path_url=$YNH_APP_ARG_PATH
 is_public=$YNH_APP_ARG_IS_PUBLIC
-language=$YNH_APP_ARG_LANGUAGE
-password=$YNH_APP_ARG_PASSWORD
-expiration=$YNH_APP_ARG_EXPIRATION
-deletion=$YNH_APP_ARG_DELETION
-admin_mail=$(ynh_user_get_info --username=$admin --key=mail)
+#password=$YNH_APP_ARG_PASSWORD
+#admin_mail=$(ynh_user_get_info --username=$admin --key=mail)
 phpversion=$YNH_PHP_VERSION
 
 app=$YNH_APP_INSTANCE_NAME
@@ -50,11 +47,8 @@ ynh_script_progression --message="Storing installation settings..." --weight=1
 
 ynh_app_setting_set --app=$app --key=domain --value=$domain
 ynh_app_setting_set --app=$app --key=path --value=$path_url
-ynh_app_setting_set --app=$app --key=password --value=$password
-ynh_app_setting_set --app=$app --key=language --value=$language
-ynh_app_setting_set --app=$app --key=expiration --value=$expiration
-ynh_app_setting_set --app=$app --key=deletion --value=$deletion
-ynh_app_setting_set --app=$app --key=phpversion --value=$phpversion
+#ynh_app_setting_set --app=$app --key=password --value=$password
+#ynh_app_setting_set --app=$app --key=phpversion --value=$phpversion
 
 #=================================================
 # STANDARD MODIFICATIONS
