@@ -18,8 +18,8 @@ app=$YNH_APP_INSTANCE_NAME
 
 domain=$(ynh_app_setting_get --app=$app --key=domain)
 path_url=$(ynh_app_setting_get --app=$app --key=path)
-final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 admin=$(ynh_app_setting_get --app=$app --key=admin)
+final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 db_name=$(ynh_app_setting_get --app=$app --key=db_name)
 phpversion=$(ynh_app_setting_get --app=$app --key=phpversion)
 datadir=$(ynh_app_setting_get --app=$app --key=datadir)
@@ -88,7 +88,7 @@ fi
 ynh_script_progression --message="Making sure dedicated system user exists..." --weight=1
 
 # Create a dedicated user (if not existing)
-ynh_system_user_create --username=$app --home_dir=$final_path
+ynh_system_user_create --username=$app --home_dir="$final_path"
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
@@ -163,12 +163,12 @@ then
 	update-alternatives --set php /usr/bin/php$phpversion
 
 	pushd "$final_path"
-    	sudo -u $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 1 
-    	sudo -u $app env PATH=$PATH drush @$app cache-clear all 
-    	# sudo -u $app env PATH=$PATH drush @$app pm-update -y drupal
-    	# sudo -u $app env PATH=$PATH drush @$app updatedb -y
-    	sudo -u $app env PATH=$PATH drush @$app cache-clear all 
-    	sudo -u $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 0 
+    	ynh_exec_as $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 1 
+    	ynh_exec_as $app env PATH=$PATH drush @$app cache-clear all 
+    	# ynh_exec_as $app env PATH=$PATH drush @$app pm-update -y drupal
+    	# ynh_exec_as $app env PATH=$PATH drush @$app updatedb -y
+    	ynh_exec_as $app env PATH=$PATH drush @$app cache-clear all 
+    	ynh_exec_as $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 0 
 	popd
 
 	update-alternatives --set php /usr/bin/php${YNH_DEFAULT_PHP_VERSION}

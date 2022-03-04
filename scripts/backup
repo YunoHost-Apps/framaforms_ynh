@@ -62,7 +62,7 @@ ynh_backup --src_path="/etc/php/$phpversion/fpm/pool.d/$app.conf"
 #=================================================
 # SPECIFIC BACKUP
 #=================================================
-# BACKUP A CRON FILE
+# BACKUP VARIOUS FILES
 #=================================================
 
 ynh_backup --src_path="/etc/cron.d/$app"
