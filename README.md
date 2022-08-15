@@ -20,6 +20,7 @@ See this [article](https://framablog.org/2016/10/05/framaforms-noffrez-plus-les-
 
 
 **Shipped version:** 1.0.3~ynh3
+
 ## Disclaimers / important information
 
 ## Configuration
