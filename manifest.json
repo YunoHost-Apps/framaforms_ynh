@@ -7,15 +7,20 @@
         "fr": "Créez des formulaires et questionnaires en ligne"
     },
     "version": "1.0.3~ynh3",
-    "url": "https://framagit.org/framasoft/framaforms",
-    "license": "GPL-2.0-only",
-    "requirements": {
-        "yunohost": ">= 4.2.0"
+    "url": "https://framaforms.org",
+    "upstream": {
+        "license": "GPL-2.0-only",
+        "website": "https://framaforms.org",
+        "code": "https://framagit.org/framasoft/framaforms"
     },
+    "license": "GPL-2.0-only",
     "maintainer": {
         "name": "ljf",
         "email": "ljf+framaforms_ynh@reflexlibre.net",
         "url": "https://reflexlibre.net"
+    },
+    "requirements": {
+        "yunohost": ">= 4.3.0"
     },
     "multi_instance": true,
     "services": [
@@ -24,7 +29,7 @@
         "mysql"
     ],
     "arguments": {
-        "install" : [
+        "install": [
             {
                 "name": "domain",
                 "type": "domain"
@@ -36,12 +41,13 @@
                 "default": "/poll"
             },
             {
-                "name": "admin",
-                "type": "user"
-            },
-            {
-                "name": "password",
-                "type": "password"
+                "name": "is_public",
+                "type": "boolean",
+                "help": {
+                    "en": "If no, only person with an account on your server will be able to create forms. In all cases, visitors will be able to reply to form.",
+                    "fr": "Si non, seule la personne disposant d'un compte sur votre serveur pourra créer des formulaires. Dans tous les cas, les visiteurs pourront répondre au formulaire."
+                },
+                "default": true
             },
             {
                 "name": "language",
@@ -52,6 +58,14 @@
                 },
                 "choices": ["de", "en", "es", "fr", "it", "pt"],
                 "default": "en"
+            },
+            {
+                "name": "admin",
+                "type": "user"
+            },
+            {
+                "name": "password",
+                "type": "password"
             },
             {
                 "name": "expiration",
@@ -78,15 +92,6 @@
                 "fr": "Mettre 0 pour désactiver la suppression"
                 },
                 "default": "0"
-            },
-            {
-                "name": "is_public",
-                "type": "boolean",
-                "help": {
-                    "en": "If no, only person with an account on your server will be able to create forms. In all cases, visitors will be able to reply to form.",
-                    "fr": "Si non, seule la personne disposant d'un compte sur votre serveur pourra créer des formulaires. Dans tous les cas, les visiteurs pourront répondre au formulaire."
-                },
-                "default": true
             }
         ]
     }

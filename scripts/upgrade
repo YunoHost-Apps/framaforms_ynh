@@ -18,8 +18,8 @@ app=$YNH_APP_INSTANCE_NAME
 
 domain=$(ynh_app_setting_get --app=$app --key=domain)
 path_url=$(ynh_app_setting_get --app=$app --key=path)
-final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 admin=$(ynh_app_setting_get --app=$app --key=admin)
+final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 db_name=$(ynh_app_setting_get --app=$app --key=db_name)
 phpversion=$(ynh_app_setting_get --app=$app --key=phpversion)
 datadir=$(ynh_app_setting_get --app=$app --key=datadir)
@@ -52,6 +52,18 @@ ynh_abort_if_errors
 #=================================================
 ynh_script_progression --message="Ensuring downward compatibility..." --weight=1
 
+# Cleaning legacy permissions
+if ynh_legacy_permissions_exists; then
+	ynh_legacy_permissions_delete_all
+
+	ynh_app_setting_delete --app=$app --key=is_public
+fi
+
+if ! ynh_permission_exists --permission="admin"; then
+	# Create the required permissions
+	ynh_permission_create --permission="admin" --url="/admin" --allowed=$admin
+fi
+
 # If db_name doesn't exist, create it
 if [ -z "$db_name" ]; then
 	db_name=$(ynh_sanitize_dbid --db_name=$app)
@@ -68,18 +80,6 @@ fi
 if [ -z "$datadir" ]; then
 	datadir=/home/yunohost.app/$app
 	ynh_app_setting_set --app=$app --key=datadir --value=$datadir
-fi
-
-# Cleaning legacy permissions
-if ynh_legacy_permissions_exists; then
-	ynh_legacy_permissions_delete_all
-
-	ynh_app_setting_delete --app=$app --key=is_public
-fi
-
-if ! ynh_permission_exists --permission="admin"; then
-	# Create the required permissions
-	ynh_permission_create --permission="admin" --url="/admin" --allowed=$admin
 fi
 
 #=================================================
@@ -107,19 +107,11 @@ chmod -R o-rwx "$final_path"
 chown -R $app:www-data "$final_path"
 
 #=================================================
-# NGINX CONFIGURATION
-#=================================================
-ynh_script_progression --message="Upgrading NGINX web server configuration..." --weight=1
-
-# Create a dedicated NGINX config
-ynh_add_nginx_config
-
-#=================================================
 # UPGRADE DEPENDENCIES
 #=================================================
 ynh_script_progression --message="Upgrading dependencies..." --weight=5
 
-ynh_install_app_dependencies $pkg_dependencies
+ynh_exec_warn_less ynh_install_app_dependencies $pkg_dependencies
 
 #=================================================
 # PHP-FPM CONFIGURATION
@@ -127,7 +119,15 @@ ynh_install_app_dependencies $pkg_dependencies
 ynh_script_progression --message="Upgrading PHP-FPM configuration..." --weight=1
 
 # Create a dedicated PHP-FPM config
-ynh_add_fpm_config --usage=low --footprint=low --package="$extra_php_dependencies"
+ynh_add_fpm_config --usage=low --footprint=low
+
+#=================================================
+# NGINX CONFIGURATION
+#=================================================
+ynh_script_progression --message="Upgrading NGINX web server configuration..." --weight=1
+
+# Create a dedicated NGINX config
+ynh_add_nginx_config
 
 #=================================================
 # SPECIFIC UPGRADE
@@ -163,12 +163,12 @@ then
 	update-alternatives --set php /usr/bin/php$phpversion
 
 	pushd "$final_path"
-    	sudo -u $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 1 
-    	sudo -u $app env PATH=$PATH drush @$app cache-clear all 
-    	# sudo -u $app env PATH=$PATH drush @$app pm-update -y drupal
-    	# sudo -u $app env PATH=$PATH drush @$app updatedb -y
-    	sudo -u $app env PATH=$PATH drush @$app cache-clear all 
-    	sudo -u $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 0 
+    	ynh_exec_as $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 1 
+    	ynh_exec_as $app env PATH=$PATH drush @$app cache-clear all 
+    	# ynh_exec_as $app env PATH=$PATH drush @$app pm-update -y drupal
+    	# ynh_exec_as $app env PATH=$PATH drush @$app updatedb -y
+    	ynh_exec_as $app env PATH=$PATH drush @$app cache-clear all 
+    	ynh_exec_as $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 0 
 	popd
 
 	update-alternatives --set php /usr/bin/php${YNH_DEFAULT_PHP_VERSION}
