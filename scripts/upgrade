@@ -90,21 +90,6 @@ ynh_script_progression --message="Making sure dedicated system user exists..." -
 # Create a dedicated user (if not existing)
 ynh_system_user_create --username=$app --home_dir=$final_path
 
-#=================================================
-# DOWNLOAD, CHECK AND UNPACK SOURCE
-#=================================================
-
-if [ "$upgrade_type" == "UPGRADE_APP" ]
-then
-	ynh_script_progression --message="Upgrading source files..." --weight=9
-
-	# Download, check integrity, uncompress and patch the source from app.src
-	ynh_setup_source --dest_dir="$final_path/app"
-fi
-
-chmod 750 "$final_path"
-chmod -R o-rwx "$final_path"
-chown -R $app:www-data "$final_path"
 
 #=================================================
 # UPGRADE DEPENDENCIES
@@ -142,6 +127,45 @@ chmod -R o-rwx "$datadir"
 chown -R $app:www-data "$datadir"
 
 #=================================================
+# Framaforms 2 Yakforms Backup
+#=================================================
+upgrade_to_yakforms=false
+if test -d "$final_path/app/CHANGELOG-FRAMAFORMS.md"
+then
+	update-alternatives --set php /usr/bin/php$phpversion
+    upgrade_to_yakforms=true
+
+	pushd "$final_path"
+    	ynh_exec_as $app env PATH=$PATH php framaforms2yakforms.php backup
+    	ynh_exec_as $app env PATH=$PATH drush @$app dis framaforms 
+    	ynh_exec_as $app env PATH=$PATH drush @$app pm-uninstall framaforms 
+    	ynh_exec_as $app env PATH=$PATH drush @$app dis framaforms_share_results
+    	ynh_exec_as $app env PATH=$PATH drush @$app pm-uninstall framaforms_share_results 
+    	ynh_exec_as $app env PATH=$PATH drush @$app dis framaforms_public_results 
+    	ynh_exec_as $app env PATH=$PATH drush @$app pm-uninstall framaforms_public_results 
+    	ynh_exec_as $app env PATH=$PATH drush @$app dis framaforms_spam 
+    	ynh_exec_as $app env PATH=$PATH drush @$app pm-uninstall framaforms_spam
+	popd
+	update-alternatives --set php /usr/bin/php${YNH_DEFAULT_PHP_VERSION}
+
+fi
+#=================================================
+# DOWNLOAD, CHECK AND UNPACK SOURCE
+#=================================================
+
+if [ "$upgrade_type" == "UPGRADE_APP" ]
+then
+	ynh_script_progression --message="Upgrading source files..." --weight=9
+
+	# Download, check integrity, uncompress and patch the source from app.src
+	ynh_setup_source --dest_dir="$final_path/app"
+fi
+
+chmod 750 "$final_path"
+chmod -R o-rwx "$final_path"
+chown -R $app:www-data "$final_path"
+
+#=================================================
 # UPGRADE COMPOSER
 #=================================================
 ynh_script_progression --message="Upgrading Composer..." --weight=3
@@ -151,9 +175,26 @@ ynh_install_composer --phpversion="$phpversion" --workdir="$final_path/.composer
 export PATH="$final_path/.composer/vendor/bin:$PATH"
 
 #=================================================
+# Framaforms 2 Yakforms Restore
+#=================================================
+if [ "$upgrade_to_yakforms" = true ]
+then
+	update-alternatives --set php /usr/bin/php$phpversion
+
+	pushd "$final_path"
+    	ynh_exec_as $app env PATH=$PATH drush @$app en yakforms 
+    	ynh_exec_as $app env PATH=$PATH drush @$app dis yakforms_share_results
+    	ynh_exec_as $app env PATH=$PATH drush @$app dis yakforms_public_results 
+    	ynh_exec_as $app env PATH=$PATH drush @$app dis yakforms_spam 
+    	ynh_exec_as $app env PATH=$PATH php framaforms2yakforms.php restore
+    	ynh_exec_as $app env PATH=$PATH php framaforms2yakforms.php clean
+	popd
+	update-alternatives --set php /usr/bin/php${YNH_DEFAULT_PHP_VERSION}
+fi
+
+#=================================================
 # UPGRADE DRUPAL
 #=================================================
-
 if [ "$upgrade_type" == "UPGRADE_APP" ]
 then
 	ynh_script_progression --message="Upgrading Drupal..." --weight=30
