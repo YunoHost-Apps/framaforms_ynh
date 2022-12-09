@@ -13,6 +13,25 @@ source /usr/share/yunohost/helpers
 # ynh_script_progression --message="Ensuring downward compatibility..." --weight=1
 
 #=================================================
+# Framaforms 2 Yakforms Backup
+#=================================================
+upgrade_to_yakforms=true
+
+if [ "$upgrade_to_yakforms" = false ]; then
+    pushd "$install_dir"
+        ynh_exec_as "$app" env "PATH=$PATH" "php$phpversion" framaforms2yakforms.php backup
+        _ynh_exec_with_drush_php drush "@$app" dis framaforms
+        _ynh_exec_with_drush_php drush "@$app" pm-uninstall framaforms
+        _ynh_exec_with_drush_php drush "@$app" dis framaforms_share_results
+        _ynh_exec_with_drush_php drush "@$app" pm-uninstall framaforms_share_results
+        _ynh_exec_with_drush_php drush "@$app" dis framaforms_public_results
+        _ynh_exec_with_drush_php drush "@$app" pm-uninstall framaforms_public_results
+        _ynh_exec_with_drush_php drush "@$app" dis framaforms_spam
+        _ynh_exec_with_drush_php drush "@$app" pm-uninstall framaforms_spam
+    popd
+fi
+
+#=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
 ynh_script_progression --message="Upgrading source files..." --weight=9
@@ -32,6 +51,21 @@ chown -R "$app:www-data" "$data_dir"
 ynh_script_progression --message="Upgrading Composer..." --weight=3
 
 ynh_install_composer --phpversion="$phpversion" --workdir="$install_dir/.composer"
+
+#=================================================
+# Framaforms 2 Yakforms Restore
+#=================================================
+
+if [ "$upgrade_to_yakforms" = true ]; then
+    pushd "$install_dir"
+        _ynh_exec_with_drush_php drush "@$app" en yakforms
+        _ynh_exec_with_drush_php drush "@$app" dis yakforms_share_results
+        _ynh_exec_with_drush_php drush "@$app" dis yakforms_public_results
+        _ynh_exec_with_drush_php drush "@$app" dis yakforms_spam
+        ynh_exec_as "$app" env "PATH=$PATH" "php$phpversion" framaforms2yakforms.php restore
+        ynh_exec_as "$app" env "PATH=$PATH" "php$phpversion" framaforms2yakforms.php clean
+    popd
+fi
 
 #=================================================
 # UPGRADE DRUPAL
