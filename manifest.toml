@@ -69,8 +69,8 @@ ram.runtime = "50M"
 
 [resources]
         [resources.sources.main]
-        url = "https://framagit.org/yakforms/yakforms/-/archive/v1.1/yakforms-v1.1.tar.gz"
-        sha256 = "da30fbd9821f84f21f06b7604232f0dc9b6b6a39738bb5326ee875f173300045"
+        url = "https://packages.yakforms.org/yakforms_distribution_1.1.zip"
+        sha256 = "96c026e914b29ea81c8e86aeca2754af51314ca0529cf7d3005f75653827520b"
 
     [resources.system_user]
 
@@ -84,7 +84,7 @@ ram.runtime = "50M"
     admin.allowed = "admins"
 
     [resources.apt]
-    packages = "postgresql curl libzip-dev php8.2-fpm php8.2-cli php8.2-gd php8.2-xml php8.2-ldap php8.2-mbstring php8.2-pgsql"
+    packages = "postgresql php8.2-fpm php8.2-cli php8.2-gd php8.2-xml php8.2-ldap php8.2-mbstring php8.2-pgsql"
 
     [resources.database]
     type = "postgresql"
