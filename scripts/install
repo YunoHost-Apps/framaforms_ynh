@@ -88,10 +88,10 @@ ynh_add_nginx_config
 #=================================================
 ynh_script_progression --message="Adding a configuration file..." --weight=1
 
-ynh_add_config --template="../conf/default.settings.php" --destination="$install_dir/settings.php"
+#ynh_add_config --template="../conf/default.settings.php" --destination="$install_dir/settings.php"
 
-chmod 600 "$install_dir/settings.php"
-chown $app:$app "$install_dir/settings.php"
+#chmod 600 "$install_dir/settings.php"
+#chown $app:$app "$install_dir/settings.php"
 
 #=================================================
 # INSTALLING FRAMAFORMS WITH DRUSH
