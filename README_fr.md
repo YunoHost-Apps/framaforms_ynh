@@ -21,12 +21,6 @@ See this [article](https://framablog.org/2016/10/05/framaforms-noffrez-plus-les-
 
 
 **Version incluse :** 1.0.3~ynh3
-## Avertissements / informations importantes
-
-## Configuration
-
-You can modify some configurations using the Framaforms administration panel. You can log in with the admin user and the password you gave during installation.
-
 ## Documentations et ressources
 
 * Site officiel de l’app : <https://framaforms.org>
