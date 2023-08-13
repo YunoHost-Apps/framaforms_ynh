@@ -1,0 +1,95 @@
+packaging_format = 2
+
+id = "framaforms"
+name = "Framaforms"
+description.en = "Create online webforms and surveys"
+description.fr = "Créez des formulaires et questionnaires en ligne"
+
+version = "1.1~ynh1"
+
+maintainers = ["ljf"]
+
+[upstream]
+license = "GPL-2.0-only"
+website = "https://yakforms.org"
+code = "https://framagit.org/yakforms/yakforms"
+cpe = "???" # FIXME: optional but recommended if relevant, this is meant to contain the Common Platform Enumeration, which is sort of a standard id for applications defined by the NIST. In particular, Yunohost may use this is in the future to easily track CVE (=security reports) related to apps. The CPE may be obtained by searching here: https://nvd.nist.gov/products/cpe/search. For example, for Nextcloud, the CPE is 'cpe:2.3:a:nextcloud:nextcloud' (no need to include the version number)
+fund = "???" # FIXME: optional but recommended (or remove if irrelevant / not applicable). This is meant to be an URL where people can financially support this app, especially when its development is based on volunteers and/or financed by its community. YunoHost may later advertise it in the webadmin.
+
+[integration]
+yunohost = ">= 4.3.0"
+architectures = "all" # FIXME: can be replaced by a list of supported archs using the dpkg --print-architecture nomenclature (amd64/i386/armhf/arm64), for example: ["amd64", "i386"]
+multi_instance = true
+ldap = "?" # FIXME: replace with true, false, or "not_relevant". Not to confuse with the "sso" key : the "ldap" key corresponds to wether or not a user *can* login on the app using its YunoHost credentials.
+sso = "?" # FIXME: replace with true, false, or "not_relevant". Not to confuse with the "ldap" key : the "sso" key corresponds to wether or not a user is *automatically logged-in* on the app when logged-in on the YunoHost portal.
+disk = "50M" # FIXME: replace with an **estimate** minimum disk requirement. e.g. 20M, 400M, 1G, ...
+ram.build = "50M" # FIXME: replace with an **estimate** minimum ram requirement. e.g. 50M, 400M, 1G, ...
+ram.runtime = "50M" # FIXME: replace with an **estimate** minimum ram requirement. e.g. 50M, 400M, 1G, ...
+
+[install]
+    [install.domain]
+    # this is a generic question - ask strings are automatically handled by Yunohost's core
+    type = "domain"
+
+    [install.path]
+    # this is a generic question - ask strings are automatically handled by Yunohost's core
+    type = "path"
+    default = "/poll"
+
+    [install.init_main_permission]
+    help.en = "If no, only person with an account on your server will be able to create forms. In all cases, visitors will be able to reply to form."
+    help.fr = "Si non, seule la personne disposant d'un compte sur votre serveur pourra créer des formulaires. Dans tous les cas, les visiteurs pourront répondre au formulaire."
+    type = "group"
+    default = "visitors"
+
+    [install.language]
+    ask.en = "Choose the application language"
+    ask.fr = "Choisissez la langue de l'application"
+    type = "string"
+    choices = ["de", "en", "es", "fr", "it", "pt"]
+    default = "en"
+
+    [install.admin]
+    # this is a generic question - ask strings are automatically handled by Yunohost's core
+    type = "user"
+
+    [install.password]
+    # this is a generic question - ask strings are automatically handled by Yunohost's core
+    type = "password"
+
+    [install.expiration]
+    ask.en = "After how many weeks do the forms expire?"
+    ask.fr = "Après combien de semaines les formulaires expirent-ils ?"
+    help.en = "Set 0 to disable expiration"
+    help.fr = "Mettre 0 pour désactiver l'expiration"
+    type = "string"
+    default = "0"
+
+    [install.deletion]
+    ask.en = "After how many weeks is the forms deleted?"
+    ask.fr = "Après combien de semaines les formulaires sont-ils supprimés ?"
+    help.en = "Set 0 to disable deletion"
+    help.fr = "Mettre 0 pour désactiver la suppression"
+    type = "string"
+    default = "0"
+
+[resources]
+        [resources.sources.main]
+        url = "https://framagit.org/yakforms/yakforms/-/archive/1.0.3/yakforms-1.0.3.tar.gz"
+        sha256 = "f8a8ac8789c36f07f2d1a03d13f9f6d947e499967b79ea626f7f87271a357703"
+
+
+    [resources.system_user]
+
+    [resources.install_dir]
+
+    [resources.data_dir]
+
+    [resources.permissions]
+    main.url = "/"
+
+    [resources.apt]
+    packages = "postgresql, curl, libzip-dev, php7.3-fpm, php7.3-cli, php7.3-gd, php7.3-mysql, php7.3-xml, php7.3-ldap, php7.3-mbstring, php7.3-pgsql"
+
+    [resources.database]
+    type = "postgresql"
