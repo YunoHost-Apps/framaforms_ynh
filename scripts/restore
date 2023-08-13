@@ -11,46 +11,6 @@ source ../settings/scripts/_common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
-# MANAGE SCRIPT FAILURE
-#=================================================
-
-# Exit if an error occurs during the execution of the script
-
-
-#=================================================
-# LOAD SETTINGS
-#=================================================
-
-
-
-
-
-
-
-
-
-
-
-
-#=================================================
-# CHECK IF THE APP CAN BE RESTORED
-#=================================================
-
-
-
-	|| ynh_die --message="There is already a directory: $install_dir "
-
-#=================================================
-# STANDARD RESTORATION STEPS
-#=================================================
-# RECREATE THE DEDICATED USER
-#=================================================
-
-
-# Create the dedicated user (if not existing)
-
-
-#=================================================
 # RESTORE THE APP MAIN DIR
 #=================================================
 ynh_script_progression --message="Restoring the app main directory..." --weight=1
@@ -79,11 +39,6 @@ chown -R $app:www-data "$data_dir"
 #=================================================
 # SPECIFIC RESTORATION
 #=================================================
-# REINSTALL DEPENDENCIES
-#=================================================
-
-
-# Define and install dependencies
 
 
 #=================================================
@@ -97,7 +52,6 @@ ynh_restore_file --origin_path="/etc/php/$phpversion/fpm/pool.d/$app.conf"
 # Recreate a dedicated php-fpm config
 ynh_add_fpm_config --usage=low --footprint=low
 
-
 #=================================================
 # RESTORE THE NGINX CONFIGURATION
 #=================================================
@@ -108,10 +62,6 @@ ynh_restore_file --origin_path="/etc/nginx/conf.d/$domain.d/$app.conf"
 #=================================================
 # RESTORE THE POSTGRESQL DATABASE
 #=================================================
-
-
-
-
 
 ynh_psql_execute_file_as_root --database=$db_name --file="./db.sql"
 
