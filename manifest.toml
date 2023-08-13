@@ -87,7 +87,7 @@ ram.runtime = "50M" # FIXME: replace with an **estimate** minimum ram requiremen
     main.url = "/"
 
     [resources.apt]
-    packages = "postgresql, curl, libzip-dev, php7.3-fpm, php7.3-cli, php7.3-gd, php7.3-mysql, php7.3-xml, php7.3-ldap, php7.3-mbstring, php7.3-pgsql"
+    packages = "postgresql, curl, libzip-dev, php8.1-fpm, php8.1-cli, php8.1-gd, php8.1-mysql, php8.1-xml, php8.1-ldap, php8.1-mbstring, php8.1-pgsql"
 
     [resources.database]
     type = "postgresql"
