@@ -9,37 +9,9 @@
 source _common.sh
 source /usr/share/yunohost/helpers
 
-#=================================================
-# LOAD SETTINGS
-#=================================================
-
-
-
-
-
-
-
-
-
 
 #=================================================
 # STANDARD REMOVE
-#=================================================
-# REMOVE THE POSTGRESQL DATABASE
-#=================================================
-
-
-# Remove a database if it exists, along with the associated user
-
-
-#=================================================
-# REMOVE APP MAIN DIR
-#=================================================
-
-
-# Remove the app directory securely
-
-
 #=================================================
 # REMOVE DATA DIR
 #=================================================
@@ -68,14 +40,6 @@ ynh_script_progression --message="Removing PHP-FPM configuration..." --weight=1
 ynh_remove_fpm_config
 
 #=================================================
-# REMOVE DEPENDENCIES
-#=================================================
-
-
-# Remove metapackage and its dependencies
-
-
-#=================================================
 # SPECIFIC REMOVE
 #=================================================
 # REMOVE VARIOUS FILES
@@ -84,16 +48,6 @@ ynh_script_progression --message="Removing various files..."
 
 # Remove a cron file
 ynh_secure_remove --file="/etc/cron.d/$app"
-
-#=================================================
-# GENERIC FINALIZATION
-#=================================================
-# REMOVE DEDICATED USER
-#=================================================
-
-
-# Delete a system user
-
 
 #=================================================
 # END OF SCRIPT
