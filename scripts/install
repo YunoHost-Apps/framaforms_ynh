@@ -245,30 +245,6 @@ ynh_script_progression --message="Setuping the cron file..."
 
 ynh_add_config --template="../conf/cron" --destination="/etc/cron.d/$app"
 
-#=================================================
-# GENERIC FINALIZATION
-#=================================================
-# SETUP SSOWAT
-#=================================================
-
-
-# Make app public if necessary
-
-then
-	# Everyone can access the app.
-	# The "main" permission is automatically created before the install script.
-
-fi
-
-# Only the admin can access the admin panel of the app (if the app has an admin panel)
-
-
-#=================================================
-# RELOAD NGINX
-#=================================================
-
-
-
 
 #=================================================
 # END OF SCRIPT
