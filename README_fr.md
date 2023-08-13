@@ -19,8 +19,7 @@ Framaforms is an online forms and surveys service. Registered users are allowed 
 See this [article](https://framablog.org/2016/10/05/framaforms-noffrez-plus-les-reponses-que-vous-collectez-a-google/) and this [interview](https://framablog.org/2016/10/05/en-savoir-un-peu-plus-sur-le-projet-framaforms/) (in French) for further informations.
 
 
-**Version incluse :** 1.0.3~ynh3
-
+**Version incluse :** 1.1~ynh1
 ## Avertissements / informations importantes
 
 ## Configuration
@@ -29,8 +28,8 @@ You can modify some configurations using the Framaforms administration panel. Yo
 
 ## Documentations et ressources
 
-* Site officiel de l'app : <https://framaforms.org>
-* Dépôt de code officiel de l'app : <https://framagit.org/framasoft/framaforms>
+* Site officiel de l'app : <https://yakforms.org>
+* Dépôt de code officiel de l'app : <https://framagit.org/yakforms/yakforms>
 * Documentation YunoHost pour cette app : <https://yunohost.org/app_framaforms>
 * Signaler un bug : <https://github.com/YunoHost-Apps/framaforms_ynh/issues>
 
