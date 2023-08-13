@@ -9,20 +9,6 @@
 source _common.sh
 source /usr/share/yunohost/helpers
 
-#=================================================
-# LOAD SETTINGS
-#=================================================
-
-
-
-
-
-
-
-
-
-
-
 
 #=================================================
 # CHECK VERSION
@@ -31,72 +17,17 @@ ynh_script_progression --message="Checking version..." --weight=1
 
 upgrade_type=$(ynh_check_app_version_changed)
 
-#=================================================
-# BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
-#=================================================
-
-
-# Backup the current version of the app
-
-
-	# Restore it if the upgrade fails
-
-}
-# Exit if an error occurs during the execution of the script
-
-
-#=================================================
-# STANDARD UPGRADE STEPS
-#=================================================
-# ENSURE DOWNWARD COMPATIBILITY
-#=================================================
-ynh_script_progression --message="Ensuring downward compatibility..." --weight=1
-
-# Cleaning legacy permissions
-
-
-
-	ynh_app_setting_delete --app=$app --key=is_public
-fi
-
-
-	# Create the required permissions
-
-fi
-
 # If db_name doesn't exist, create it
 if [ -z "$db_name" ]; then
 	db_name=$(ynh_sanitize_dbid --db_name=$app)
-
 fi
 
-# If install_dir doesn't exist, create it
-if [ -z "$install_dir" ]; then
 
-
-fi
 
 # If data_dir doesn't exist, create it
 if [ -z "$data_dir" ]; then
 	data_dir=/home/yunohost.app/$app
-
 fi
-
-#=================================================
-# CREATE DEDICATED USER
-#=================================================
-
-
-# Create a dedicated user (if not existing)
-
-
-
-#=================================================
-# UPGRADE DEPENDENCIES
-#=================================================
-
-
-
 
 #=================================================
 # PHP-FPM CONFIGURATION
@@ -222,15 +153,6 @@ ynh_script_progression --message="Updating a configuration file..."
 
 chmod 600 "$install_dir/app/sites/default/settings.php"
 chown $app:$app "$install_dir/app/sites/default/settings.php"
-
-#=================================================
-# GENERIC FINALIZATION
-#=================================================
-# RELOAD NGINX
-#=================================================
-
-
-
 
 #=================================================
 # END OF SCRIPT
