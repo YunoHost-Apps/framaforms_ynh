@@ -43,7 +43,7 @@ ram.runtime = "50M"
     [install.language]
     ask.en = "Choose the application language"
     ask.fr = "Choisissez la langue de l'application"
-    type = "string"
+    type = "choices"
     choices = ["de", "en", "es", "fr", "it", "pt"]
     default = "en"
 
@@ -87,7 +87,7 @@ ram.runtime = "50M"
     main.url = "/"
 
     [resources.apt]
-    packages = "postgresql, curl, libzip-dev, php8.1-fpm, php8.1-cli, php8.1-gd, php8.1-mysql, php8.1-xml, php8.1-ldap, php8.1-mbstring, php8.1-pgsql"
+    packages = "postgresql, curl, libzip-dev, php7.4-fpm, php7.4-cli, php7.4-gd, php7.4-mysql, php7.4-xml, php7.4-ldap, php7.4-mbstring, php7.4-pgsql"
 
     [resources.database]
     type = "postgresql"
