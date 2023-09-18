@@ -9,82 +9,7 @@
 source _common.sh
 source /usr/share/yunohost/helpers
 
-#=================================================
-# MANAGE SCRIPT FAILURE
-#=================================================
-
-# Exit if an error occurs during the execution of the script
-
-
-#=================================================
-# RETRIEVE ARGUMENTS FROM THE MANIFEST
-#=================================================
-
-
-
-
-
-
-
-
-
-
-
-
 admin_mail=$(ynh_user_get_info --username=$admin --key=mail)
-
-#=================================================
-# CHECK IF THE APP CAN BE INSTALLED WITH THESE ARGS
-#=================================================
-
-
-
-
-
-# Register (book) web path
-
-
-#=================================================
-# STORE SETTINGS FROM MANIFEST
-#=================================================
-
-
-
-
-ynh_app_setting_set --app=$app --key=language --value=$language
-
-
-ynh_app_setting_set --app=$app --key=expiration --value=$expiration
-ynh_app_setting_set --app=$app --key=deletion --value=$deletion
-
-#=================================================
-# STANDARD MODIFICATIONS
-#=================================================
-# INSTALL DEPENDENCIES
-#=================================================
-
-
-
-
-#=================================================
-# CREATE DEDICATED USER
-#=================================================
-
-
-# Create a system user
-
-
-#=================================================
-# CREATE A POSTGRESQL DATABASE
-#=================================================
-
-
-
-
-
-
-
-
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
@@ -105,8 +30,7 @@ chown -R $app:www-data "$install_dir"
 ynh_script_progression --message="Configuring PHP-FPM..." --weight=1
 
 # Create a dedicated PHP-FPM config
-ynh_add_fpm_config --usage=low --footprint=low
-
+ynh_add_fpm_config
 
 #=================================================
 # NGINX CONFIGURATION
@@ -162,9 +86,6 @@ chmod 2775 "$install_dir/app/sites/default/files"
 #=================================================
 ynh_script_progression --message="Creating a data directory..."
 
-
-
-
 mkdir -p $data_dir
 
 chmod 750 "$data_dir"
@@ -185,6 +106,9 @@ chown $app:$app "$install_dir/app/sites/default/settings.php"
 # INSTALLING FRAMAFORMS WITH DRUSH
 #=================================================
 ynh_script_progression --message="Installing database..." --weight=19
+
+chmod -R o-rwx "$install_dir"
+chown -R $app:www-data "$install_dir"
 
 update-alternatives --set php /usr/bin/php$phpversion
 ynh_exec_as $app env PATH=$PATH drush @$app site-install framaforms_org  install_configure_form.site_contact_url="https://forum.yunohost.org/t/framaforms-create-polls-using-drag-and-drop/8208" install_configure_form.site_default_country=FR -y --locale="$language" --account-name="admin" --account-pass="$password" --site-name="Framaforms" --site-mail="$admin_mail" 2>&1
@@ -232,7 +156,7 @@ ynh_exec_as $app env PATH=$PATH drush @$app pm-download ldap
 ynh_exec_as $app env PATH=$PATH drush @$app pm-enable -y ldap_servers ldap_user ldap_authentication ldap_authorization ldap_authorization_drupal_role
 # Generated with sudo -u postgres pg_dump -a -t ldap_servers --inserts framaforms
 ynh_exec_as $app env PATH=$PATH drush @$app sql-query "INSERT INTO public.ldap_servers VALUES ('localhost', 1, 'localhost', 1, 'default', 'ldap://127.0.0.1', 389, 0, 0, 3, '', NULL, 'a:2:{i:0;s:27:\"ou=users,dc=yunohost,dc=org\";i:1;s:32:\"ou=permission,dc=yunohost,dc=org\";}', 'uid', 'uid', 'mail', '', '', '', 0, 'cn=%username,ou=users,dc=yunohost,dc=org', '', '', '', 0, 'permissionynh', 0, 1, 'permission', 'memberuid', 'dn', 0, '', '$app.main', '', 0, 1000, 0);"
-ynh_exec_as $app env PATH=$PATH drush @$app sql-query "INSERT INTO public.ldap_authorization VALUES (1, 'localhost', 'drupal_role', 'ldap_authorization_drupal_role', 1, 1, 0, 'a:2:{i:0;a:6:{s:12:\"user_entered\";s:24:\"utilisateur authentifié\";s:4:\"from\";s:51:\"cn=framaforms.main,ou=permission,dc=yunohost,dc=org\";s:10:\"normalized\";s:24:\"utilisateur authentifié\";s:10:\"simplified\";s:24:\"utilisateur authentifié\";s:5:\"valid\";b:0;s:13:\"error_message\";s:112:\"Role <em class=\"placeholder\">utilisateur authentifié</em>_name does not exist and role creation is not enabled.\";}i:1;a:6:{s:12:\"user_entered\";s:13:\"administrator\";s:4:\"from\";s:52:\"cn=framaforms.admin,ou=permission,dc=yunohost,dc=org\";s:10:\"normalized\";s:13:\"administrator\";s:10:\"simplified\";s:13:\"administrator\";s:5:\"valid\";b:0;s:13:\"error_message\";s:101:\"Role <em class=\"placeholder\">administrator</em>_name does not exist and role creation is not enabled.\";}}', 1, 0, 1, 1, 1, 1);"
+ynh_exec_as $app env PATH=$PATH drush @$app sql-query "INSERT INTO public.ldap_authorization VALUES (1, 'localhost', 'drupal_role', 'ldap_authorization_drupal_role', 1, 1, 0, 'a:2:{i:0;a:6:{s:12:\"user_entered\";s:24:\"utilisateur authentifié\";s:4:\"from\";s:51:\"cn=$app.main,ou=permission,dc=yunohost,dc=org\";s:10:\"normalized\";s:24:\"utilisateur authentifié\";s:10:\"simplified\";s:24:\"utilisateur authentifié\";s:5:\"valid\";b:0;s:13:\"error_message\";s:112:\"Role <em class=\"placeholder\">utilisateur authentifié</em>_name does not exist and role creation is not enabled.\";}i:1;a:6:{s:12:\"user_entered\";s:13:\"administrator\";s:4:\"from\";s:52:\"cn=$app.admin,ou=permission,dc=yunohost,dc=org\";s:10:\"normalized\";s:13:\"administrator\";s:10:\"simplified\";s:13:\"administrator\";s:5:\"valid\";b:0;s:13:\"error_message\";s:101:\"Role <em class=\"placeholder\">administrator</em>_name does not exist and role creation is not enabled.\";}}', 1, 0, 1, 1, 1, 1);"
 
 cat ../conf/ldap.conf | ynh_exec_as $app env PATH=$PATH drush @$app variable-set --format=yaml ldap_authentication_conf -
 
@@ -244,7 +168,6 @@ update-alternatives --set php /usr/bin/php${YNH_DEFAULT_PHP_VERSION}
 ynh_script_progression --message="Setuping the cron file..."
 
 ynh_add_config --template="../conf/cron" --destination="/etc/cron.d/$app"
-
 
 #=================================================
 # END OF SCRIPT

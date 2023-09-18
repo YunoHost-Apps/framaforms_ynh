@@ -1,0 +1,5 @@
+test_format = 1.0
+
+[default]
+
+    test_upgrade_from.79cdc1a13.name = "Upgrade from 1.0.3~ynh3"

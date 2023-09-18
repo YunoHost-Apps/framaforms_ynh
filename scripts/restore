@@ -37,11 +37,6 @@ chmod -R o-rwx "$data_dir"
 chown -R $app:www-data "$data_dir"
 
 #=================================================
-# SPECIFIC RESTORATION
-#=================================================
-
-
-#=================================================
 # RESTORE THE PHP-FPM CONFIGURATION
 #=================================================
 ynh_script_progression --message="Restoring the PHP-FPM configuration..." --weight=1
