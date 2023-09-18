@@ -9,95 +9,20 @@
 source _common.sh
 source /usr/share/yunohost/helpers
 
-#=================================================
-# MANAGE SCRIPT FAILURE
-#=================================================
-
-# Exit if an error occurs during the execution of the script
-ynh_abort_if_errors
-
-#=================================================
-# RETRIEVE ARGUMENTS FROM THE MANIFEST
-#=================================================
-
-domain=$YNH_APP_ARG_DOMAIN
-path_url=$YNH_APP_ARG_PATH
-is_public=$YNH_APP_ARG_IS_PUBLIC
-language=$YNH_APP_ARG_LANGUAGE
-admin=$YNH_APP_ARG_ADMIN
-password=$YNH_APP_ARG_PASSWORD
-expiration=$YNH_APP_ARG_EXPIRATION
-deletion=$YNH_APP_ARG_DELETION
-
-app=$YNH_APP_INSTANCE_NAME
-
 admin_mail=$(ynh_user_get_info --username=$admin --key=mail)
-
-#=================================================
-# CHECK IF THE APP CAN BE INSTALLED WITH THESE ARGS
-#=================================================
-ynh_script_progression --message="Validating installation parameters..." --weight=1
-
-final_path=/var/www/$app
-test ! -e "$final_path" || ynh_die --message="This path already contains a folder"
-
-# Register (book) web path
-ynh_webpath_register --app=$app --domain=$domain --path_url=$path_url
-
-#=================================================
-# STORE SETTINGS FROM MANIFEST
-#=================================================
-ynh_script_progression --message="Storing installation settings..." --weight=1
-
-ynh_app_setting_set --app=$app --key=domain --value=$domain
-ynh_app_setting_set --app=$app --key=path --value=$path_url
-ynh_app_setting_set --app=$app --key=language --value=$language
-ynh_app_setting_set --app=$app --key=admin --value=$admin
-ynh_app_setting_set --app=$app --key=password --value=$password
-ynh_app_setting_set --app=$app --key=expiration --value=$expiration
-ynh_app_setting_set --app=$app --key=deletion --value=$deletion
-
-#=================================================
-# STANDARD MODIFICATIONS
-#=================================================
-# INSTALL DEPENDENCIES
-#=================================================
-ynh_script_progression --message="Installing dependencies..." --weight=7
-
-ynh_exec_warn_less ynh_install_app_dependencies $pkg_dependencies
-
-#=================================================
-# CREATE DEDICATED USER
-#=================================================
-ynh_script_progression --message="Configuring system user..." --weight=3
-
-# Create a system user
-ynh_system_user_create --username=$app --home_dir=$final_path
-
-#=================================================
-# CREATE A POSTGRESQL DATABASE
-#=================================================
-ynh_script_progression --message="Creating a PostgreSQL database..." --weight=2
-
-ynh_psql_test_if_first_run
-
-db_name=$(ynh_sanitize_dbid --db_name=$app)
-db_user=$db_name
-ynh_app_setting_set --app=$app --key=db_name --value=$db_name
-ynh_psql_setup_db --db_user=$db_user --db_name=$db_name
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
 ynh_script_progression --message="Setting up source files..." --weight=9
 
-ynh_app_setting_set --app=$app --key=final_path --value=$final_path
-# Download, check integrity, uncompress and patch the source from app.src
-ynh_setup_source --dest_dir="$final_path/app"
 
-chmod 750 "$final_path"
-chmod -R o-rwx "$final_path"
-chown -R $app:www-data "$final_path"
+# Download, check integrity, uncompress and patch the source from app.src
+ynh_setup_source --dest_dir="$install_dir/app"
+
+chmod 750 "$install_dir"
+chmod -R o-rwx "$install_dir"
+chown -R $app:www-data "$install_dir"
 
 #=================================================
 # PHP-FPM CONFIGURATION
@@ -105,8 +30,7 @@ chown -R $app:www-data "$final_path"
 ynh_script_progression --message="Configuring PHP-FPM..." --weight=1
 
 # Create a dedicated PHP-FPM config
-ynh_add_fpm_config --usage=low --footprint=low
-phpversion=$(ynh_app_setting_get --app=$app --key=phpversion)
+ynh_add_fpm_config
 
 #=================================================
 # NGINX CONFIGURATION
@@ -123,8 +47,8 @@ ynh_add_nginx_config
 #=================================================
 ynh_script_progression --message="Creating Drush alias..." --weight=2
 
-mkdir -p "$final_path/.drush"
-drush_aliasconfig="$final_path/.drush/$app.aliases.drushrc.php"
+mkdir -p "$install_dir/.drush"
+drush_aliasconfig="$install_dir/.drush/$app.aliases.drushrc.php"
 
 ynh_add_config --template="../conf/yoursite.aliases.drushrc.php" --destination="$drush_aliasconfig"
 
@@ -136,50 +60,47 @@ chown $app:$app "$drush_aliasconfig"
 #=================================================
 ynh_script_progression --message="Installing Composer..." --weight=31
 
-mkdir -p "$final_path/.composer"
+mkdir -p "$install_dir/.composer"
 
-ynh_add_config --template="../conf/composer.json" --destination="$final_path/.composer/composer.json"
+ynh_add_config --template="../conf/composer.json" --destination="$install_dir/.composer/composer.json"
 
-ynh_install_composer --phpversion="$phpversion" --workdir="$final_path/.composer"
+ynh_install_composer --phpversion="$phpversion" --workdir="$install_dir/.composer"
 
-export PATH="$final_path/.composer/vendor/bin:$PATH"
+export PATH="$install_dir/.composer/vendor/bin:$PATH"
 
 #=================================================
 # INITIALIZE TMP AND PRIVATE DIRECTORY
 #=================================================
 ynh_script_progression --message="Initializing tmp and private directory..." --weight=1
 
-mkdir -p "$final_path/app/sites/default/files"
-mkdir -p "$final_path/app/sites/default/files/tmp"
+mkdir -p "$install_dir/app/sites/default/files"
+mkdir -p "$install_dir/app/sites/default/files/tmp"
 
-chmod 750 "$final_path"
-chmod -R o-rwx "$final_path"
-chown -R $app:www-data "$final_path"
-chmod 2775 "$final_path/app/sites/default/files"
+chmod 750 "$install_dir"
+chmod -R o-rwx "$install_dir"
+chown -R $app:www-data "$install_dir"
+chmod 2775 "$install_dir/app/sites/default/files"
 
 #=================================================
 # CREATE DATA DIRECTORY
 #=================================================
 ynh_script_progression --message="Creating a data directory..."
 
-datadir=/home/yunohost.app/$app
-ynh_app_setting_set --app=$app --key=datadir --value=$datadir
+mkdir -p $data_dir
 
-mkdir -p $datadir
-
-chmod 750 "$datadir"
-chmod -R o-rwx "$datadir"
-chown -R $app:www-data "$datadir"
+chmod 750 "$data_dir"
+chmod -R o-rwx "$data_dir"
+chown -R $app:www-data "$data_dir"
 
 #=================================================
 # ADD A CONFIGURATION
 #=================================================
 ynh_script_progression --message="Adding a configuration file..." --weight=1
 
-ynh_add_config --template="../conf/default.settings.php" --destination="$final_path/app/sites/default/settings.php"
+ynh_add_config --template="../conf/default.settings.php" --destination="$install_dir/app/sites/default/settings.php"
 
-chmod 600 "$final_path/app/sites/default/settings.php"
-chown $app:$app "$final_path/app/sites/default/settings.php"
+chmod 600 "$install_dir/app/sites/default/settings.php"
+chown $app:$app "$install_dir/app/sites/default/settings.php"
 
 #=================================================
 # INSTALLING FRAMAFORMS WITH DRUSH
@@ -207,7 +128,7 @@ ynh_exec_as $app env PATH=$PATH drush @$app cache-clear drush -y 2>&1
 ynh_exec_as $app env PATH=$PATH drush @$app l10n-update-refresh -y 2>&1
 ynh_exec_as $app env PATH=$PATH drush @$app l10n-update -y 2>&1
 
-# We don't upgrade module to avoid to erase framaforms change 
+# We don't upgrade module to avoid to erase framaforms change
 # in drupal core and modules code
 # see https://framagit.org/framasoft/framaforms/-/wikis/modifications
 #ynh_exec_as $app env PATH=$PATH drush @$app pm-update -y
@@ -232,7 +153,7 @@ ynh_exec_as $app env PATH=$PATH drush @$app pm-download ldap
 ynh_exec_as $app env PATH=$PATH drush @$app pm-enable -y ldap_servers ldap_user ldap_authentication ldap_authorization ldap_authorization_drupal_role
 # Generated with sudo -u postgres pg_dump -a -t ldap_servers --inserts framaforms
 ynh_exec_as $app env PATH=$PATH drush @$app sql-query "INSERT INTO public.ldap_servers VALUES ('localhost', 1, 'localhost', 1, 'default', 'ldap://127.0.0.1', 389, 0, 0, 3, '', NULL, 'a:2:{i:0;s:27:\"ou=users,dc=yunohost,dc=org\";i:1;s:32:\"ou=permission,dc=yunohost,dc=org\";}', 'uid', 'uid', 'mail', '', '', '', 0, 'cn=%username,ou=users,dc=yunohost,dc=org', '', '', '', 0, 'permissionynh', 0, 1, 'permission', 'memberuid', 'dn', 0, '', '$app.main', '', 0, 1000, 0);"
-ynh_exec_as $app env PATH=$PATH drush @$app sql-query "INSERT INTO public.ldap_authorization VALUES (1, 'localhost', 'drupal_role', 'ldap_authorization_drupal_role', 1, 1, 0, 'a:2:{i:0;a:6:{s:12:\"user_entered\";s:24:\"utilisateur authentifié\";s:4:\"from\";s:51:\"cn=framaforms.main,ou=permission,dc=yunohost,dc=org\";s:10:\"normalized\";s:24:\"utilisateur authentifié\";s:10:\"simplified\";s:24:\"utilisateur authentifié\";s:5:\"valid\";b:0;s:13:\"error_message\";s:112:\"Role <em class=\"placeholder\">utilisateur authentifié</em>_name does not exist and role creation is not enabled.\";}i:1;a:6:{s:12:\"user_entered\";s:13:\"administrator\";s:4:\"from\";s:52:\"cn=framaforms.admin,ou=permission,dc=yunohost,dc=org\";s:10:\"normalized\";s:13:\"administrator\";s:10:\"simplified\";s:13:\"administrator\";s:5:\"valid\";b:0;s:13:\"error_message\";s:101:\"Role <em class=\"placeholder\">administrator</em>_name does not exist and role creation is not enabled.\";}}', 1, 0, 1, 1, 1, 1);"
+ynh_exec_as $app env PATH=$PATH drush @$app sql-query "INSERT INTO public.ldap_authorization VALUES (1, 'localhost', 'drupal_role', 'ldap_authorization_drupal_role', 1, 1, 0, 'a:2:{i:0;a:6:{s:12:\"user_entered\";s:24:\"utilisateur authentifié\";s:4:\"from\";s:51:\"cn=$app.main,ou=permission,dc=yunohost,dc=org\";s:10:\"normalized\";s:24:\"utilisateur authentifié\";s:10:\"simplified\";s:24:\"utilisateur authentifié\";s:5:\"valid\";b:0;s:13:\"error_message\";s:112:\"Role <em class=\"placeholder\">utilisateur authentifié</em>_name does not exist and role creation is not enabled.\";}i:1;a:6:{s:12:\"user_entered\";s:13:\"administrator\";s:4:\"from\";s:52:\"cn=$app.admin,ou=permission,dc=yunohost,dc=org\";s:10:\"normalized\";s:13:\"administrator\";s:10:\"simplified\";s:13:\"administrator\";s:5:\"valid\";b:0;s:13:\"error_message\";s:101:\"Role <em class=\"placeholder\">administrator</em>_name does not exist and role creation is not enabled.\";}}', 1, 0, 1, 1, 1, 1);"
 
 cat ../conf/ldap.conf | ynh_exec_as $app env PATH=$PATH drush @$app variable-set --format=yaml ldap_authentication_conf -
 
@@ -244,31 +165,6 @@ update-alternatives --set php /usr/bin/php${YNH_DEFAULT_PHP_VERSION}
 ynh_script_progression --message="Setuping the cron file..."
 
 ynh_add_config --template="../conf/cron" --destination="/etc/cron.d/$app"
-
-#=================================================
-# GENERIC FINALIZATION
-#=================================================
-# SETUP SSOWAT
-#=================================================
-ynh_script_progression --message="Configuring permissions..." --weight=1
-
-# Make app public if necessary
-if [ $is_public -eq 1 ]
-then
-	# Everyone can access the app.
-	# The "main" permission is automatically created before the install script.
-	ynh_permission_update --permission="main" --add="visitors"
-fi
-
-# Only the admin can access the admin panel of the app (if the app has an admin panel)
-ynh_permission_create --permission="admin" --url="/admin" --allowed=$admin
-
-#=================================================
-# RELOAD NGINX
-#=================================================
-ynh_script_progression --message="Reloading NGINX web server..." --weight=1
-
-ynh_systemd_action --service_name=nginx --action=reload
 
 #=================================================
 # END OF SCRIPT
