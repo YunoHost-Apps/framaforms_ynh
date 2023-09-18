@@ -19,7 +19,7 @@ yunohost = ">= 4.3.0"
 architectures = "all" 
 multi_instance = true
 ldap = true
-sso = "?" # FIXME: replace with true, false, or "not_relevant". Not to confuse with the "ldap" key : the "sso" key corresponds to wether or not a user is *automatically logged-in* on the app when logged-in on the YunoHost portal.
+sso = false
 disk = "500M"
 ram.build = "50M"
 ram.runtime = "50M"
