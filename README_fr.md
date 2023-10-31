@@ -5,22 +5,22 @@ It shall NOT be edited by hand.
 
 # Framaforms pour YunoHost
 
-[![Niveau d'intégration](https://dash.yunohost.org/integration/framaforms.svg)](https://dash.yunohost.org/appci/app/framaforms) ![Statut du fonctionnement](https://ci-apps.yunohost.org/ci/badges/framaforms.status.svg) ![Statut de maintenance](https://ci-apps.yunohost.org/ci/badges/framaforms.maintain.svg)  
+[![Niveau d’intégration](https://dash.yunohost.org/integration/framaforms.svg)](https://dash.yunohost.org/appci/app/framaforms) ![Statut du fonctionnement](https://ci-apps.yunohost.org/ci/badges/framaforms.status.svg) ![Statut de maintenance](https://ci-apps.yunohost.org/ci/badges/framaforms.maintain.svg)
+
 [![Installer Framaforms avec YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=framaforms)
 
 *[Read this readme in english.](./README.md)*
 
-> *Ce package vous permet d'installer Framaforms rapidement et simplement sur un serveur YunoHost.
-Si vous n'avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) pour savoir comment l'installer et en profiter.*
+> *Ce package vous permet d’installer Framaforms rapidement et simplement sur un serveur YunoHost.
+Si vous n’avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) pour savoir comment l’installer et en profiter.*
 
-## Vue d'ensemble
+## Vue d’ensemble
 
 Framaforms is an online forms and surveys service. Registered users are allowed to create forms, share them, collect and visualize results through a simple interface.
 See this [article](https://framablog.org/2016/10/05/framaforms-noffrez-plus-les-reponses-que-vous-collectez-a-google/) and this [interview](https://framablog.org/2016/10/05/en-savoir-un-peu-plus-sur-le-projet-framaforms/) (in French) for further informations.
 
 
-**Version incluse :** 1.0.3~ynh3
-
+**Version incluse :** 1.0.3~ynh3
 ## Avertissements / informations importantes
 
 ## Configuration
@@ -29,9 +29,9 @@ You can modify some configurations using the Framaforms administration panel. Yo
 
 ## Documentations et ressources
 
-* Site officiel de l'app : <https://framaforms.org>
-* Dépôt de code officiel de l'app : <https://framagit.org/framasoft/framaforms>
-* Documentation YunoHost pour cette app : <https://yunohost.org/app_framaforms>
+* Site officiel de l’app : <https://framaforms.org>
+* Dépôt de code officiel de l’app : <https://framagit.org/framasoft/framaforms>
+* YunoHost Store: <https://apps.yunohost.org/app/framaforms>
 * Signaler un bug : <https://github.com/YunoHost-Apps/framaforms_ynh/issues>
 
 ## Informations pour les développeurs
@@ -46,4 +46,4 @@ ou
 sudo yunohost app upgrade framaforms -u https://github.com/YunoHost-Apps/framaforms_ynh/tree/testing --debug
 ```
 
-**Plus d'infos sur le packaging d'applications :** <https://yunohost.org/packaging_apps>
+**Plus d’infos sur le packaging d’applications :** <https://yunohost.org/packaging_apps>
