@@ -7,7 +7,7 @@ name = "Framaforms"
 description.en = "Create online webforms and surveys"
 description.fr = "Créez des formulaires et questionnaires en ligne"
 
-version = "1.0.3~ynh4"
+version = "1.1~ynh1"
 
 maintainers = []
 
@@ -73,8 +73,8 @@ ram.runtime = "50M"
 
 [resources]
     [resources.sources.main]
-    url = "https://framagit.org/yakforms/yakforms/-/archive/1.0.3/yakforms-1.0.3.tar.gz"
-    sha256 = "f8a8ac8789c36f07f2d1a03d13f9f6d947e499967b79ea626f7f87271a357703"
+    url = "https://framagit.org/yakforms/yakforms/-/archive/v1.1/yakforms-v1.1.tar.gz"
+    sha256 = "da30fbd9821f84f21f06b7604232f0dc9b6b6a39738bb5326ee875f173300045"
 
     autoupdate.strategy = "latest_gitlab_release"
 
@@ -92,14 +92,14 @@ ram.runtime = "50M"
         "postgresql",
         "curl",
         "libzip-dev",
-        "php7.4-fpm",
-        "php7.4-cli",
-        "php7.4-gd",
-        "php7.4-mysql",
-        "php7.4-xml",
-        "php7.4-ldap",
-        "php7.4-mbstring",
-        "php7.4-pgsql",
+        "php8.2-fpm",
+        "php8.2-cli",
+        "php8.2-gd",
+        "php8.2-mysql",
+        "php8.2-xml",
+        "php8.2-ldap",
+        "php8.2-mbstring",
+        "php8.2-pgsql",
     ]
 
     [resources.database]
