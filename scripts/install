@@ -50,7 +50,7 @@ ynh_script_progression --message="Creating Drush alias..." --weight=2
 mkdir -p "$install_dir/.drush"
 drush_aliasconfig="$install_dir/.drush/$app.aliases.drushrc.php"
 
-ynh_add_config --template="../conf/yoursite.aliases.drushrc.php" --destination="$drush_aliasconfig"
+ynh_add_config --template="yoursite.aliases.drushrc.php" --destination="$drush_aliasconfig"
 
 chmod 400 "$drush_aliasconfig"
 chown $app:$app "$drush_aliasconfig"
@@ -62,7 +62,7 @@ ynh_script_progression --message="Installing Composer..." --weight=31
 
 mkdir -p "$install_dir/.composer"
 
-ynh_add_config --template="../conf/composer.json" --destination="$install_dir/.composer/composer.json"
+ynh_add_config --template="composer.json" --destination="$install_dir/.composer/composer.json"
 
 ynh_install_composer --phpversion="$phpversion" --workdir="$install_dir/.composer"
 
@@ -80,17 +80,6 @@ chmod 750 "$install_dir"
 chmod -R o-rwx "$install_dir"
 chown -R $app:www-data "$install_dir"
 chmod 2775 "$install_dir/app/sites/default/files"
-
-#=================================================
-# CREATE DATA DIRECTORY
-#=================================================
-ynh_script_progression --message="Creating a data directory..."
-
-mkdir -p $data_dir
-
-chmod 750 "$data_dir"
-chmod -R o-rwx "$data_dir"
-chown -R $app:www-data "$data_dir"
 
 #=================================================
 # ADD A CONFIGURATION
@@ -162,9 +151,9 @@ update-alternatives --set php /usr/bin/php${YNH_DEFAULT_PHP_VERSION}
 #=================================================
 # SETUP THE CRON FILE
 #=================================================
-ynh_script_progression --message="Setuping the cron file..."
+ynh_script_progression --message="Setuping the cron file..." --weight=1
 
-ynh_add_config --template="../conf/cron" --destination="/etc/cron.d/$app"
+ynh_add_config --template="cron" --destination="/etc/cron.d/$app"
 
 #=================================================
 # END OF SCRIPT

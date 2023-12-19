@@ -22,8 +22,6 @@ if [ -z "$db_name" ]; then
 	db_name=$(ynh_sanitize_dbid --db_name=$app)
 fi
 
-
-
 # If data_dir doesn't exist, create it
 if [ -z "$data_dir" ]; then
 	data_dir=/home/yunohost.app/$app
@@ -34,28 +32,9 @@ fi
 #=================================================
 ynh_script_progression --message="Upgrading PHP-FPM configuration..." --weight=1
 
-# Create a dedicated PHP-FPM config
-ynh_add_fpm_config --usage=low --footprint=low
+ynh_add_fpm_config
 
-#=================================================
-# NGINX CONFIGURATION
-#=================================================
-ynh_script_progression --message="Upgrading NGINX web server configuration..." --weight=1
-
-# Create a dedicated NGINX config
 ynh_add_nginx_config
-
-#=================================================
-# SPECIFIC UPGRADE
-#=================================================
-# CREATE DATA DIRECTORY
-#=================================================
-ynh_script_progression --message="Creating a data directory..."
-
-mkdir -p $data_dir
-chmod 750 "$data_dir"
-chmod -R o-rwx "$data_dir"
-chown -R $app:www-data "$data_dir"
 
 #=================================================
 # Framaforms 2 Yakforms Backup
@@ -92,7 +71,6 @@ then
 	ynh_setup_source --dest_dir="$install_dir/app"
 fi
 
-chmod 750 "$install_dir"
 chmod -R o-rwx "$install_dir"
 chown -R $app:www-data "$install_dir"
 
@@ -126,6 +104,7 @@ fi
 #=================================================
 # UPGRADE DRUPAL
 #=================================================
+
 if [ "$upgrade_type" == "UPGRADE_APP" ]
 then
 	ynh_script_progression --message="Upgrading Drupal..." --weight=30
