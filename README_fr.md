@@ -25,7 +25,7 @@ See this [article](https://framablog.org/2016/10/05/framaforms-noffrez-plus-les-
 
 * Site officiel de l’app : <https://yakforms.org>
 * Dépôt de code officiel de l’app : <https://framagit.org/yakforms/yakforms>
-* Documentation YunoHost pour cette app : <https://yunohost.org/app_framaforms>
+* YunoHost Store: <https://apps.yunohost.org/app/framaforms>
 * Signaler un bug : <https://github.com/YunoHost-Apps/framaforms_ynh/issues>
 
 ## Informations pour les développeurs
