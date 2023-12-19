@@ -141,7 +141,7 @@ ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app sql-query "INSERT
 
 cat ../conf/ldap.conf | ynh_exec_as $app env PATH=$PATH drush @$app variable-set --format=yaml ldap_authentication_conf -
 
-update-alternatives --set php /usr/bin/php${YNH_DEFAULT_PHP_VERSION}
+update-alternatives --set php /usr/bin/php${YNH_PHP_VERSION}
 
 #=================================================
 # SETUP THE CRON FILE
