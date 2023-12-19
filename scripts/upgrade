@@ -39,8 +39,8 @@ ynh_add_nginx_config
 #=================================================
 # Framaforms 2 Yakforms Backup
 #=================================================
-upgrade_to_yakforms=false
 
+if [ "$upgrade_to_yakforms" = false ]
 then
 	update-alternatives --set php /usr/bin/php$phpversion
     upgrade_to_yakforms=true
