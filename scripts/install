@@ -92,25 +92,25 @@ chown $app:$app "$install_dir/app/sites/default/settings.php"
 ynh_script_progression --message="Installing database..." --weight=19
 
 update-alternatives --set php /usr/bin/php$phpversion
-ynh_exec_as $app env PATH=$PATH drush @$app site-install framaforms_org  install_configure_form.site_contact_url="https://forum.yunohost.org/t/framaforms-create-polls-using-drag-and-drop/8208" install_configure_form.site_default_country=FR -y --locale="$language" --account-name="admin" --account-pass="$password" --site-name="Framaforms" --site-mail="$admin_mail" 2>&1
-ynh_exec_as $app env PATH=$PATH drush @$app variable-set update_notify_emails "$admin_mail"
-ynh_exec_as $app env PATH=$PATH drush @$app variable-set file_private_path "/home/yunohost.app/$app/data" 2>&1
-ynh_exec_as $app env PATH=$PATH drush @$app pm-enable framaforms_feature -y --resolve-dependencies 2>&1
-ynh_exec_as $app env PATH=$PATH drush @$app php-eval "module_load_include('inc', 'framaforms', 'includes/framaforms.pages');create_all_pages();" 2>&1 || true
+ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app site-install framaforms_org  install_configure_form.site_contact_url="https://forum.yunohost.org/t/framaforms-create-polls-using-drag-and-drop/8208" install_configure_form.site_default_country=FR -y --locale="$language" --account-name="admin" --account-pass="$password" --site-name="Framaforms" --site-mail="$admin_mail"
+ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app variable-set update_notify_emails "$admin_mail"
+ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app variable-set file_private_path "/home/yunohost.app/$app/data"
+ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app pm-enable framaforms_feature -y --resolve-dependencies
+ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app php-eval "module_load_include('inc', 'framaforms', 'includes/framaforms.pages');create_all_pages();" || true
 
 #=================================================
 # IMPORTING LANGUAGE PACK
 #=================================================
 ynh_script_progression --message="Importing language pack..." --weight=5
 
-ynh_exec_as $app env PATH=$PATH drush @$app pm-download -y drush_language 2>&1
-ynh_exec_as $app env PATH=$PATH drush @$app pm-download -y l10n_update 2>&1
-ynh_exec_as $app env PATH=$PATH drush @$app pm-enable -y l10n_update 2>&1
-ynh_exec_as $app env PATH=$PATH drush @$app language-add $language -y 2>&1
-ynh_exec_as $app env PATH=$PATH drush @$app language-default $language -y 2>&1
-ynh_exec_as $app env PATH=$PATH drush @$app cache-clear drush -y 2>&1
-ynh_exec_as $app env PATH=$PATH drush @$app l10n-update-refresh -y 2>&1
-ynh_exec_as $app env PATH=$PATH drush @$app l10n-update -y 2>&1
+ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app pm-download -y drush_language
+ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app pm-download -y l10n_update
+ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app pm-enable -y l10n_update
+ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app language-add $language -y
+ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app language-default $language -y
+ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app cache-clear drush -y
+ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app l10n-update-refresh -y
+ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app l10n-update -y
 
 # We don't upgrade module to avoid to erase framaforms change
 # in drupal core and modules code
@@ -122,22 +122,22 @@ ynh_exec_as $app env PATH=$PATH drush @$app l10n-update -y 2>&1
 #=================================================
 ynh_script_progression --message="Removing branding and change default settings..." --weight=1
 
-ynh_exec_as $app env PATH=$PATH drush @$app vset error_level 0
-ynh_exec_as $app env PATH=$PATH drush @$app vset framaforms_notification_period_value $expiration
-ynh_exec_as $app env PATH=$PATH drush @$app vset framaforms_deletion_period_value $deletion
+ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app vset error_level 0
+ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app vset framaforms_notification_period_value $expiration
+ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app vset framaforms_deletion_period_value $deletion
 # Remove framaforms footer
-ynh_exec_as $app env PATH=$PATH drush @$app sql-query "UPDATE block SET region='-1', status=0 WHERE delta='framaforms_footer' AND region='footer'"
+ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app sql-query "UPDATE block SET region='-1', status=0 WHERE delta='framaforms_footer' AND region='footer'"
 
 #=================================================
 # CONFIGURING LDAP
 #=================================================
 ynh_script_progression --message="Configuring LDAP authentication..." --weight=1
 
-ynh_exec_as $app env PATH=$PATH drush @$app pm-download ldap
-ynh_exec_as $app env PATH=$PATH drush @$app pm-enable -y ldap_servers ldap_user ldap_authentication ldap_authorization ldap_authorization_drupal_role
+ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app pm-download ldap
+ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app pm-enable -y ldap_servers ldap_user ldap_authentication ldap_authorization ldap_authorization_drupal_role
 # Generated with sudo -u postgres pg_dump -a -t ldap_servers --inserts framaforms
-ynh_exec_as $app env PATH=$PATH drush @$app sql-query "INSERT INTO public.ldap_servers VALUES ('localhost', 1, 'localhost', 1, 'default', 'ldap://127.0.0.1', 389, 0, 0, 3, '', NULL, 'a:2:{i:0;s:27:\"ou=users,dc=yunohost,dc=org\";i:1;s:32:\"ou=permission,dc=yunohost,dc=org\";}', 'uid', 'uid', 'mail', '', '', '', 0, 'cn=%username,ou=users,dc=yunohost,dc=org', '', '', '', 0, 'permissionynh', 0, 1, 'permission', 'memberuid', 'dn', 0, '', '$app.main', '', 0, 1000, 0);"
-ynh_exec_as $app env PATH=$PATH drush @$app sql-query "INSERT INTO public.ldap_authorization VALUES (1, 'localhost', 'drupal_role', 'ldap_authorization_drupal_role', 1, 1, 0, 'a:2:{i:0;a:6:{s:12:\"user_entered\";s:24:\"utilisateur authentifié\";s:4:\"from\";s:51:\"cn=$app.main,ou=permission,dc=yunohost,dc=org\";s:10:\"normalized\";s:24:\"utilisateur authentifié\";s:10:\"simplified\";s:24:\"utilisateur authentifié\";s:5:\"valid\";b:0;s:13:\"error_message\";s:112:\"Role <em class=\"placeholder\">utilisateur authentifié</em>_name does not exist and role creation is not enabled.\";}i:1;a:6:{s:12:\"user_entered\";s:13:\"administrator\";s:4:\"from\";s:52:\"cn=$app.admin,ou=permission,dc=yunohost,dc=org\";s:10:\"normalized\";s:13:\"administrator\";s:10:\"simplified\";s:13:\"administrator\";s:5:\"valid\";b:0;s:13:\"error_message\";s:101:\"Role <em class=\"placeholder\">administrator</em>_name does not exist and role creation is not enabled.\";}}', 1, 0, 1, 1, 1, 1);"
+ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app sql-query "INSERT INTO public.ldap_servers VALUES ('localhost', 1, 'localhost', 1, 'default', 'ldap://127.0.0.1', 389, 0, 0, 3, '', NULL, 'a:2:{i:0;s:27:\"ou=users,dc=yunohost,dc=org\";i:1;s:32:\"ou=permission,dc=yunohost,dc=org\";}', 'uid', 'uid', 'mail', '', '', '', 0, 'cn=%username,ou=users,dc=yunohost,dc=org', '', '', '', 0, 'permissionynh', 0, 1, 'permission', 'memberuid', 'dn', 0, '', '$app.main', '', 0, 1000, 0);"
+ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app sql-query "INSERT INTO public.ldap_authorization VALUES (1, 'localhost', 'drupal_role', 'ldap_authorization_drupal_role', 1, 1, 0, 'a:2:{i:0;a:6:{s:12:\"user_entered\";s:24:\"utilisateur authentifié\";s:4:\"from\";s:51:\"cn=$app.main,ou=permission,dc=yunohost,dc=org\";s:10:\"normalized\";s:24:\"utilisateur authentifié\";s:10:\"simplified\";s:24:\"utilisateur authentifié\";s:5:\"valid\";b:0;s:13:\"error_message\";s:112:\"Role <em class=\"placeholder\">utilisateur authentifié</em>_name does not exist and role creation is not enabled.\";}i:1;a:6:{s:12:\"user_entered\";s:13:\"administrator\";s:4:\"from\";s:52:\"cn=$app.admin,ou=permission,dc=yunohost,dc=org\";s:10:\"normalized\";s:13:\"administrator\";s:10:\"simplified\";s:13:\"administrator\";s:5:\"valid\";b:0;s:13:\"error_message\";s:101:\"Role <em class=\"placeholder\">administrator</em>_name does not exist and role creation is not enabled.\";}}', 1, 0, 1, 1, 1, 1);"
 
 cat ../conf/ldap.conf | ynh_exec_as $app env PATH=$PATH drush @$app variable-set --format=yaml ldap_authentication_conf -
 
