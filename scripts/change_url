@@ -30,7 +30,6 @@ path="$new_path"
 
 ynh_add_config --template="yoursite.aliases.drushrc.php" --destination="$install_dir/.drush/$app.aliases.drushrc.php"
 
-
 #=================================================
 # END OF SCRIPT
 #=================================================
