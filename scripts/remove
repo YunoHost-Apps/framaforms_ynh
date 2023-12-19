@@ -12,7 +12,7 @@ source /usr/share/yunohost/helpers
 #=================================================
 # REMOVE NGINX CONFIGURATION
 #=================================================
-ynh_script_progression --message="Removing system configurations for $app..."
+ynh_script_progression --message="Removing system configurations related to $app..." --weight=1
 
 ynh_remove_nginx_config
 
