@@ -123,7 +123,7 @@ then
     	ynh_exec_as $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 0
 	popd
 
-	update-alternatives --set php /usr/bin/php${YNH_DEFAULT_PHP_VERSION}
+	update-alternatives --set php /usr/bin/php${YNH_PHP_VERSION}
 fi
 
 #=================================================
