@@ -86,6 +86,7 @@ export PATH="$install_dir/.composer/vendor/bin:$PATH"
 #=================================================
 # Framaforms 2 Yakforms Restore
 #=================================================
+
 if [ "$upgrade_to_yakforms" = true ]
 then
 	update-alternatives --set php /usr/bin/php$phpversion
@@ -98,7 +99,7 @@ then
     	ynh_exec_as $app env PATH=$PATH php framaforms2yakforms.php restore
     	ynh_exec_as $app env PATH=$PATH php framaforms2yakforms.php clean
 	popd
-	update-alternatives --set php /usr/bin/php${YNH_DEFAULT_PHP_VERSION}
+	update-alternatives --set php /usr/bin/php${YNH_PHP_VERSION}
 fi
 
 #=================================================
