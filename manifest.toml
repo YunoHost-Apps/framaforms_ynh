@@ -1,7 +1,7 @@
 packaging_format = 2
 
-id = "framaforms"
-name = "Framaforms"
+id = "yakforms"
+name = "YakForms"
 description.en = "Create online webforms and surveys"
 description.fr = "Créez des formulaires et questionnaires en ligne"
 
@@ -85,7 +85,7 @@ ram.runtime = "50M"
     main.url = "/"
 
     [resources.apt]
-    packages = "postgresql, curl, libzip-dev, php7.4-fpm, php7.4-cli, php7.4-gd, php7.4-mysql, php7.4-xml, php7.4-ldap, php7.4-mbstring, php7.4-pgsql"
+    packages = "postgresql, curl, libzip-dev, php8.2-cli, php8.2-gd, php8.2-xml, php8.2-ldap, php8.2-mbstring, php8.2-pgsql"
 
     [resources.database]
     type = "postgresql"

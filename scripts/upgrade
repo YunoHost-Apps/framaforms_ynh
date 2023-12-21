@@ -40,29 +40,6 @@ ynh_add_fpm_config
 ynh_add_nginx_config
 
 #=================================================
-# Framaforms 2 Yakforms Backup
-#=================================================
-
-if [ "$upgrade_to_yakforms" = false ]
-then
-	update-alternatives --set php /usr/bin/php$phpversion
-    upgrade_to_yakforms=true
-
-	pushd "$install_dir"
-    	ynh_exec_as $app env PATH=$PATH php framaforms2yakforms.php backup
-    	ynh_exec_as $app env PATH=$PATH drush @$app dis framaforms
-    	ynh_exec_as $app env PATH=$PATH drush @$app pm-uninstall framaforms
-    	ynh_exec_as $app env PATH=$PATH drush @$app dis framaforms_share_results
-    	ynh_exec_as $app env PATH=$PATH drush @$app pm-uninstall framaforms_share_results
-    	ynh_exec_as $app env PATH=$PATH drush @$app dis framaforms_public_results
-    	ynh_exec_as $app env PATH=$PATH drush @$app pm-uninstall framaforms_public_results
-    	ynh_exec_as $app env PATH=$PATH drush @$app dis framaforms_spam
-    	ynh_exec_as $app env PATH=$PATH drush @$app pm-uninstall framaforms_spam
-	popd
-	update-alternatives --set php /usr/bin/php${YNH_PHP_VERSION}
-fi
-
-#=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
 
@@ -85,25 +62,6 @@ ynh_script_progression --message="Upgrading Composer..." --weight=3
 ynh_install_composer --phpversion="$phpversion" --workdir="$install_dir/.composer"
 
 export PATH="$install_dir/.composer/vendor/bin:$PATH"
-
-#=================================================
-# Framaforms 2 Yakforms Restore
-#=================================================
-
-if [ "$upgrade_to_yakforms" = true ]
-then
-	update-alternatives --set php /usr/bin/php$phpversion
-
-	pushd "$install_dir"
-    	ynh_exec_as $app env PATH=$PATH drush @$app en yakforms
-    	ynh_exec_as $app env PATH=$PATH drush @$app dis yakforms_share_results
-    	ynh_exec_as $app env PATH=$PATH drush @$app dis yakforms_public_results
-    	ynh_exec_as $app env PATH=$PATH drush @$app dis yakforms_spam
-    	ynh_exec_as $app env PATH=$PATH php framaforms2yakforms.php restore
-    	ynh_exec_as $app env PATH=$PATH php framaforms2yakforms.php clean
-	popd
-	update-alternatives --set php /usr/bin/php${YNH_PHP_VERSION}
-fi
 
 #=================================================
 # UPGRADE DRUPAL
