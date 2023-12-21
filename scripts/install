@@ -16,11 +16,8 @@ admin_mail=$(ynh_user_get_info --username=$admin --key=mail)
 #=================================================
 ynh_script_progression --message="Setting up source files..." --weight=9
 
-
-# Download, check integrity, uncompress and patch the source from app.src
 ynh_setup_source --dest_dir="$install_dir/app"
 
-chmod 750 "$install_dir"
 chmod -R o-rwx "$install_dir"
 chown -R $app:www-data "$install_dir"
 
