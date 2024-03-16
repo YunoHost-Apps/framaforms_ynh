@@ -1,8 +1,6 @@
 #!/bin/bash
 
 #=================================================
-# GENERIC START
-#=================================================
 # IMPORT GENERIC HELPERS
 #=================================================
 
@@ -10,186 +8,67 @@ source _common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
-# LOAD SETTINGS
-#=================================================
-ynh_script_progression --message="Loading installation settings..." --weight=2
-
-app=$YNH_APP_INSTANCE_NAME
-
-domain=$(ynh_app_setting_get --app=$app --key=domain)
-path_url=$(ynh_app_setting_get --app=$app --key=path)
-admin=$(ynh_app_setting_get --app=$app --key=admin)
-final_path=$(ynh_app_setting_get --app=$app --key=final_path)
-db_name=$(ynh_app_setting_get --app=$app --key=db_name)
-phpversion=$(ynh_app_setting_get --app=$app --key=phpversion)
-datadir=$(ynh_app_setting_get --app=$app --key=datadir)
-
-#=================================================
-# CHECK VERSION
-#=================================================
-ynh_script_progression --message="Checking version..." --weight=1
-
-upgrade_type=$(ynh_check_app_version_changed)
-
-#=================================================
-# BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
-#=================================================
-ynh_script_progression --message="Backing up the app before upgrading (may take a while)..." --weight=21
-
-# Backup the current version of the app
-ynh_backup_before_upgrade
-ynh_clean_setup () {
-	# Restore it if the upgrade fails
-	ynh_restore_upgradebackup
-}
-# Exit if an error occurs during the execution of the script
-ynh_abort_if_errors
-
-#=================================================
-# STANDARD UPGRADE STEPS
-#=================================================
 # ENSURE DOWNWARD COMPATIBILITY
 #=================================================
-ynh_script_progression --message="Ensuring downward compatibility..." --weight=1
-
-# Cleaning legacy permissions
-if ynh_legacy_permissions_exists; then
-	ynh_legacy_permissions_delete_all
-
-	ynh_app_setting_delete --app=$app --key=is_public
-fi
-
-if ! ynh_permission_exists --permission="admin"; then
-	# Create the required permissions
-	ynh_permission_create --permission="admin" --url="/admin" --allowed=$admin
-fi
-
-# If db_name doesn't exist, create it
-if [ -z "$db_name" ]; then
-	db_name=$(ynh_sanitize_dbid --db_name=$app)
-	ynh_app_setting_set --app=$app --key=db_name --value=$db_name
-fi
-
-# If final_path doesn't exist, create it
-if [ -z "$final_path" ]; then
-	final_path=/var/www/$app
-	ynh_app_setting_set --app=$app --key=final_path --value=$final_path
-fi
-
-# If datadir doesn't exist, create it
-if [ -z "$datadir" ]; then
-	datadir=/home/yunohost.app/$app
-	ynh_app_setting_set --app=$app --key=datadir --value=$datadir
-fi
-
-#=================================================
-# CREATE DEDICATED USER
-#=================================================
-ynh_script_progression --message="Making sure dedicated system user exists..." --weight=1
-
-# Create a dedicated user (if not existing)
-ynh_system_user_create --username=$app --home_dir=$final_path
+# ynh_script_progression --message="Ensuring downward compatibility..." --weight=1
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
+ynh_script_progression --message="Upgrading source files..." --weight=9
 
-if [ "$upgrade_type" == "UPGRADE_APP" ]
-then
-	ynh_script_progression --message="Upgrading source files..." --weight=9
+# Download, check integrity, uncompress and patch the source from app.src
+ynh_setup_source --dest_dir="$install_dir/app"
 
-	# Download, check integrity, uncompress and patch the source from app.src
-	ynh_setup_source --dest_dir="$final_path/app"
-fi
+chmod -R o-rwx "$install_dir"
+chown -R "$app:www-data" "$install_dir"
 
-chmod 750 "$final_path"
-chmod -R o-rwx "$final_path"
-chown -R $app:www-data "$final_path"
-
-#=================================================
-# UPGRADE DEPENDENCIES
-#=================================================
-ynh_script_progression --message="Upgrading dependencies..." --weight=5
-
-ynh_exec_warn_less ynh_install_app_dependencies $pkg_dependencies
-
-#=================================================
-# PHP-FPM CONFIGURATION
-#=================================================
-ynh_script_progression --message="Upgrading PHP-FPM configuration..." --weight=1
-
-# Create a dedicated PHP-FPM config
-ynh_add_fpm_config --usage=low --footprint=low
-
-#=================================================
-# NGINX CONFIGURATION
-#=================================================
-ynh_script_progression --message="Upgrading NGINX web server configuration..." --weight=1
-
-# Create a dedicated NGINX config
-ynh_add_nginx_config
-
-#=================================================
-# SPECIFIC UPGRADE
-#=================================================
-# CREATE DATA DIRECTORY
-#=================================================
-ynh_script_progression --message="Creating a data directory..."
-
-mkdir -p $datadir
-chmod 750 "$datadir"
-chmod -R o-rwx "$datadir"
-chown -R $app:www-data "$datadir"
+chmod -R o-rwx "$data_dir"
+chown -R "$app:www-data" "$data_dir"
 
 #=================================================
 # UPGRADE COMPOSER
 #=================================================
 ynh_script_progression --message="Upgrading Composer..." --weight=3
 
-ynh_install_composer --phpversion="$phpversion" --workdir="$final_path/.composer"
-
-export PATH="$final_path/.composer/vendor/bin:$PATH"
+ynh_install_composer --phpversion="$phpversion" --workdir="$install_dir/.composer"
 
 #=================================================
 # UPGRADE DRUPAL
 #=================================================
+ynh_script_progression --message="Upgrading Drupal..." --weight=30
 
-if [ "$upgrade_type" == "UPGRADE_APP" ]
-then
-	ynh_script_progression --message="Upgrading Drupal..." --weight=30
+ynh_backup_if_checksum_is_different --file="$install_dir/app/sites/default/settings.php"
 
-	ynh_backup_if_checksum_is_different --file="$final_path/app/sites/default/settings.php"
-
-	update-alternatives --set php /usr/bin/php$phpversion
-
-	pushd "$final_path"
-    	ynh_exec_as $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 1 
-    	ynh_exec_as $app env PATH=$PATH drush @$app cache-clear all 
-    	# ynh_exec_as $app env PATH=$PATH drush @$app pm-update -y drupal
-    	# ynh_exec_as $app env PATH=$PATH drush @$app updatedb -y
-    	ynh_exec_as $app env PATH=$PATH drush @$app cache-clear all 
-    	ynh_exec_as $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 0 
-	popd
-
-	update-alternatives --set php /usr/bin/php${YNH_DEFAULT_PHP_VERSION}
-fi
+pushd "$install_dir"
+    _ynh_exec_with_drush_php drush "@$app" variable-set --exact maintenance_mode 1
+    _ynh_exec_with_drush_php drush "@$app" cache-clear all
+    # _ynh_exec_with_drush_php drush "@$app" pm-update -y drupal
+    # _ynh_exec_with_drush_php drush "@$app" updatedb -y
+    _ynh_exec_with_drush_php drush "@$app" cache-clear all
+    _ynh_exec_with_drush_php drush "@$app" variable-set --exact maintenance_mode 0
+popd
 
 #=================================================
 # UPDATE A CONFIG FILE
 #=================================================
 ynh_script_progression --message="Updating a configuration file..."
 
-chmod 600 "$final_path/app/sites/default/settings.php"
-chown $app:$app "$final_path/app/sites/default/settings.php"
+chmod 600 "$install_dir/app/sites/default/settings.php"
+chown "$app:$app" "$install_dir/app/sites/default/settings.php"
 
 #=================================================
-# GENERIC FINALIZATION
+# REAPPLY SYSTEM CONFIGURATIONS
 #=================================================
-# RELOAD NGINX
-#=================================================
-ynh_script_progression --message="Reloading NGINX web server..." --weight=1
+ynh_script_progression --message="Upgrading system configurations related to $app..." --weight=1
 
-ynh_systemd_action --service_name=nginx --action=reload
+# Create a dedicated PHP-FPM config
+ynh_add_fpm_config --usage=low --footprint=low
+
+# Create a dedicated NGINX config
+ynh_add_nginx_config
+
+ynh_add_config --template="cron" --destination="/etc/cron.d/$app"
 
 #=================================================
 # END OF SCRIPT

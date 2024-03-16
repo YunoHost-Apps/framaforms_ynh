@@ -28,7 +28,7 @@
  * Set the root and site_path values to point to your local site
  */
 $aliases['__APP__'] = array(
-  'root' => '__FINALPATH__/app/',
+  'root' => '__INSTALL_DIR__/app/',
   'uri'  => 'https://__DOMAIN____PATH__',
   'path-aliases' => array(
     '%dump-dir' => '/tmp',
