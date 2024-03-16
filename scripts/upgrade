@@ -42,6 +42,9 @@ ynh_script_progression --message="Upgrading Drupal..." --weight=30
 
 ynh_backup_if_checksum_is_different --file="$install_dir/app/sites/default/settings.php"
 
+# Chown from composer/drush install
+chown -R "$app:www-data" "$install_dir"
+
 pushd "$install_dir"
     _ynh_exec_with_drush_php drush "@$app" variable-set --exact maintenance_mode 1
     _ynh_exec_with_drush_php drush "@$app" cache-clear all
