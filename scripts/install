@@ -121,7 +121,7 @@ _ynh_exec_with_drush_php drush "@$app" sql-query "UPDATE block SET region='-1', 
 #=================================================
 ynh_script_progression --message="Configuring LDAP authentication..." --weight=1
 
-_ynh_exec_with_drush_php drush "@$app" pm-download ldap
+_ynh_exec_with_drush_php drush "@$app" pm-download ldap-7.x-2.6
 _ynh_exec_with_drush_php drush "@$app" pm-enable -y ldap_servers ldap_user ldap_authentication ldap_authorization ldap_authorization_drupal_role
 # Generated with sudo -u postgres pg_dump -a -t ldap_servers --inserts framaforms
 _ynh_exec_with_drush_php drush "@$app" sql-query "INSERT INTO public.ldap_servers VALUES ('localhost', 1, 'localhost', 1, 'default', 'ldap://127.0.0.1', 389, 0, 0, 3, '', NULL, 'a:2:{i:0;s:27:\"ou=users,dc=yunohost,dc=org\";i:1;s:32:\"ou=permission,dc=yunohost,dc=org\";}', 'uid', 'uid', 'mail', '', '', '', 0, 'cn=%username,ou=users,dc=yunohost,dc=org', '', '', '', 0, 'permissionynh', 0, 1, 'permission', 'memberuid', 'dn', 0, '', '$app.main', '', 0, 1000, 0);"
