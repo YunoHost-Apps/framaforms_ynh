@@ -33,6 +33,8 @@ ynh_script_progression --message="Upgrading Composer..." --weight=3
 
 ynh_install_composer --phpversion="$phpversion" --workdir="$install_dir/.composer"
 
+export PATH="$install_dir/.composer/vendor/bin:$PATH"
+
 #=================================================
 # UPGRADE DRUPAL
 #=================================================
