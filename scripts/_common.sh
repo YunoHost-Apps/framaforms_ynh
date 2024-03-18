@@ -12,7 +12,8 @@ YNH_COMPOSER_VERSION="1.10.17"
 
 _ynh_exec_with_drush_php() {
     ynh_exec_warn_less ynh_exec_as "$app" \
-        env PATH="$PATH" DRUSH_PHP="/usr/bin/php$phpversion" \
+        env PATH="$install_dir/.composer/vendor/bin:$PATH" \
+        DRUSH_PHP="/usr/bin/php$phpversion" \
         "$@"
 }
 
