@@ -31,9 +31,10 @@ ram.runtime = "50M"
     [install.domain]
     type = "domain"
 
-    [install.path]
-    type = "path"
-    default = "/poll"
+    # Framaform doesn't seem to be installable on a subdir, disabling it for now.
+    # [install.path]
+    # type = "path"
+    # default = "/poll"
 
     [install.init_main_permission]
     help.en = "If no, only person with an account on your server will be able to create forms. In all cases, visitors will be able to reply to form."
