@@ -679,4 +679,4 @@ $conf['file_scan_ignore_directories'] = array(
  */
 $conf['x_frame_options'] = '';
 
-$conf['file_temporary_path'] = '__FINALPATH__/app/sites/default/files/tmp';
+$conf['file_temporary_path'] = '__INSTALL_DIR__/app/sites/default/files/tmp';
