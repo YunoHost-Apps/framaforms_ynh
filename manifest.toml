@@ -60,7 +60,7 @@ ram.runtime = "50M" # FIXME: replace with an **estimate** minimum ram requiremen
     help.en = "Set 0 to disable expiration"
     help.fr = "Mettre 0 pour désactiver l'expiration"
     type = "number"
-    default = "0"
+    default = 0
 
     [install.deletion]
     ask.en = "After how many weeks is the forms deleted?"
@@ -68,7 +68,7 @@ ram.runtime = "50M" # FIXME: replace with an **estimate** minimum ram requiremen
     help.en = "Set 0 to disable deletion"
     help.fr = "Mettre 0 pour désactiver la suppression"
     type = "number"
-    default = "0"
+    default = 0
 
 [resources]
     [resources.sources.main]
