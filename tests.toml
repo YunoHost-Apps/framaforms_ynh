@@ -8,5 +8,9 @@ test_format = 1.0
     # Tests to run
     # ------------
 
-    test_upgrade_from.cb1ccdf04ff50b14826a96da2930570bd482f233.name = "1.0.3~ynh3"
-    test_upgrade_from.cb1ccdf04ff50b14826a96da2930570bd482f233.args.path = "/"
+    [default.test_upgrade_from.cb1ccdf04ff50b14826a96da2930570bd482f233]
+    name = "1.0.3~ynh3"
+    args.path = "/"
+    args.domain = "domain.tld"
+    args.admin = "package_checker"
+    args.password = "MySuperComplexPassword"
