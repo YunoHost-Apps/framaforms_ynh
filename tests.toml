@@ -8,4 +8,4 @@ test_format = 1.0
     # Tests to run
     # ------------
 
-    test_upgrade_from.79cdc1a139ff06805647cb56e5eab1d595ee0259.name = "1.0.3~ynh3"
+    test_upgrade_from.cb1ccdf04ff50b14826a96da2930570bd482f233.name = "1.0.3~ynh3"
