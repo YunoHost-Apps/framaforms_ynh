@@ -78,25 +78,25 @@ chown -R "$app:www-data" "$install_dir"
 _ynh_exec_with_drush_php drush "@$app" site-install framaforms_org \
     install_configure_form.site_contact_url="https://forum.yunohost.org/t/framaforms-create-polls-using-drag-and-drop/8208" \
     install_configure_form.site_default_country=FR \
-    -y --locale="$language" --account-name="admin" --account-pass="$password" --site-name="Framaforms" --site-mail="$admin_mail" 2>&1
+    -y --locale="$language" --account-name="admin" --account-pass="$password" --site-name="Framaforms" --site-mail="$admin_mail"
 _ynh_exec_with_drush_php drush "@$app" variable-set update_notify_emails "$admin_mail"
-_ynh_exec_with_drush_php drush "@$app" variable-set file_private_path "/home/yunohost.app/$app/data" 2>&1
-_ynh_exec_with_drush_php drush "@$app" pm-enable framaforms_feature -y --resolve-dependencies 2>&1
-_ynh_exec_with_drush_php drush "@$app" php-eval "module_load_include('inc', 'framaforms', 'includes/framaforms.pages');create_all_pages();" 2>&1 || true
+_ynh_exec_with_drush_php drush "@$app" variable-set file_private_path "/home/yunohost.app/$app/data"
+_ynh_exec_with_drush_php drush "@$app" pm-enable framaforms_feature -y --resolve-dependencies
+_ynh_exec_with_drush_php drush "@$app" php-eval "module_load_include('inc', 'framaforms', 'includes/framaforms.pages');create_all_pages();" || true
 
 #=================================================
 # IMPORTING LANGUAGE PACK
 #=================================================
 ynh_script_progression --message="Importing language pack..." --weight=5
 
-_ynh_exec_with_drush_php drush "@$app" pm-download -y drush_language 2>&1
-_ynh_exec_with_drush_php drush "@$app" pm-download -y l10n_update 2>&1
-_ynh_exec_with_drush_php drush "@$app" pm-enable -y l10n_update 2>&1
-_ynh_exec_with_drush_php drush "@$app" language-add "$language" -y 2>&1
-_ynh_exec_with_drush_php drush "@$app" language-default "$language" -y 2>&1
-_ynh_exec_with_drush_php drush "@$app" cache-clear drush -y 2>&1
-_ynh_exec_with_drush_php drush "@$app" l10n-update-refresh -y 2>&1
-_ynh_exec_with_drush_php drush "@$app" l10n-update -y 2>&1
+_ynh_exec_with_drush_php drush "@$app" pm-download -y drush_language
+_ynh_exec_with_drush_php drush "@$app" pm-download -y l10n_update
+_ynh_exec_with_drush_php drush "@$app" pm-enable -y l10n_update
+_ynh_exec_with_drush_php drush "@$app" language-add "$language" -y
+_ynh_exec_with_drush_php drush "@$app" language-default "$language" -y
+_ynh_exec_with_drush_php drush "@$app" cache-clear drush -y
+_ynh_exec_with_drush_php drush "@$app" l10n-update-refresh -y
+_ynh_exec_with_drush_php drush "@$app" l10n-update -y
 
 # We don't upgrade module to avoid to erase framaforms change
 # in drupal core and modules code
