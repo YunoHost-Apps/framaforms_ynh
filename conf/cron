@@ -1,5 +1,5 @@
 SHELL=/bin/sh
-PATH=__FINALPATH__/.composer/vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+PATH=__INSTALL_DIR__/.composer/vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 # m h dom mon dow user	command
 30 *	* * *	__APP__	drush --quiet @__APP__ core-cron
