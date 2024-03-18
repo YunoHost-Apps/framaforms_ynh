@@ -44,9 +44,7 @@ ynh_script_progression --message="Restoring system configurations related to $ap
 
 # Restore the file first, so it can have a backup if different
 ynh_restore_file --origin_path="/etc/php/$phpversion/fpm/pool.d/$app.conf"
-
-# Recreate a dedicated php-fpm config
-# ynh_add_fpm_config --usage=low --footprint=low
+ynh_add_fpm_config --usage=low --footprint=low
 
 ynh_restore_file --origin_path="/etc/nginx/conf.d/$domain.d/$app.conf"
 
