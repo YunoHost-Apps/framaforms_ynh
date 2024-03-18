@@ -9,7 +9,7 @@ description.fr = "Créez des formulaires et questionnaires en ligne"
 
 version = "1.0.3~ynh4"
 
-maintainers = ["ljf"]
+maintainers = []
 
 [upstream]
 license = "GPL-2.0-only"
