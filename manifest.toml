@@ -14,7 +14,7 @@ maintainers = []
 [upstream]
 license = "GPL-2.0-only"
 website = "https://framaforms.org"
-code = "https://framagit.org/framasoft/framaforms"
+code = "https://framagit.org/yakforms/yakforms"
 fund = "https://soutenir.framasoft.org"
 
 [integration]
