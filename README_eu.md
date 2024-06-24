@@ -20,10 +20,10 @@ Framaforms is an online forms and surveys service. Registered users are allowed 
 See this [article](https://framablog.org/2016/10/05/framaforms-noffrez-plus-les-reponses-que-vous-collectez-a-google/) and this [interview](https://framablog.org/2016/10/05/en-savoir-un-peu-plus-sur-le-projet-framaforms/) (in French) for further informations.
 
 
-**Paketatutako bertsioa:** 1.0.3~ynh4
+**Paketatutako bertsioa:** 1.1~ynh1
 ## Dokumentazioa eta baliabideak
 
-- Aplikazioaren webgune ofiziala: <https://framaforms.org>
+- Aplikazioaren webgune ofiziala: <https://yakforms.org>
 - Jatorrizko aplikazioaren kode-gordailua: <https://framagit.org/yakforms/yakforms>
 - YunoHost Denda: <https://apps.yunohost.org/app/framaforms>
 - Eman errore baten berri: <https://github.com/YunoHost-Apps/framaforms_ynh/issues>
