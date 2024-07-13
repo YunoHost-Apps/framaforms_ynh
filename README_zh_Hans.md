@@ -5,7 +5,7 @@
 
 # YunoHost 上的 Framaforms
 
-[![集成程度](https://dash.yunohost.org/integration/framaforms.svg)](https://dash.yunohost.org/appci/app/framaforms) ![工作状态](https://ci-apps.yunohost.org/ci/badges/framaforms.status.svg) ![维护状态](https://ci-apps.yunohost.org/ci/badges/framaforms.maintain.svg)
+[![集成程度](https://dash.yunohost.org/integration/framaforms.svg)](https://ci-apps.yunohost.org/ci/apps/framaforms/) ![工作状态](https://ci-apps.yunohost.org/ci/badges/framaforms.status.svg) ![维护状态](https://ci-apps.yunohost.org/ci/badges/framaforms.maintain.svg)
 
 [![使用 YunoHost 安装 Framaforms](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=framaforms)
 
@@ -24,7 +24,7 @@ See this [article](https://framablog.org/2016/10/05/framaforms-noffrez-plus-les-
 ## 文档与资源
 
 - 官方应用网站： <https://framaforms.org>
-- 上游应用代码库： <https://framagit.org/framasoft/framaforms>
+- 上游应用代码库： <https://framagit.org/yakforms/yakforms>
 - YunoHost 商店： <https://apps.yunohost.org/app/framaforms>
 - 报告 bug： <https://github.com/YunoHost-Apps/framaforms_ynh/issues>
 

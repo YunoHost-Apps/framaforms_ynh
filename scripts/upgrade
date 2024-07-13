@@ -18,7 +18,7 @@ source /usr/share/yunohost/helpers
 ynh_script_progression --message="Upgrading source files..." --weight=9
 
 # Download, check integrity, uncompress and patch the source from app.src
-ynh_setup_source --dest_dir="$install_dir/app"
+ynh_setup_source --dest_dir="$install_dir/app" --full_replace=1 --keep="sites"
 
 chmod -R o-rwx "$install_dir"
 chown -R "$app:www-data" "$install_dir"

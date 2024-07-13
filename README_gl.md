@@ -5,7 +5,7 @@ NON debe editarse manualmente.
 
 # Framaforms para YunoHost
 
-[![Nivel de integración](https://dash.yunohost.org/integration/framaforms.svg)](https://dash.yunohost.org/appci/app/framaforms) ![Estado de funcionamento](https://ci-apps.yunohost.org/ci/badges/framaforms.status.svg) ![Estado de mantemento](https://ci-apps.yunohost.org/ci/badges/framaforms.maintain.svg)
+[![Nivel de integración](https://dash.yunohost.org/integration/framaforms.svg)](https://ci-apps.yunohost.org/ci/apps/framaforms/) ![Estado de funcionamento](https://ci-apps.yunohost.org/ci/badges/framaforms.status.svg) ![Estado de mantemento](https://ci-apps.yunohost.org/ci/badges/framaforms.maintain.svg)
 
 [![Instalar Framaforms con YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=framaforms)
 
@@ -24,7 +24,7 @@ See this [article](https://framablog.org/2016/10/05/framaforms-noffrez-plus-les-
 ## Documentación e recursos
 
 - Web oficial da app: <https://framaforms.org>
-- Repositorio de orixe do código: <https://framagit.org/framasoft/framaforms>
+- Repositorio de orixe do código: <https://framagit.org/yakforms/yakforms>
 - Tenda YunoHost: <https://apps.yunohost.org/app/framaforms>
 - Informar dun problema: <https://github.com/YunoHost-Apps/framaforms_ynh/issues>
 
