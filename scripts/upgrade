@@ -10,12 +10,17 @@ source /usr/share/yunohost/helpers
 #=================================================
 # ENSURE DOWNWARD COMPATIBILITY
 #=================================================
-# ynh_script_progression --message="Ensuring downward compatibility..." --weight=1
+ynh_script_progression --message="Ensuring downward compatibility..." --weight=1
 
 #=================================================
 # Framaforms 2 Yakforms Backup
 #=================================================
-upgrade_to_yakforms=true
+
+if ynh_compare_current_package_version --comparison lt --version 1.1~ynh1; then
+    upgrade_to_yakforms=true
+else
+    upgrade_to_yakforms=false
+fi
 
 if [ "$upgrade_to_yakforms" = false ]; then
     pushd "$install_dir"
