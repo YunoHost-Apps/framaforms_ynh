@@ -5,7 +5,7 @@ EZ editatu eskuz.
 
 # Framaforms YunoHost-erako
 
-[![Integrazio maila](https://dash.yunohost.org/integration/framaforms.svg)](https://dash.yunohost.org/appci/app/framaforms) ![Funtzionamendu egoera](https://ci-apps.yunohost.org/ci/badges/framaforms.status.svg) ![Mantentze egoera](https://ci-apps.yunohost.org/ci/badges/framaforms.maintain.svg)
+[![Integrazio maila](https://dash.yunohost.org/integration/framaforms.svg)](https://ci-apps.yunohost.org/ci/apps/framaforms/) ![Funtzionamendu egoera](https://ci-apps.yunohost.org/ci/badges/framaforms.status.svg) ![Mantentze egoera](https://ci-apps.yunohost.org/ci/badges/framaforms.maintain.svg)
 
 [![Instalatu Framaforms YunoHost-ekin](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=framaforms)
 
@@ -24,7 +24,7 @@ See this [article](https://framablog.org/2016/10/05/framaforms-noffrez-plus-les-
 ## Dokumentazioa eta baliabideak
 
 - Aplikazioaren webgune ofiziala: <https://framaforms.org>
-- Jatorrizko aplikazioaren kode-gordailua: <https://framagit.org/framasoft/framaforms>
+- Jatorrizko aplikazioaren kode-gordailua: <https://framagit.org/yakforms/yakforms>
 - YunoHost Denda: <https://apps.yunohost.org/app/framaforms>
 - Eman errore baten berri: <https://github.com/YunoHost-Apps/framaforms_ynh/issues>
 
