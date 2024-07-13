@@ -23,7 +23,7 @@ See this [article](https://framablog.org/2016/10/05/framaforms-noffrez-plus-les-
 **Paketatutako bertsioa:** 1.0.3~ynh4
 ## Dokumentazioa eta baliabideak
 
-- Aplikazioaren webgune ofiziala: <https://framaforms.org>
+- Aplikazioaren webgune ofiziala: <https://yakforms.org>
 - Jatorrizko aplikazioaren kode-gordailua: <https://framagit.org/yakforms/yakforms>
 - YunoHost Denda: <https://apps.yunohost.org/app/framaforms>
 - Eman errore baten berri: <https://github.com/YunoHost-Apps/framaforms_ynh/issues>

@@ -23,7 +23,7 @@ See this [article](https://framablog.org/2016/10/05/framaforms-noffrez-plus-les-
 **Versión actual:** 1.0.3~ynh4
 ## Documentaciones y recursos
 
-- Sitio web oficial: <https://framaforms.org>
+- Sitio web oficial: <https://yakforms.org>
 - Repositorio del código fuente oficial de la aplicación : <https://framagit.org/yakforms/yakforms>
 - Catálogo YunoHost: <https://apps.yunohost.org/app/framaforms>
 - Reportar un error: <https://github.com/YunoHost-Apps/framaforms_ynh/issues>

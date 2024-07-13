@@ -23,7 +23,7 @@ See this [article](https://framablog.org/2016/10/05/framaforms-noffrez-plus-les-
 **分发版本：** 1.0.3~ynh4
 ## 文档与资源
 
-- 官方应用网站： <https://framaforms.org>
+- 官方应用网站： <https://yakforms.org>
 - 上游应用代码库： <https://framagit.org/yakforms/yakforms>
 - YunoHost 商店： <https://apps.yunohost.org/app/framaforms>
 - 报告 bug： <https://github.com/YunoHost-Apps/framaforms_ynh/issues>
