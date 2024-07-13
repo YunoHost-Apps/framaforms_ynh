@@ -68,7 +68,7 @@ chmod 600 "$install_dir/app/sites/default/settings.php"
 chown "$app:$app" "$install_dir/app/sites/default/settings.php"
 
 #=================================================
-# INSTALLING FRAMAFORMS WITH DRUSH
+# INSTALLING YAKFORMS WITH DRUSH
 #=================================================
 ynh_script_progression --message="Installing database..." --weight=19
 

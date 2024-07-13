@@ -3,7 +3,7 @@
 packaging_format = 2
 
 id = "framaforms"
-name = "Framaforms"
+name = "Yakforms"
 description.en = "Create online webforms and surveys"
 description.fr = "Créez des formulaires et questionnaires en ligne"
 
@@ -31,7 +31,7 @@ ram.runtime = "50M"
     [install.domain]
     type = "domain"
 
-    # Framaform doesn't seem to be installable on a subdir, disabling it for now.
+    # Yakform doesn't seem to be installable on a subdir, disabling it for now.
     # [install.path]
     # type = "path"
     # default = "/poll"
