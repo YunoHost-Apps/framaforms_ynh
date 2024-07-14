@@ -82,6 +82,7 @@ _ynh_exec_with_drush_php drush "@$app" site-install yakforms_profile \
 _ynh_exec_with_drush_php drush "@$app" variable-set update_notify_emails "$admin_mail"
 _ynh_exec_with_drush_php drush "@$app" variable-set file_private_path "$data_dir/data"
 _ynh_exec_with_drush_php drush "@$app" pm-enable yakforms_feature -y --resolve-dependencies
+_ynh_exec_with_drush_php drush "@$app" pm-enable yakforms -y --resolve-dependencies
 _ynh_exec_with_drush_php drush "@$app" php-eval "module_load_include('inc', 'yakforms', 'includes/yakforms.pages');create_all_pages();" || true
 
 #=================================================
