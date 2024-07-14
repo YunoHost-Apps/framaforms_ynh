@@ -3,27 +3,27 @@
 请勿手动编辑。
 -->
 
-# YunoHost 上的 Framaforms
+# YunoHost 上的 Yakforms
 
 [![集成程度](https://dash.yunohost.org/integration/framaforms.svg)](https://ci-apps.yunohost.org/ci/apps/framaforms/) ![工作状态](https://ci-apps.yunohost.org/ci/badges/framaforms.status.svg) ![维护状态](https://ci-apps.yunohost.org/ci/badges/framaforms.maintain.svg)
 
-[![使用 YunoHost 安装 Framaforms](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=framaforms)
+[![使用 YunoHost 安装 Yakforms](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=framaforms)
 
 *[阅读此 README 的其它语言版本。](./ALL_README.md)*
 
-> *通过此软件包，您可以在 YunoHost 服务器上快速、简单地安装 Framaforms。*  
+> *通过此软件包，您可以在 YunoHost 服务器上快速、简单地安装 Yakforms。*  
 > *如果您还没有 YunoHost，请参阅[指南](https://yunohost.org/install)了解如何安装它。*
 
 ## 概况
 
-Framaforms is an online forms and surveys service. Registered users are allowed to create forms, share them, collect and visualize results through a simple interface.
+Yakforms is an online forms and surveys service. Registered users are allowed to create forms, share them, collect and visualize results through a simple interface.
 See this [article](https://framablog.org/2016/10/05/framaforms-noffrez-plus-les-reponses-que-vous-collectez-a-google/) and this [interview](https://framablog.org/2016/10/05/en-savoir-un-peu-plus-sur-le-projet-framaforms/) (in French) for further informations.
 
 
-**分发版本：** 1.0.3~ynh4
+**分发版本：** 1.1~ynh1
 ## 文档与资源
 
-- 官方应用网站： <https://framaforms.org>
+- 官方应用网站： <https://yakforms.org>
 - 上游应用代码库： <https://framagit.org/yakforms/yakforms>
 - YunoHost 商店： <https://apps.yunohost.org/app/framaforms>
 - 报告 bug： <https://github.com/YunoHost-Apps/framaforms_ynh/issues>

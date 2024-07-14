@@ -10,7 +10,32 @@ source /usr/share/yunohost/helpers
 #=================================================
 # ENSURE DOWNWARD COMPATIBILITY
 #=================================================
-# ynh_script_progression --message="Ensuring downward compatibility..." --weight=1
+ynh_script_progression --message="Ensuring downward compatibility..." --weight=1
+
+#=================================================
+# Framaforms 2 Yakforms Backup
+#=================================================
+
+if ynh_compare_current_package_version --comparison lt --version 1.1~ynh1; then
+    upgrade_to_yakforms=true
+else
+    upgrade_to_yakforms=false
+fi
+
+if [ "$upgrade_to_yakforms" = true ]; then
+    pushd "$install_dir/app"
+        ynh_setup_source --source_id="migration_script" --dest_dir="$install_dir/app"
+        ynh_exec_as "$app" env "PATH=$PATH" "php$phpversion" framaforms2yakforms.php backup
+        _ynh_exec_with_drush_php drush "@$app" dis framaforms
+        _ynh_exec_with_drush_php drush "@$app" pm-uninstall framaforms
+        _ynh_exec_with_drush_php drush "@$app" dis framaforms_share_results
+        _ynh_exec_with_drush_php drush "@$app" pm-uninstall framaforms_share_results
+        _ynh_exec_with_drush_php drush "@$app" dis framaforms_public_results
+        _ynh_exec_with_drush_php drush "@$app" pm-uninstall framaforms_public_results
+        _ynh_exec_with_drush_php drush "@$app" dis framaforms_spam
+        _ynh_exec_with_drush_php drush "@$app" pm-uninstall framaforms_spam
+    popd
+fi
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
@@ -34,6 +59,21 @@ ynh_script_progression --message="Upgrading Composer..." --weight=3
 ynh_install_composer --phpversion="$phpversion" --workdir="$install_dir/.composer"
 
 #=================================================
+# Framaforms 2 Yakforms Restore
+#=================================================
+
+if [ "$upgrade_to_yakforms" = true ]; then
+    pushd "$install_dir/app"
+        _ynh_exec_with_drush_php drush "@$app" en yakforms
+        _ynh_exec_with_drush_php drush "@$app" dis yakforms_share_results
+        _ynh_exec_with_drush_php drush "@$app" dis yakforms_public_results
+        _ynh_exec_with_drush_php drush "@$app" dis yakforms_spam
+        ynh_exec_as "$app" env "PATH=$PATH" "php$phpversion" framaforms2yakforms.php restore
+        ynh_exec_as "$app" env "PATH=$PATH" "php$phpversion" framaforms2yakforms.php clean
+    popd
+fi
+
+#=================================================
 # UPGRADE DRUPAL
 #=================================================
 ynh_script_progression --message="Upgrading Drupal..." --weight=30
@@ -43,7 +83,7 @@ ynh_backup_if_checksum_is_different --file="$install_dir/app/sites/default/setti
 # Chown from composer/drush install
 chown -R "$app:www-data" "$install_dir"
 
-pushd "$install_dir"
+pushd "$install_dir/app"
     _ynh_exec_with_drush_php drush "@$app" variable-set --exact maintenance_mode 1
     _ynh_exec_with_drush_php drush "@$app" cache-clear all
     # _ynh_exec_with_drush_php drush "@$app" pm-update -y drupal

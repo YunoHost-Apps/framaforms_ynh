@@ -3,27 +3,27 @@ Nota bene : ce README est automatiquement généré par <https://github.com/Yu
 Il NE doit PAS être modifié à la main.
 -->
 
-# Framaforms pour YunoHost
+# Yakforms pour YunoHost
 
 [![Niveau d’intégration](https://dash.yunohost.org/integration/framaforms.svg)](https://ci-apps.yunohost.org/ci/apps/framaforms/) ![Statut du fonctionnement](https://ci-apps.yunohost.org/ci/badges/framaforms.status.svg) ![Statut de maintenance](https://ci-apps.yunohost.org/ci/badges/framaforms.maintain.svg)
 
-[![Installer Framaforms avec YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=framaforms)
+[![Installer Yakforms avec YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=framaforms)
 
 *[Lire le README dans d'autres langues.](./ALL_README.md)*
 
-> *Ce package vous permet d’installer Framaforms rapidement et simplement sur un serveur YunoHost.*  
+> *Ce package vous permet d’installer Yakforms rapidement et simplement sur un serveur YunoHost.*  
 > *Si vous n’avez pas YunoHost, consultez [ce guide](https://yunohost.org/install) pour savoir comment l’installer et en profiter.*
 
 ## Vue d’ensemble
 
-Framaforms is an online forms and surveys service. Registered users are allowed to create forms, share them, collect and visualize results through a simple interface.
+Yakforms is an online forms and surveys service. Registered users are allowed to create forms, share them, collect and visualize results through a simple interface.
 See this [article](https://framablog.org/2016/10/05/framaforms-noffrez-plus-les-reponses-que-vous-collectez-a-google/) and this [interview](https://framablog.org/2016/10/05/en-savoir-un-peu-plus-sur-le-projet-framaforms/) (in French) for further informations.
 
 
-**Version incluse :** 1.0.3~ynh4
+**Version incluse :** 1.1~ynh1
 ## Documentations et ressources
 
-- Site officiel de l’app : <https://framaforms.org>
+- Site officiel de l’app : <https://yakforms.org>
 - Dépôt de code officiel de l’app : <https://framagit.org/yakforms/yakforms>
 - YunoHost Store : <https://apps.yunohost.org/app/framaforms>
 - Signaler un bug : <https://github.com/YunoHost-Apps/framaforms_ynh/issues>

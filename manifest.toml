@@ -3,17 +3,17 @@
 packaging_format = 2
 
 id = "framaforms"
-name = "Framaforms"
+name = "Yakforms"
 description.en = "Create online webforms and surveys"
 description.fr = "Créez des formulaires et questionnaires en ligne"
 
-version = "1.0.3~ynh4"
+version = "1.1~ynh1"
 
 maintainers = []
 
 [upstream]
 license = "GPL-2.0-only"
-website = "https://framaforms.org"
+website = "https://yakforms.org"
 code = "https://framagit.org/yakforms/yakforms"
 fund = "https://soutenir.framasoft.org"
 
@@ -31,7 +31,7 @@ ram.runtime = "50M"
     [install.domain]
     type = "domain"
 
-    # Framaform doesn't seem to be installable on a subdir, disabling it for now.
+    # Yakforms doesn't seem to be installable on a subdir, disabling it for now.
     # [install.path]
     # type = "path"
     # default = "/poll"
@@ -73,10 +73,18 @@ ram.runtime = "50M"
 
 [resources]
     [resources.sources.main]
-    url = "https://framagit.org/yakforms/yakforms/-/archive/1.0.3/yakforms-1.0.3.tar.gz"
-    sha256 = "f8a8ac8789c36f07f2d1a03d13f9f6d947e499967b79ea626f7f87271a357703"
+    url = "https://framagit.org/yakforms/yakforms/-/archive/v1.1/yakforms-v1.1.tar.gz"
+    sha256 = "da30fbd9821f84f21f06b7604232f0dc9b6b6a39738bb5326ee875f173300045"
 
     autoupdate.strategy = "latest_gitlab_release"
+
+    [resources.sources.migration_script]
+    url = "https://framagit.org/yakforms/yakforms/-/raw/v1.1/framaforms2yakforms.php"
+    sha256 = "58a2e7378461dc5db70f59d69d37c0d6bd34eed224872151db5a794fdf33d07a"
+    format = "whatever"
+    extract = false
+    rename = "framaforms2yakforms.php"
+    prefetch = false
 
     [resources.system_user]
 
@@ -92,14 +100,14 @@ ram.runtime = "50M"
         "postgresql",
         "curl",
         "libzip-dev",
-        "php7.4-fpm",
-        "php7.4-cli",
-        "php7.4-gd",
-        "php7.4-mysql",
-        "php7.4-xml",
-        "php7.4-ldap",
-        "php7.4-mbstring",
-        "php7.4-pgsql",
+        "php7.3-fpm",
+        "php7.3-cli",
+        "php7.3-gd",
+        "php7.3-mysql",
+        "php7.3-xml",
+        "php7.3-ldap",
+        "php7.3-mbstring",
+        "php7.3-pgsql",
     ]
 
     [resources.database]
