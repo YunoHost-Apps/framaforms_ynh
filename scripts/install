@@ -76,13 +76,13 @@ ynh_script_progression --message="Installing database..." --weight=19
 chown -R "$app:www-data" "$install_dir"
 
 _ynh_exec_with_drush_php drush "@$app" site-install yakforms_profile \
-    install_configure_form.site_contact_url="https://forum.yunohost.org/t/framaforms-create-polls-using-drag-and-drop/8208" \
+    install_configure_form.site_contact_url="https://apps.yunohost.org/app/framaforms" \
     install_configure_form.site_default_country=FR \
-    -y --locale="$language" --account-name="admin" --account-pass="$password" --site-name="Framaforms" --site-mail="$admin_mail"
+    -y --locale="$language" --account-name="admin" --account-pass="$password" --site-name="Yakforms" --site-mail="$admin_mail"
 _ynh_exec_with_drush_php drush "@$app" variable-set update_notify_emails "$admin_mail"
-_ynh_exec_with_drush_php drush "@$app" variable-set file_private_path "/home/yunohost.app/$app/data"
-_ynh_exec_with_drush_php drush "@$app" pm-enable framaforms_feature -y --resolve-dependencies
-_ynh_exec_with_drush_php drush "@$app" php-eval "module_load_include('inc', 'framaforms', 'includes/framaforms.pages');create_all_pages();" || true
+_ynh_exec_with_drush_php drush "@$app" variable-set file_private_path "$data_dir/data"
+_ynh_exec_with_drush_php drush "@$app" pm-enable yakforms_feature -y --resolve-dependencies
+_ynh_exec_with_drush_php drush "@$app" php-eval "module_load_include('inc', 'yakforms', 'includes/yakforms.pages');create_all_pages();" || true
 
 #=================================================
 # IMPORTING LANGUAGE PACK
@@ -98,9 +98,9 @@ _ynh_exec_with_drush_php drush "@$app" cache-clear drush -y
 _ynh_exec_with_drush_php drush "@$app" l10n-update-refresh -y
 _ynh_exec_with_drush_php drush "@$app" l10n-update -y
 
-# We don't upgrade module to avoid to erase framaforms change
+# We don't upgrade module to avoid to erase Yakforms change
 # in drupal core and modules code
-# see https://framagit.org/framasoft/framaforms/-/wikis/modifications
+# see https://framagit.org/yakforms/yakforms/-/wikis/modifications
 # _ynh_exec_with_drush_php drush "@$app" pm-update -y
 
 #=================================================
@@ -109,10 +109,10 @@ _ynh_exec_with_drush_php drush "@$app" l10n-update -y
 ynh_script_progression --message="Removing branding and change default settings..." --weight=1
 
 _ynh_exec_with_drush_php drush "@$app" vset error_level 0
-_ynh_exec_with_drush_php drush "@$app" vset framaforms_notification_period_value "$expiration"
-_ynh_exec_with_drush_php drush "@$app" vset framaforms_deletion_period_value "$deletion"
-# Remove framaforms footer
-_ynh_exec_with_drush_php drush "@$app" sql-query "UPDATE block SET region='-1', status=0 WHERE delta='framaforms_footer' AND region='footer'"
+_ynh_exec_with_drush_php drush "@$app" vset yakforms_notification_period_value "$expiration"
+_ynh_exec_with_drush_php drush "@$app" vset yakforms_deletion_period_value "$deletion"
+# Remove yakforms footer
+_ynh_exec_with_drush_php drush "@$app" sql-query "UPDATE block SET region='-1', status=0 WHERE delta='yakforms_footer' AND region='footer'"
 
 #=================================================
 # CONFIGURING LDAP
