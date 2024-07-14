@@ -78,6 +78,14 @@ ram.runtime = "50M"
 
     autoupdate.strategy = "latest_gitlab_release"
 
+    [resources.sources.migration_script]
+    url = "https://framagit.org/yakforms/yakforms/-/raw/v1.1/framaforms2yakforms.php"
+    sha256 = "58a2e7378461dc5db70f59d69d37c0d6bd34eed224872151db5a794fdf33d07a"
+    format = "whatever"
+    extract = false
+    rename = "framaforms2yakforms.php"
+    prefetch = false
+
     [resources.system_user]
 
     [resources.install_dir]

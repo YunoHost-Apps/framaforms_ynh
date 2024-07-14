@@ -22,8 +22,9 @@ else
     upgrade_to_yakforms=false
 fi
 
-if [ "$upgrade_to_yakforms" = false ]; then
+if [ "$upgrade_to_yakforms" = true ]; then
     pushd "$install_dir"
+        ynh_setup_source --source_id="migration_script" --dest_dir="$install_dir/app"
         ynh_exec_as "$app" env "PATH=$PATH" "php$phpversion" framaforms2yakforms.php backup
         _ynh_exec_with_drush_php drush "@$app" dis framaforms
         _ynh_exec_with_drush_php drush "@$app" pm-uninstall framaforms
