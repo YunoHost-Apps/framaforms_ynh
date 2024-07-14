@@ -75,7 +75,7 @@ ynh_script_progression --message="Installing database..." --weight=19
 # Chown from composer/drush install
 chown -R "$app:www-data" "$install_dir"
 
-_ynh_exec_with_drush_php drush "@$app" site-install framaforms_org \
+_ynh_exec_with_drush_php drush "@$app" site-install yakforms_profile \
     install_configure_form.site_contact_url="https://forum.yunohost.org/t/framaforms-create-polls-using-drag-and-drop/8208" \
     install_configure_form.site_default_country=FR \
     -y --locale="$language" --account-name="admin" --account-pass="$password" --site-name="Framaforms" --site-mail="$admin_mail"

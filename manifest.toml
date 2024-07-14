@@ -31,7 +31,7 @@ ram.runtime = "50M"
     [install.domain]
     type = "domain"
 
-    # Yakform doesn't seem to be installable on a subdir, disabling it for now.
+    # Yakforms doesn't seem to be installable on a subdir, disabling it for now.
     # [install.path]
     # type = "path"
     # default = "/poll"
