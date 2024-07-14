@@ -23,7 +23,7 @@ else
 fi
 
 if [ "$upgrade_to_yakforms" = true ]; then
-    pushd "$install_dir"
+    pushd "$install_dir/app"
         ynh_setup_source --source_id="migration_script" --dest_dir="$install_dir/app"
         ynh_exec_as "$app" env "PATH=$PATH" "php$phpversion" framaforms2yakforms.php backup
         _ynh_exec_with_drush_php drush "@$app" dis framaforms
@@ -63,7 +63,7 @@ ynh_install_composer --phpversion="$phpversion" --workdir="$install_dir/.compose
 #=================================================
 
 if [ "$upgrade_to_yakforms" = true ]; then
-    pushd "$install_dir"
+    pushd "$install_dir/app"
         _ynh_exec_with_drush_php drush "@$app" en yakforms
         _ynh_exec_with_drush_php drush "@$app" dis yakforms_share_results
         _ynh_exec_with_drush_php drush "@$app" dis yakforms_public_results
@@ -83,7 +83,7 @@ ynh_backup_if_checksum_is_different --file="$install_dir/app/sites/default/setti
 # Chown from composer/drush install
 chown -R "$app:www-data" "$install_dir"
 
-pushd "$install_dir"
+pushd "$install_dir/app"
     _ynh_exec_with_drush_php drush "@$app" variable-set --exact maintenance_mode 1
     _ynh_exec_with_drush_php drush "@$app" cache-clear all
     # _ynh_exec_with_drush_php drush "@$app" pm-update -y drupal
