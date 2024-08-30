@@ -10,19 +10,19 @@ source /usr/share/yunohost/helpers
 #=================================================
 # MODIFY URL IN NGINX CONF
 #=================================================
-ynh_script_progression --message="Updating NGINX web server configuration..." --weight=1
+ynh_script_progression "Updating NGINX web server configuration..."
 
-ynh_change_url_nginx_config
+ynh_config_change_url_nginx
 
 #=================================================
 # UPDATE DRUSH ALIAS
 #=================================================
-ynh_script_progression --message="Updating Drush alias..." --weight=1
+ynh_script_progression "Updating Drush alias..."
 
-ynh_add_config --template="yoursite.aliases.drushrc.php" --destination="$install_dir/.drush/$app.aliases.drushrc.php"
+ynh_config_add --template="yoursite.aliases.drushrc.php" --destination="$install_dir/.drush/$app.aliases.drushrc.php"
 
 #=================================================
 # END OF SCRIPT
 #=================================================
 
-ynh_script_progression --message="Change of URL completed for $app" --last
+ynh_script_progression "Change of URL completed for $app"

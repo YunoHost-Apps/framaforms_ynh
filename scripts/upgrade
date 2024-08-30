@@ -10,39 +10,38 @@ source /usr/share/yunohost/helpers
 #=================================================
 # ENSURE DOWNWARD COMPATIBILITY
 #=================================================
-# ynh_script_progression --message="Ensuring downward compatibility..." --weight=1
+# ynh_script_progression "Ensuring downward compatibility..."
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
-ynh_script_progression --message="Upgrading source files..." --weight=9
+ynh_script_progression "Upgrading source files..."
 
 # Download, check integrity, uncompress and patch the source from app.src
-ynh_setup_source --dest_dir="$install_dir/app" --full_replace=1 --keep="sites"
+ynh_setup_source --dest_dir="$install_dir/app" --full_replace --keep="sites"
 
-chmod -R o-rwx "$install_dir"
-chown -R "$app:www-data" "$install_dir"
-
+#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chmod -R o-rwx "$install_dir"
+#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chown -R "$app:www-data" "$install_dir"
 chmod -R o-rwx "$data_dir"
 chown -R "$app:www-data" "$data_dir"
 
 #=================================================
 # UPGRADE COMPOSER
 #=================================================
-ynh_script_progression --message="Upgrading Composer..." --weight=3
+ynh_script_progression "Upgrading Composer..."
 
-ynh_install_composer --phpversion="$phpversion" --workdir="$install_dir/.composer"
+ynh_composer_install
+ynh_composer_exec install --no-dev  # FIXMEhelpers2.1 (replace with composer_workdir=... prior to calling this helper, default is $intall_dir) --workdir="$install_dir/.composer"
 
 #=================================================
 # UPGRADE DRUPAL
 #=================================================
-ynh_script_progression --message="Upgrading Drupal..." --weight=30
+ynh_script_progression "Upgrading Drupal..."
 
-ynh_backup_if_checksum_is_different --file="$install_dir/app/sites/default/settings.php"
+ynh_backup_if_checksum_is_different "$install_dir/app/sites/default/settings.php"
 
 # Chown from composer/drush install
-chown -R "$app:www-data" "$install_dir"
-
+#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chown -R "$app:www-data" "$install_dir"
 pushd "$install_dir"
     _ynh_exec_with_drush_php drush "@$app" variable-set --exact maintenance_mode 1
     _ynh_exec_with_drush_php drush "@$app" cache-clear all
@@ -55,26 +54,26 @@ popd
 #=================================================
 # UPDATE A CONFIG FILE
 #=================================================
-ynh_script_progression --message="Updating a configuration file..."
+ynh_script_progression "Updating configuration..."
 
-chmod 600 "$install_dir/app/sites/default/settings.php"
-chown "$app:$app" "$install_dir/app/sites/default/settings.php"
+#REMOVEME? Assuming the file is setup using ynh_config_add, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chmod 600 "$install_dir/app/sites/default/settings.php"
+#REMOVEME? Assuming the file is setup using ynh_config_add, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chown "$app:$app" "$install_dir/app/sites/default/settings.php"
 
 #=================================================
 # REAPPLY SYSTEM CONFIGURATIONS
 #=================================================
-ynh_script_progression --message="Upgrading system configurations related to $app..." --weight=1
+ynh_script_progression "Upgrading system configurations related to $app..."
 
 # Create a dedicated PHP-FPM config
-ynh_add_fpm_config --usage=low --footprint=low
+ynh_config_add_phpfpm
 
 # Create a dedicated NGINX config
-ynh_add_nginx_config
+ynh_config_add_nginx
 
-ynh_add_config --template="cron" --destination="/etc/cron.d/$app"
+ynh_config_add --template="cron" --destination="/etc/cron.d/$app"
 
 #=================================================
 # END OF SCRIPT
 #=================================================
 
-ynh_script_progression --message="Upgrade of $app completed" --last
+ynh_script_progression "Upgrade of $app completed"

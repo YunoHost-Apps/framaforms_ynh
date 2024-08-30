@@ -13,12 +13,12 @@ source /usr/share/yunohost/helpers
 
 admin_mail=$(ynh_user_get_info --username="$admin" --key="mail")
 
-ynh_app_setting_set --app="$app" --key="password" --value="$password"
+ynh_app_setting_set --key="password" --value="$password"
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
-ynh_script_progression --message="Setting up source files..." --weight=9
+ynh_script_progression "Setting up source files..."
 
 # Download, check integrity, uncompress and patch the source from app.src
 ynh_setup_source --dest_dir="$install_dir/app"
@@ -26,8 +26,8 @@ ynh_setup_source --dest_dir="$install_dir/app"
 mkdir -p "$install_dir/app/sites/default/files"
 mkdir -p "$install_dir/app/sites/default/files/tmp"
 
-chmod -R o-rwx "$install_dir"
-chown -R "$app:www-data" "$install_dir"
+#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chmod -R o-rwx "$install_dir"
+#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chown -R "$app:www-data" "$install_dir"
 chmod 2775 "$install_dir/app/sites/default/files"
 
 chmod -R o-rwx "$data_dir"
@@ -36,12 +36,12 @@ chown -R "$app:www-data" "$data_dir"
 #=================================================
 # CREATE DRUSH ALIAS
 #=================================================
-ynh_script_progression --message="Creating Drush alias..." --weight=2
+ynh_script_progression "Creating Drush alias..."
 
 mkdir -p "$install_dir/.drush"
 drush_aliasconfig="$install_dir/.drush/$app.aliases.drushrc.php"
 
-ynh_add_config --template="yoursite.aliases.drushrc.php" --destination="$drush_aliasconfig"
+ynh_config_add --template="yoursite.aliases.drushrc.php" --destination="$drush_aliasconfig"
 
 chmod 400 "$drush_aliasconfig"
 chown "$app:$app" "$drush_aliasconfig"
@@ -49,32 +49,32 @@ chown "$app:$app" "$drush_aliasconfig"
 #=================================================
 # INSTALL COMPOSER
 #=================================================
-ynh_script_progression --message="Installing Composer..." --weight=31
+ynh_script_progression "Installing Composer..."
 
 mkdir -p "$install_dir/.composer"
 
-ynh_add_config --template="composer.json" --destination="$install_dir/.composer/composer.json"
+ynh_config_add --template="composer.json" --destination="$install_dir/.composer/composer.json"
 
-ynh_install_composer --phpversion="$phpversion" --workdir="$install_dir/.composer"
+ynh_composer_install
+ynh_composer_exec install --no-dev  # FIXMEhelpers2.1 (replace with composer_workdir=... prior to calling this helper, default is $intall_dir) --workdir="$install_dir/.composer"
 
 #=================================================
 # ADD A CONFIGURATION
 #=================================================
-ynh_script_progression --message="Adding $app's configuration file..." --weight=1
+ynh_script_progression "Adding $app's configuration file..."
 
-ynh_add_config --template="default.settings.php" --destination="$install_dir/app/sites/default/settings.php"
+ynh_config_add --template="default.settings.php" --destination="$install_dir/app/sites/default/settings.php"
 
-chmod 600 "$install_dir/app/sites/default/settings.php"
-chown "$app:$app" "$install_dir/app/sites/default/settings.php"
+#REMOVEME? Assuming the file is setup using ynh_config_add, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chmod 600 "$install_dir/app/sites/default/settings.php"
+#REMOVEME? Assuming the file is setup using ynh_config_add, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chown "$app:$app" "$install_dir/app/sites/default/settings.php"
 
 #=================================================
 # INSTALLING FRAMAFORMS WITH DRUSH
 #=================================================
-ynh_script_progression --message="Installing database..." --weight=19
+ynh_script_progression "Installing database..."
 
 # Chown from composer/drush install
-chown -R "$app:www-data" "$install_dir"
-
+#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chown -R "$app:www-data" "$install_dir"
 _ynh_exec_with_drush_php drush "@$app" site-install framaforms_org \
     install_configure_form.site_contact_url="https://forum.yunohost.org/t/framaforms-create-polls-using-drag-and-drop/8208" \
     install_configure_form.site_default_country=FR \
@@ -87,7 +87,7 @@ _ynh_exec_with_drush_php drush "@$app" php-eval "module_load_include('inc', 'fra
 #=================================================
 # IMPORTING LANGUAGE PACK
 #=================================================
-ynh_script_progression --message="Importing language pack..." --weight=5
+ynh_script_progression "Importing language pack..."
 
 _ynh_exec_with_drush_php drush "@$app" pm-download -y drush_language
 _ynh_exec_with_drush_php drush "@$app" pm-download -y l10n_update
@@ -106,7 +106,7 @@ _ynh_exec_with_drush_php drush "@$app" l10n-update -y
 #=================================================
 # REMOVING BRANDING AND CHANGING DEFAULT SETTINGS
 #=================================================
-ynh_script_progression --message="Removing branding and change default settings..." --weight=1
+ynh_script_progression "Removing branding and change default settings..."
 
 _ynh_exec_with_drush_php drush "@$app" vset error_level 0
 _ynh_exec_with_drush_php drush "@$app" vset framaforms_notification_period_value "$expiration"
@@ -117,7 +117,7 @@ _ynh_exec_with_drush_php drush "@$app" sql-query "UPDATE block SET region='-1', 
 #=================================================
 # CONFIGURING LDAP
 #=================================================
-ynh_script_progression --message="Configuring LDAP authentication..." --weight=1
+ynh_script_progression "Configuring LDAP authentication..."
 
 _ynh_exec_with_drush_php drush "@$app" pm-download ldap-7.x-2.6
 _ynh_exec_with_drush_php drush "@$app" pm-enable -y ldap_servers ldap_user ldap_authentication ldap_authorization ldap_authorization_drupal_role
@@ -128,18 +128,18 @@ _ynh_exec_with_drush_php drush "@$app" variable-set --format=yaml ldap_authentic
 #=================================================
 # SYSTEM CONFIGURATION
 #=================================================
-ynh_script_progression --message="Adding system configurations related to $app..." --weight=1
+ynh_script_progression "Adding system configurations related to $app..."
 
 # Create a dedicated PHP-FPM config
-ynh_add_fpm_config --usage=low --footprint=low
+ynh_config_add_phpfpm
 
 # Create a dedicated NGINX config
-ynh_add_nginx_config
+ynh_config_add_nginx
 
-ynh_add_config --template="cron" --destination="/etc/cron.d/$app"
+ynh_config_add --template="cron" --destination="/etc/cron.d/$app"
 
 #=================================================
 # END OF SCRIPT
 #=================================================
 
-ynh_script_progression --message="Installation of $app completed" --last
+ynh_script_progression "Installation of $app completed"
