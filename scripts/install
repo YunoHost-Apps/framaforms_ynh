@@ -43,9 +43,6 @@ drush_aliasconfig="$install_dir/.drush/$app.aliases.drushrc.php"
 
 ynh_config_add --template="yoursite.aliases.drushrc.php" --destination="$drush_aliasconfig"
 
-chmod 400 "$drush_aliasconfig"
-chown "$app:$app" "$drush_aliasconfig"
-
 #=================================================
 # INSTALL COMPOSER
 #=================================================
@@ -55,7 +52,6 @@ mkdir -p "$install_dir/.composer"
 
 ynh_config_add --template="composer.json" --destination="$install_dir/.composer/composer.json"
 
-ynh_composer_install
 ynh_composer_exec install --no-dev  # FIXMEhelpers2.1 (replace with composer_workdir=... prior to calling this helper, default is $intall_dir) --workdir="$install_dir/.composer"
 
 #=================================================
